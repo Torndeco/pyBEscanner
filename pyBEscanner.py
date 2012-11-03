@@ -127,7 +127,7 @@ class Main:
 				
 				x = x + 1
 
-		time.sleep(self.interval)
+			time.sleep(self.interval)
 		
 
 pyBE = Main()
