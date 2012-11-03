@@ -15,11 +15,11 @@ class Rcon:
 		pass
 		
 	def kickplayer(self, playername):
-		temp = os.path.join("bin", ("rcon_kickplayer_" + str(self.port) + ".exe"))
+		temp = os.path.join("rcon", ("rcon_kickplayer_" + str(self.port) + ".exe"))
 		#subprocess.call([temp, playername])
 		
 	def reloadbans(self):
-		temp = os.path.join("bin", ("rcon_reloadbans_" + str(self.port) + ".exe"))
+		temp = os.path.join("rcon", ("rcon_reloadbans_" + str(self.port) + ".exe"))
 		#subprocess.call[os.path.join("bin","rcon_reload_bans"+str(self.port)+".exe")]
 
 	
