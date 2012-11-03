@@ -19,8 +19,9 @@ class Rcon:
 		#subprocess.call([temp, playername])
 		
 	def reloadbans(self):
-		temp = os.path.join("rcon", ("rcon_reloadbans_" + str(self.port) + ".exe"))
-		#subprocess.call[os.path.join("bin","rcon_reload_bans"+str(self.port)+".exe")]
+		temp = os.path.join(os.getcwd(), "rcon", ("rcon_reloadbans_" + str(self.port) + ".exe"))
+		print str(temp)
+		subprocess.call([temp])
 
 	
 	def reloadfilters(self):

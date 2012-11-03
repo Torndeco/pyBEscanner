@@ -19,7 +19,7 @@ namespace BattleNET_client
             BattlEyeLoginCredentials loginCredentials = new BattlEyeLoginCredentials();
             #region
             loginCredentials.Host = "127.0.0.1";
-            loginCredentials.Port = 2302;
+            loginCredentials.Port = 2312;
             loginCredentials.Password = "CHANGEME";
             #endregion
             

@@ -67,26 +67,27 @@ class Scanner:
 	def scan_battleye_logs(self, x, time="-1"):
 
 		if os.path.isfile(self.logs[x]) == True:
-
+			print "------------------"
+			print "------------------"
 			if self.server_settings[x] == "disable":
 				print "Skipping " + x + ".log, scan option = disable"
 			else:
 				log_scanner = Parser()
 				if self.server_settings[x] == "whitelist":
-					print x + " = whitelist"
+					print x + " (whitelist)"
 					log_scanner.scan_log(self.logs[x], self.backup_logs[x], self.whitelisted_filters[x], None)
 					self.update_bans(x, log_scanner.blacklist)
 					self.update_bans(x, log_scanner.unknownlist, time, True) 
 					self.log_unknown(x, log_scanner.unknownlist)
 					# TODO: Update bans.txt
 				elif self.server_settings[x] == "blacklist":
-					print x + " = blacklist"
+					print x + " (blacklist)"
 					log_scanner.scan_log(self.logs[x], self.backup_logs[x], self.whitelisted_filters[x], self.blacklisted_filters[x])
 					self.update_bans(x, log_scanner.blacklist, time, True)
 					self.log_unknown(x, log_scanner.unknownlist)
 					# TODO: Update bans.txt
 				elif self.server_settings[x] == "blacklist+kick":
-					print x + " = blacklist+kick"
+					print x + " (blacklist+kick)"
 					log_scanner.scan_log(self.logs[x], self.backup_logs[x], self.whitelisted_filters[x], self.blacklisted_filters[x])
 					self.update_bans(x, log_scanner.blacklist, time, True)
 					self.update_kicks(x, log_scanner.unknownlist)
@@ -99,12 +100,12 @@ class Scanner:
 			if self.ban_list.count(data["guid"][x]) == 0:
 				self.ban_list.append(data["guid"][x])
 				self.ban_reason.append("pyBEscanner: " + str(data["name"][x]) + " detected hacking on Server " + str(self.server_settings["ServerName"]) + " @ " + str(data["date"][x]))
+				print "Banning Player " + str(data["name"][x])
 			ban_logger.add(str(data["date"][x]) + str(data["name"][x]) + "(" + str(data["ip"][x]) + ") " + str(data["guid"][x]) + " - " + str(data["code"][x]) + "\n")
 			
 		if update == True:
 			f_bans = open(os.path.join(self.server_settings["BattlEye Directory"], "bans.txt"), "a")
 			for x in range(len(self.ban_list)):
-				print str(self.ban_list)
 				f_bans.write("\n" + str(self.ban_list[x]) + " " + str(time) + " " + str(self.ban_reason[x]))
 			f_bans.close()
 	
