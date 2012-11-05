@@ -15,25 +15,30 @@ Features (assuming not bugged)
 	* Auto-purges logs as it scans, reduces need to re-scan
 	* Makes backup logs files & splits them up into folders based on date
 	* Makes actions logs i.e 
-		createvehicle-bans.txt / createvehicle-kicks.txt / createvehicle-unknown-kicks.txt.
+		scripts-bans.txt / 
+		scripts-kicks.txt / 
+		scripts-unknown-kicks.txt.
 	* Ability to pick per file different scan settings / disable
 		Ban only for blacklisted code...
-		Ban only for blacklisted code + kick for unknown code entries... (dont recommend atm)
-		Ban for all logged code that isnt in whitelist (dont recommend atm)
+		Ban only for blacklisted code + kick for unknown code entries... 
+			(dont recommend atm)
+		Ban for all logged code that isnt in whitelist 
+			(dont recommend atm)
 
 
 Directory Layout
 	<pyBEscanner install directory>pyBEscanner.py                 
 		[Main Python Script....   This is what u run]
 	<pyBEscanner install directory>/conf/servers.ini              
-		[Settings File,  settings are reloaded everytime before a log scan]
+		[Settings File, reloaded everytime before a log scan]
 	<pyBEscanner install directory>/rcon/                         
-		[Temp workaround, using ziello2k C# Battlenet library as workaround for reloading bans see note below]
+		[Using ziello2k C# Battlenet library, see note below]
 
 	<server battleye directory>/pyBEscanner                       
 		[Location of whitelist / blacklist filters]
 	<server battleye directory>/Battle Logs - %Year-%Month-%Day   
-		[Location of archived battleye logs, also contains any bans/kicks/unknown logs]
+		[Location of archived battleye logs, 
+		also contains any bans/kicks/unknown logs]
 	
 	
 Requirements
