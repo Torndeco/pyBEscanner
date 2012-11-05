@@ -48,14 +48,18 @@ Requirements
 
 Known Issues
 	* No python rcon networking code
-	* No / very little exception handling code...  If there is a typo in filter files will cause app to exit out with error message...
-	* If logged code entry contains more than one line, possible for app to read file before battleye gets a chance to finish updating the files with line 2+. 
+	* No / very little exception handling code...  
+		If there is a typo in filter files will cause app to crash
+	* If logged code entry contains more than one line, 
+		race condition between reading file versus battleye
 	* Health may cause Dementia, Hair Loss, Loss of Life
 
 
 Notes:-  
 	* Havent written any rcon code written for python yet...
 	* So Temp workaround till i get around to creating rcon networking code...
-		Using ziello2k https://github.com/ziellos2k/BattleNET to create an exe file to connect to server & issue reloadbans / kickplayers command
-		Edit the source *.cs and enter in your server ip / port / password & compile into an exe. 
+		Using ziello2k https://github.com/ziellos2k/BattleNET 
+		To create an exe file to connect to server
+		Edit the source *.cs 
+		Enter in your server ip / port / password & compile into an exe. 
 		I used http://www.csscript.net/ to create executables
