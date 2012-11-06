@@ -107,7 +107,6 @@ class Scanner:
 				elif self.server_settings[x] == "standard":
 					# Standard Scanning
 					print x + " (standard)"
-					log_scanner.scan_log(self.logs[x], self.backup_logs[x], self.whitelist_filters[x], self.banlist_filters[x], self.kicklist_filters[x])
 					self.update_bans(x, log_scanner.banlist, update=True)
 					self.update_kicks(x, log_scanner.kicklist)
 
