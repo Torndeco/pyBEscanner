@@ -18,7 +18,7 @@ class Scanner:
 		self.kick_reason = []
 	
 		self.backuplog_dir = os.path.join(self.server_settings["BattlEye Directory"], datetime.datetime.now().strftime("BattlEye Logs - %Y-%m-%d"))
-
+		
 		self.logs = {
 			"createvehicle": os.path.join(self.server_settings["BattlEye Directory"], "createvehicle.log"),
 			"mpeventhandler": os.path.join(self.server_settings["BattlEye Directory"], "mpeventhandler.log"),
@@ -36,8 +36,26 @@ class Scanner:
 			"setdamage": os.path.join(self.backuplog_dir, "setdamage.log"),
 			"setpos": os.path.join(self.backuplog_dir, "setpos.log")
 			}			
+
+		self.banlist_filters = {
+			"createvehicle": os.path.join(self.server_settings["BattlEye Directory"], "pyBEscanner", "createvehicle.banlist"),
+			"mpeventhandler": os.path.join(self.server_settings["BattlEye Directory"], "pyBEscanner", "mpeventhandler.banlist"),
+			"publicvariable": os.path.join(self.server_settings["BattlEye Directory"], "pyBEscanner", "publicvariable.banlist"),
+			"scripts": os.path.join(self.server_settings["BattlEye Directory"], "pyBEscanner", "scripts.banlist"),
+			"setdamage": os.path.join(self.server_settings["BattlEye Directory"], "pyBEscanner", "setdamage.banlist"),
+			"setpos": os.path.join(self.server_settings["BattlEye Directory"], "pyBEscanner", "setpos.banlist")
+			}
 			
-		self.whitelisted_filters = {
+		self.kicklist_filters = {
+			"createvehicle": os.path.join(self.server_settings["BattlEye Directory"], "pyBEscanner", "createvehicle.kicklist"),
+			"mpeventhandler": os.path.join(self.server_settings["BattlEye Directory"], "pyBEscanner", "mpeventhandler.kicklist"),
+			"publicvariable": os.path.join(self.server_settings["BattlEye Directory"], "pyBEscanner", "publicvariable.kicklist"),
+			"scripts": os.path.join(self.server_settings["BattlEye Directory"], "pyBEscanner", "scripts.kicklist"),
+			"setdamage": os.path.join(self.server_settings["BattlEye Directory"], "pyBEscanner", "setdamage.kicklist"),
+			"setpos": os.path.join(self.server_settings["BattlEye Directory"], "pyBEscanner", "setpos.kicklist")
+			}
+
+		self.whitelist_filters = {
 			"createvehicle": os.path.join(self.server_settings["BattlEye Directory"], "pyBEscanner", "createvehicle.whitelist"),
 			"mpeventhandler": os.path.join(self.server_settings["BattlEye Directory"], "pyBEscanner", "mpeventhandler.whitelist"),
 			"publicvariable": os.path.join(self.server_settings["BattlEye Directory"], "pyBEscanner", "publicvariable.whitelist"),
@@ -45,16 +63,6 @@ class Scanner:
 			"setdamage": os.path.join(self.server_settings["BattlEye Directory"], "pyBEscanner", "setdamage.whitelist"),
 			"setpos": os.path.join(self.server_settings["BattlEye Directory"], "pyBEscanner", "setpos.whitelist")
 			}
-			
-		self.blacklisted_filters = {
-			"createvehicle": os.path.join(self.server_settings["BattlEye Directory"], "pyBEscanner", "createvehicle.blacklist"),
-			"mpeventhandler": os.path.join(self.server_settings["BattlEye Directory"], "pyBEscanner", "mpeventhandler.blacklist"),
-			"publicvariable": os.path.join(self.server_settings["BattlEye Directory"], "pyBEscanner", "publicvariable.blacklist"),
-			"scripts": os.path.join(self.server_settings["BattlEye Directory"], "pyBEscanner", "scripts.blacklist"),
-			"setdamage": os.path.join(self.server_settings["BattlEye Directory"], "pyBEscanner", "setdamage.blacklist"),
-			"setpos": os.path.join(self.server_settings["BattlEye Directory"], "pyBEscanner", "setpos.blacklist")
-			}
-
 			
 		# Create Backup Folder if it doesnt exist
 		if not os.path.exists(self.backuplog_dir):
@@ -67,65 +75,82 @@ class Scanner:
 	def scan_battleye_logs(self, x, time="-1"):
 
 		if os.path.isfile(self.logs[x]) == True:
-			print "------------------"
-			print "------------------"
-			if self.server_settings[x] == "disable":
-				print "Skipping " + x + ".log, scan option = disable"
+			if self.server_settings[x] == "off":
+				print "Skipping " + x + ".log, scan option = off"
 			else:
 				log_scanner = Parser()
-				if self.server_settings[x] == "whitelist":
-					print x + " (whitelist)"
-					log_scanner.scan_log(self.logs[x], self.backup_logs[x], self.whitelisted_filters[x], None)
-					self.update_bans(x, log_scanner.blacklist)
-					self.update_bans(x, log_scanner.unknownlist, time, True) 
-					self.log_unknown(x, log_scanner.unknownlist)
-					# TODO: Update bans.txt
-				elif self.server_settings[x] == "blacklist":
-					print x + " (blacklist)"
-					log_scanner.scan_log(self.logs[x], self.backup_logs[x], self.whitelisted_filters[x], self.blacklisted_filters[x])
-					self.update_bans(x, log_scanner.blacklist, time, True)
-					self.log_unknown(x, log_scanner.unknownlist)
-					# TODO: Update bans.txt
-				elif self.server_settings[x] == "blacklist+kick":
-					print x + " (blacklist+kick)"
-					log_scanner.scan_log(self.logs[x], self.backup_logs[x], self.whitelisted_filters[x], self.blacklisted_filters[x])
-					self.update_bans(x, log_scanner.blacklist, time, True)
+				log_scanner.scan_log(self.logs[x], self.backup_logs[x], self.whitelist_filters[x], self.banlist_filters[x], self.kicklist_filters[x])
+				if self.server_settings[x] == "strict":
+					# Strict Scanning
+					print x + " (strict)"
+					self.update_bans(x, log_scanner.banlist)
+					self.update_bans(x, log_scanner.kicklist)
+					self.update_bans(x, log_scanner.unknownlist, update=True) 
+					
+					# Logging
+					self.log(x, "bans", log_scanner.banlist)
+					self.log(x, "kicks", log_scanner.kicklist)
+					self.log(x, "unknown", log_scanner.unknownlist)
+
+				elif self.server_settings[x] == "standard+kick":
+					# Standard Scanning + Kicking
+					print x + " (standard+kick)"
+					self.update_bans(x, log_scanner.banlist, update=True)
+					self.update_kicks(x, log_scanner.kicklist)
 					self.update_kicks(x, log_scanner.unknownlist)
-					self.log_unknown(x, log_scanner.unknownlist)
+					
+					# Logging
+					self.log(x, "bans", log_scanner.banlist)
+					self.log(x, "kicks", log_scanner.kicklist)
+					self.log(x, "unknown", log_scanner.unknownlist)
+					
+				elif self.server_settings[x] == "standard":
+					# Standard Scanning
+					print x + " (standard)"
+					log_scanner.scan_log(self.logs[x], self.backup_logs[x], self.whitelist_filters[x], self.banlist_filters[x], self.kicklist_filters[x])
+					self.update_bans(x, log_scanner.banlist, update=True)
+					self.update_kicks(x, log_scanner.kicklist)
+
+					# Logging
+					self.log(x, "bans", log_scanner.banlist)
+					self.log(x, "kicks", log_scanner.kicklist)
+					self.log(x, "unknown", log_scanner.unknownlist)
+
+				else:
+					print x + " (unknown option)"
 						
 						
 	def update_bans(self, x, data, time="-1", update=False):
-		ban_logger = Logger(os.path.join(self.backuplog_dir, x + "-bans.txt"))				
 		for x in range(len(data["guid"])):
 			if self.ban_list.count(data["guid"][x]) == 0:
 				self.ban_list.append(data["guid"][x])
 				self.ban_reason.append("pyBEscanner: " + str(data["name"][x]) + " detected hacking on Server " + str(self.server_settings["ServerName"]) + " @ " + str(data["date"][x]))
-				print "Banning Player " + str(data["name"][x])
-			ban_logger.add(str(data["date"][x]) + str(data["name"][x]) + "(" + str(data["ip"][x]) + ") " + str(data["guid"][x]) + " - " + str(data["code"][x]) + "\n")
+				print "       Banning Player " + str(data["name"][x])
 			
 		if update == True:
-			f_bans = open(os.path.join(self.server_settings["BattlEye Directory"], "bans.txt"), "a")
+			self.bans.openfile()
 			for x in range(len(self.ban_list)):
-				f_bans.write("\n" + str(self.ban_list[x]) + " " + str(time) + " " + str(self.ban_reason[x]))
-			f_bans.close()
+				self.bans.addban(self.ban_list[x], time, self.ban_reason[x])
+			self.bans.closefile()
+		print
 	
 	
 	def update_kicks(self, x, data):
-		kicks_logger = Logger(os.path.join(self.backuplog_dir, x + "-kicks.txt"))				
 		for x in range(len(data["name"])):
 			if self.kick_list.count(data["name"]) == 0:
 				self.kick_list.append(data["name"])
 				self.kick_reason.append("pyBEscanner: " + str(data["name"][x]) + " detected unknown @ " + str(data["date"][x]))
-			kicks_logger.add(str(data["date"][x]) + str(data["name"][x]) + "(" + str(data["ip"][x]) + ") " + str(data["guid"][x]) + " - " + str(data["code"][x]) + "\n")
 			
 		for x in range(len(self.kick_list)):
 			self.rcon.kickplayer(self.kick_list[x])
 			
 			
-	def log_unknown(self, x, data):
-		unknown_logger = Logger(os.path.join(self.backuplog_dir, x + "-unknown.txt"))				
-		for x in range(len(data["guid"])):
-			unknown_logger.add(str(data["date"][x]) + str(data["name"][x]) + "(" + str(data["ip"][x]) + ") " + str(data["guid"][x]) + " - " + str(data["code"][x]) + "\n")
+	def log(self, x, action, data):
+		if data["date"] != []:
+			f_log = open((os.path.join(self.backuplog_dir, x + "-" + action + ".txt")), "a")
+			for x in range(len(data["date"])):
+				f_log.write(str(data["date"][x]) + str(data["name"][x]) + "(" + str(data["ip"][x]) + ") " + str(data["guid"][x]) + " - " + str(data["code"][x]) + "\n")
+			f_log.close()
 				
 				
 	def start(self):
@@ -155,18 +180,32 @@ class Parser:
 
 		
 
-	def scan_log(self, logfile, backupfile, whitelisted_filters, blacklisted_filters):
+	def scan_log(self, logfile, backupfile, whitelist_filters, banlist_filters, kicklist_filters):
+	
+#log_scanner.scan_log(self.logs[x], self.backup_logs[x], self.whitelist_filters[x], self.banlist_filters[x], self.kicklist_filters[x])
 
+		# Entries
 		entries_date = []
 		entries_guid = []
 		entries_ip = []
 		entries_code = []
 		entries_name = []
 
+		# Ban Entries
+		ban_entries_date = []
+		ban_entries_guid = []
+		ban_entries_ip = []
+		ban_entries_code = []
+		ban_entries_name = []
+		
+		# Kick Entries
+		kick_entries_date = []
+		kick_entries_guid = []
+		kick_entries_ip = []
+		kick_entries_code = []
+		kick_entries_name = []
+		
 		# Scan BattlEye Logs
-			# Append BattlEye Backup Logs
-			# Empty BattlEye Logs
-
 		f_backup = open(backupfile, "a")
 		with open(logfile) as f_log:
 			for line in f_log:
@@ -192,16 +231,16 @@ class Parser:
 					entries_name.append(name[0])	
 		f_backup.close()
 		
-		print "DEBUG : length of entries code " + str(len(entries_code))
+		#print "DEBUG : length of entries code " + str(len(entries_code))
 
 		# Empty Logfile after reading it
 			# Possible race condition between parsing file & emptying file. If battleye updates it, lost entries...
 			# TODO: Replace with code that wipes entries based on line number ???
 		self.purge(logfile)
 		
-		if os.path.isfile(whitelisted_filters) == True:		
+		if os.path.isfile(whitelist_filters) == True:		
 			# Remove whitelisted entries
-			with open(whitelisted_filters) as f:
+			with open(whitelist_filters) as f:
 				for line in f:
 					temp = line.strip()
 					x = 0
@@ -216,45 +255,68 @@ class Parser:
 							x = x + 1
 		else:
 			# If file = missing, create an empty file
-			open(whitelisted_filters, 'w').close()
+			open(whitelist_filters, 'w').close()
 
-		print "DEBUG 2: length of entries code " + str(len(entries_code))
-				
-		# Split up into unknown / blacklisted entries
-		blackentries_date = []
-		blackentries_guid = []
-		blackentries_ip = []
-		blackentries_code = []
-		blackentries_name = []
+		#print "DEBUG 2: length of entries code " + str(len(entries_code))
 
-		if blacklisted_filters != None:
-			if os.path.isfile(blacklisted_filters) == True:			
+		if banlist_filters != None:
+			if os.path.isfile(banlist_filters) == True:			
 				# Search for BlackListed Entries
-				with open(blacklisted_filters) as f:
+				with open(banlist_filters) as f:
 					for line in f:
 						temp = line.strip()
 						x = 0
 						while x != len(entries_code):
 							if re.search(temp, entries_code[x]):
-								blackentries_date.append(entries_date.pop(x))
-								blackentries_guid.append(entries_guid.pop(x))
-								blackentries_ip.append(entries_ip.pop(x))
-								blackentries_code.append(entries_code.pop(x))
-								blackentries_name.append(entries_name.pop(x))
+								ban_entries_date.append(entries_date.pop(x))
+								ban_entries_guid.append(entries_guid.pop(x))
+								ban_entries_ip.append(entries_ip.pop(x))
+								ban_entries_code.append(entries_code.pop(x))
+								ban_entries_name.append(entries_name.pop(x))
 							else:
 								x = x + 1
 			else:
 				# If file = missing, create an empty file
-				open(blacklisted_filters, 'w').close()
+				open(banlist_filters, 'w').close()
 
-		print "DEBUG 3: length of entries code " + str(len(entries_code))
+		#print "DEBUG 3: length of entries code " + str(len(entries_code))
+		
+		if kicklist_filters != None:
+			if os.path.isfile(kicklist_filters) == True:			
+				# Search for KickList Entries
+				with open(kicklist_filters) as f:
+					for line in f:
+						temp = line.strip()
+						x = 0
+						while x != len(entries_code):
+							if re.search(temp, entries_code[x]):
+								kick_entries_date.append(entries_date.pop(x))
+								kick_entries_guid.append(entries_guid.pop(x))
+								kick_entries_ip.append(entries_ip.pop(x))
+								kick_entries_code.append(entries_code.pop(x))
+								kick_entries_name.append(entries_name.pop(x))
+							else:
+								x = x + 1
+			else:
+				# If file = missing, create an empty file
+				open(kicklist_filters, 'w').close()
 
-		self.blacklist = {
-					"date":blackentries_date,
-					"guid":blackentries_guid,
-					"ip":blackentries_ip,
-					"code":blackentries_code,
-					"name":blackentries_name
+		#print "DEBUG 4: length of entries code " + str(len(entries_code))
+
+		self.banlist = {
+					"date":ban_entries_date,
+					"guid":ban_entries_guid,
+					"ip":ban_entries_ip,
+					"code":ban_entries_code,
+					"name":ban_entries_name
+					}
+
+		self.kicklist = {
+					"date":kick_entries_date,
+					"guid":kick_entries_guid,
+					"ip":kick_entries_ip,
+					"code":kick_entries_code,
+					"name":kick_entries_name
 					}
 
 		self.unknownlist = {
@@ -266,34 +328,25 @@ class Parser:
 					}
 
 		
-
-			
 	def purge(self, logfile):
-		# Emptys logfile
-		open(logfile, 'w').close()
-
-
-class Logger:
-	def __init__(self, logfile):
-		self.logfile = logfile
-
-	def add(self, txt):
-		f_bans = open(self.logfile, "a")
-		f_bans.write(txt)
-		f_bans.close()
-
-class Bans:
-	def __init__(self, bans_file):
-		self.bans_file = bans_file
+		#open(logfile, 'w').close()
+		pass
 
 
 		
+class Bans:
+	def __init__(self, bans_file):
+		self.bans_file = bans_file
+		
+	def openfile(self):
+		self.f_bans = open(self.bans_file, "a")		
+
+	def closefile(self):
+		self.f_bans.close()
+
 	def addban(self, guid, time, reason):
-		temp = guid + " " + time + " " + reason + "\n"
-		f_bans = open(self.bans_file, "a")
-		f_bans.write(temp)
-		f_bans.close()
-	
+		self.f_bans.write(guid + " " + time + " " + reason + "\n")
 
 	def removeban(self, guid, time, reason):
 		pass
+		

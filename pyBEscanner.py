@@ -103,8 +103,9 @@ class Main:
 			while x < len(self.server_settings):
 				print
 				print
-				print ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
-				print "Scanning " + str(self.server_settings[x]["ServerName"])
+				print "---------------------------------------------------------"
+				print "       Scanning " + str(self.server_settings[x]["ServerName"])
+				print "---------------------------------------------------------"
 				bans_file = os.path.join(self.server_settings[x]["BattlEye Directory"], "bans.txt")
 				if os.path.isfile(bans_file) != True:
 					open(bans_file, 'w').close()
@@ -115,6 +116,7 @@ class Main:
 			
 			
 			x = 0
+			print "---------------------------------------------------------"
 			while x < len(self.server_settings):
 				print "Checking for bans.txt changes -- " + str(self.server_settings[x]["ServerName"])
 				bans_file = os.path.join(self.server_settings[x]["BattlEye Directory"], "bans.txt")
@@ -126,6 +128,7 @@ class Main:
 					rcon.reloadbans()
 				
 				x = x + 1
+			print "---------------------------------------------------------"
 
 			time.sleep(self.interval)
 		

@@ -10,20 +10,20 @@ Features (assuming not bugged)
 
 	* Multiple Servers ( No multi-threading support, it scans 1 at a time )
 	* Scans battlelogs
-	* Whitelist + Blacklist filters with regrex features
+	* Whitelist + Blanlist + Kicklist filters with regrex features
 		http://docs.python.org/2/library/re.html
 	* Auto-purges logs as it scans, reduces need to re-scan
 	* Makes backup logs files & splits them up into folders based on date
 	* Makes actions logs i.e 
 		scripts-bans.txt / 
 		scripts-kicks.txt / 
-		scripts-unknown-kicks.txt.
-	* Ability to pick per file different scan settings / disable
-		Ban only for blacklisted code...
-		Ban only for blacklisted code + kick for unknown code entries... 
-			(dont recommend atm)
-		Ban for all logged code that isnt in whitelist 
-			(dont recommend atm)
+		scripts-unknown.txt.
+	* Ability to pick per file different scan settings
+		Standard       - Ban only for blanlisted code...
+		Standard+Kick  - Ban only for blacklisted code 
+					   + kick for unknown code entries... 
+		Strict         - Ban for everything not in
+						whitelist filter
 
 
 Directory Layout
@@ -63,3 +63,5 @@ Notes:-
 		Edit the source *.cs 
 		Enter in your server ip / port / password & compile into an exe. 
 		I used http://www.csscript.net/ to create executables
+		
+	* Some settings in servers.ini are just placeholders... and have no function yet...
