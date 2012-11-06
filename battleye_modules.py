@@ -128,10 +128,11 @@ class Scanner:
 				print "       Banning Player " + str(data["name"][x])
 			
 		if update == True:
-			self.bans.openfile()
-			for x in range(len(self.ban_list)):
-				self.bans.addban(self.ban_list[x], time, self.ban_reason[x])
-			self.bans.closefile()
+			if self.ban_list != []:
+				self.bans.openfile()
+				for x in range(len(self.ban_list)):
+					self.bans.addban(self.ban_list[x], time, self.ban_reason[x])
+				self.bans.closefile()
 		print
 	
 	
@@ -329,8 +330,8 @@ class Parser:
 
 		
 	def purge(self, logfile):
-		#open(logfile, 'w').close()
-		pass
+		open(logfile, 'w').close()
+		#pass
 
 
 		

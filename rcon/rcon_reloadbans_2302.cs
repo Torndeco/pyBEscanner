@@ -14,7 +14,7 @@ namespace BattleNET_client
     {
         private static void Main(string[] args)
         {
-            Console.Title = "DayZ Ultra Server Restart";
+            //Console.Title = "DayZ Ultra Server Restart";
             
             BattlEyeLoginCredentials loginCredentials = new BattlEyeLoginCredentials();
             #region
@@ -38,7 +38,7 @@ namespace BattleNET_client
             }
 
             b.SendCommandPacket(EBattlEyeCommand.loadBans);
-            Thread.Sleep(1000); // wait 11 secs  for no reason...
+            Thread.Sleep(1000); // wait 1 second  for no reason...
             b.Disconnect();
 
         }
