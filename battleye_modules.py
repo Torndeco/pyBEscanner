@@ -20,6 +20,7 @@ class Scanner:
 		self.backuplog_dir = os.path.join(self.server_settings["BattlEye Directory"], datetime.datetime.now().strftime("BattlEye Logs - %Y-%m-%d"))
 		
 		self.logs = {
+			"addmagazinecargo": os.path.join(self.server_settings["BattlEye Directory"], "addmagazinecargo.log"),
 			"createvehicle": os.path.join(self.server_settings["BattlEye Directory"], "createvehicle.log"),
 			"mpeventhandler": os.path.join(self.server_settings["BattlEye Directory"], "mpeventhandler.log"),
 			"publicvariable": os.path.join(self.server_settings["BattlEye Directory"], "publicvariable.log"),
@@ -29,6 +30,7 @@ class Scanner:
 			}
 
 		self.backup_logs = {
+			"addmagazinecargo": os.path.join(self.backuplog_dir, "addmagazinecargo.log"),
 			"createvehicle": os.path.join(self.backuplog_dir, "createvehicle.log"),
 			"mpeventhandler": os.path.join(self.backuplog_dir, "mpeventhandler.log"),
 			"publicvariable": os.path.join(self.backuplog_dir, "publicvariable.log"),
@@ -38,6 +40,7 @@ class Scanner:
 			}			
 
 		self.banlist_filters = {
+			"addmagazinecargo": os.path.join(self.server_settings["BattlEye Directory"], "pyBEscanner", "addmagazinecargo.banlist"),
 			"createvehicle": os.path.join(self.server_settings["BattlEye Directory"], "pyBEscanner", "createvehicle.banlist"),
 			"mpeventhandler": os.path.join(self.server_settings["BattlEye Directory"], "pyBEscanner", "mpeventhandler.banlist"),
 			"publicvariable": os.path.join(self.server_settings["BattlEye Directory"], "pyBEscanner", "publicvariable.banlist"),
@@ -47,6 +50,7 @@ class Scanner:
 			}
 			
 		self.kicklist_filters = {
+			"addmagazinecargo": os.path.join(self.server_settings["BattlEye Directory"], "pyBEscanner", "addmagazinecargo.kicklist"),
 			"createvehicle": os.path.join(self.server_settings["BattlEye Directory"], "pyBEscanner", "createvehicle.kicklist"),
 			"mpeventhandler": os.path.join(self.server_settings["BattlEye Directory"], "pyBEscanner", "mpeventhandler.kicklist"),
 			"publicvariable": os.path.join(self.server_settings["BattlEye Directory"], "pyBEscanner", "publicvariable.kicklist"),
@@ -56,6 +60,7 @@ class Scanner:
 			}
 
 		self.whitelist_filters = {
+			"addmagazinecargo": os.path.join(self.server_settings["BattlEye Directory"], "pyBEscanner", "addmagazinecargo.whitelist"),
 			"createvehicle": os.path.join(self.server_settings["BattlEye Directory"], "pyBEscanner", "createvehicle.whitelist"),
 			"mpeventhandler": os.path.join(self.server_settings["BattlEye Directory"], "pyBEscanner", "mpeventhandler.whitelist"),
 			"publicvariable": os.path.join(self.server_settings["BattlEye Directory"], "pyBEscanner", "publicvariable.whitelist"),
@@ -156,6 +161,7 @@ class Scanner:
 	def start(self):
 		
 		# Check for Log Files to Scan
+		self.scan_battleye_logs("addmagazinecargo")
 		self.scan_battleye_logs("createvehicle")
 		self.scan_battleye_logs("mpeventhandler")
 		self.scan_battleye_logs("publicvariable")

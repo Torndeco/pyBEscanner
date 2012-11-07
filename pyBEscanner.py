@@ -35,7 +35,8 @@ class Main:
 		
 		## Scan Settings -- Default 
 		self.interval = int(self.config.get("Default", "interval", "60"))
-		
+
+		default["addmagazinecargo"] = self.config.get("Default", "scan_addmagazinecargo")		
 		default["createvehicle"] = self.config.get("Default", "scan_createvehicle")
 		default["mpeventhandler"] = self.config.get("Default", "scan_mpeventhandler")
 		default["publicvariable"] = self.config.get("Default", "scan_publicvariable")
@@ -59,6 +60,9 @@ class Main:
 			temp["Server RPT Log"] = self.config.get(self.server_settings[x], "Server RPT Log")
 
 			## Scan Settings -- Server Specfic
+			if self.config.has_option(self.server_settings[x], "scan_addmagazinecargo") == True:
+				temp["addmagazinecargo"] = self.config.get(self.server_settings[x], "scan_addmagazinecargo")
+				
 			if self.config.has_option(self.server_settings[x], "scan_createvehicle") == True:
 				temp["createvehicle"] = self.config.get(self.server_settings[x], "scan_createvehicle")
 
