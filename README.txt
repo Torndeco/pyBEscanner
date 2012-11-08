@@ -43,7 +43,6 @@ Directory Layout
 	
 Requirements
 	Python 2.7
-	C# Compiler
 	
 
 Known Issues
@@ -59,9 +58,6 @@ Notes:-
 	* Havent written any rcon code written for python yet...
 	* So Temp workaround till i get around to creating rcon networking code...
 		Using ziello2k https://github.com/ziellos2k/BattleNET 
-		To create an exe file to connect to server
-		Edit the source *.cs 
-		Enter in your server ip / port / password & compile into an exe. 
-		I used http://www.csscript.net/ to create executables
+		Source file is included for the paranoid people out there...
 		
 	* Some settings in servers.ini are just placeholders... and have no function yet...
