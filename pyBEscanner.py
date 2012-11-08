@@ -40,6 +40,7 @@ class Main:
 		default["createvehicle"] = self.config.get("Default", "scan_createvehicle")
 		default["mpeventhandler"] = self.config.get("Default", "scan_mpeventhandler")
 		default["publicvariable"] = self.config.get("Default", "scan_publicvariable")
+		default["remoteexec"] = self.config.get("Default", "scan_remoteexec")
 		default["scripts"] = self.config.get("Default", "scan_scripts")
 		default["setdamage"] = self.config.get("Default", "scan_setdamage")
 		default["setpos"] = self.config.get("Default", "scan_setpos")
@@ -71,6 +72,9 @@ class Main:
 
 			if self.config.has_option(self.server_settings[x], "scan_publicvariable") == True:
 				temp["publicvariable"] = self.config.get(self.server_settings[x], "scan_publicvariable")
+
+			if self.config.has_option(self.server_settings[x], "scan_remoteexec") == True:
+				temp["remoteexec"] = self.config.get(self.server_settings[x], "scan_remoteexec")
 
 			if self.config.has_option(self.server_settings[x], "scan_scripts") == True:
 				temp["scripts"] = self.config.get(self.server_settings[x], "scan_scripts")

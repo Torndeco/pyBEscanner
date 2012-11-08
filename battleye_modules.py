@@ -24,6 +24,7 @@ class Scanner:
 			"createvehicle": os.path.join(self.server_settings["BattlEye Directory"], "createvehicle.log"),
 			"mpeventhandler": os.path.join(self.server_settings["BattlEye Directory"], "mpeventhandler.log"),
 			"publicvariable": os.path.join(self.server_settings["BattlEye Directory"], "publicvariable.log"),
+			"remoteexec": os.path.join(self.server_settings["BattlEye Directory"], "remoteexec.log"),
 			"scripts": os.path.join(self.server_settings["BattlEye Directory"], "scripts.log"),
 			"setdamage": os.path.join(self.server_settings["BattlEye Directory"], "setdamage.log"),
 			"setpos": os.path.join(self.server_settings["BattlEye Directory"], "setpos.log")
@@ -34,6 +35,7 @@ class Scanner:
 			"createvehicle": os.path.join(self.backuplog_dir, "createvehicle.log"),
 			"mpeventhandler": os.path.join(self.backuplog_dir, "mpeventhandler.log"),
 			"publicvariable": os.path.join(self.backuplog_dir, "publicvariable.log"),
+			"remoteexec": os.path.join(self.backuplog_dir, "remoteexec.log"),
 			"scripts": os.path.join(self.backuplog_dir, "scripts.log"),
 			"setdamage": os.path.join(self.backuplog_dir, "setdamage.log"),
 			"setpos": os.path.join(self.backuplog_dir, "setpos.log")
@@ -44,6 +46,7 @@ class Scanner:
 			"createvehicle": os.path.join(self.server_settings["BattlEye Directory"], "pyBEscanner", "createvehicle.banlist"),
 			"mpeventhandler": os.path.join(self.server_settings["BattlEye Directory"], "pyBEscanner", "mpeventhandler.banlist"),
 			"publicvariable": os.path.join(self.server_settings["BattlEye Directory"], "pyBEscanner", "publicvariable.banlist"),
+			"remoteexec": os.path.join(self.server_settings["BattlEye Directory"], "pyBEscanner", "remoteexec.banlist"),
 			"scripts": os.path.join(self.server_settings["BattlEye Directory"], "pyBEscanner", "scripts.banlist"),
 			"setdamage": os.path.join(self.server_settings["BattlEye Directory"], "pyBEscanner", "setdamage.banlist"),
 			"setpos": os.path.join(self.server_settings["BattlEye Directory"], "pyBEscanner", "setpos.banlist")
@@ -54,6 +57,7 @@ class Scanner:
 			"createvehicle": os.path.join(self.server_settings["BattlEye Directory"], "pyBEscanner", "createvehicle.kicklist"),
 			"mpeventhandler": os.path.join(self.server_settings["BattlEye Directory"], "pyBEscanner", "mpeventhandler.kicklist"),
 			"publicvariable": os.path.join(self.server_settings["BattlEye Directory"], "pyBEscanner", "publicvariable.kicklist"),
+			"remoteexec": os.path.join(self.server_settings["BattlEye Directory"], "pyBEscanner", "remoteexec.kicklist"),
 			"scripts": os.path.join(self.server_settings["BattlEye Directory"], "pyBEscanner", "scripts.kicklist"),
 			"setdamage": os.path.join(self.server_settings["BattlEye Directory"], "pyBEscanner", "setdamage.kicklist"),
 			"setpos": os.path.join(self.server_settings["BattlEye Directory"], "pyBEscanner", "setpos.kicklist")
@@ -64,6 +68,7 @@ class Scanner:
 			"createvehicle": os.path.join(self.server_settings["BattlEye Directory"], "pyBEscanner", "createvehicle.whitelist"),
 			"mpeventhandler": os.path.join(self.server_settings["BattlEye Directory"], "pyBEscanner", "mpeventhandler.whitelist"),
 			"publicvariable": os.path.join(self.server_settings["BattlEye Directory"], "pyBEscanner", "publicvariable.whitelist"),
+			"remoteexec": os.path.join(self.server_settings["BattlEye Directory"], "pyBEscanner", "remoteexec.whitelist"),
 			"scripts": os.path.join(self.server_settings["BattlEye Directory"], "pyBEscanner", "scripts.whitelist"),
 			"setdamage": os.path.join(self.server_settings["BattlEye Directory"], "pyBEscanner", "setdamage.whitelist"),
 			"setpos": os.path.join(self.server_settings["BattlEye Directory"], "pyBEscanner", "setpos.whitelist")
@@ -165,6 +170,7 @@ class Scanner:
 		self.scan_battleye_logs("createvehicle")
 		self.scan_battleye_logs("mpeventhandler")
 		self.scan_battleye_logs("publicvariable")
+		self.scan_battleye_logs("remoteexec")
 		self.scan_battleye_logs("scripts")
 		self.scan_battleye_logs("setdamage")
 		self.scan_battleye_logs("setpos")
