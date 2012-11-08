@@ -14,13 +14,12 @@ namespace BattleNET_client
     {
         private static void Main(string[] args)
         {
-            //Console.Title = "DayZ Ultra Server Restart";
             
             BattlEyeLoginCredentials loginCredentials = new BattlEyeLoginCredentials();
             #region
-            loginCredentials.Host = "127.0.0.1";
-            loginCredentials.Port = 2302;
-            loginCredentials.Password = "CHANGEME";
+            loginCredentials.Host = args[0];
+            loginCredentials.Port = Convert.ToInt32(args[1]);
+            loginCredentials.Password = args[2];
             #endregion
             
 

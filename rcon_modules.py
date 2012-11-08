@@ -21,7 +21,7 @@ class Rcon:
 	def reloadbans(self):
 		temp = os.path.join(os.getcwd(), "rcon", ("rcon_reloadbans_" + str(self.port) + ".exe"))
 		print str(temp)
-		subprocess.call([temp])
+		subprocess.call([temp, self.ip, str(self.port), self.password)])
 
 	
 	def reloadfilters(self):
