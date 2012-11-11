@@ -1,6 +1,9 @@
 import datetime
 import re
 import os
+import shutil
+import pickle
+import time
 
 import rcon_modules
 
@@ -19,7 +22,7 @@ class Scanner:
 	
 		self.backuplog_dir = os.path.join(self.server_settings["BattlEye Directory"], datetime.datetime.now().strftime("BattlEye Logs - %Y-%m-%d"))
 		
-		self.logs = {
+		self.battleye_logs = {
 			"addmagazinecargo": os.path.join(self.server_settings["BattlEye Directory"], "addmagazinecargo.log"),
 			"createvehicle": os.path.join(self.server_settings["BattlEye Directory"], "createvehicle.log"),
 			"mpeventhandler": os.path.join(self.server_settings["BattlEye Directory"], "mpeventhandler.log"),
@@ -28,6 +31,17 @@ class Scanner:
 			"scripts": os.path.join(self.server_settings["BattlEye Directory"], "scripts.log"),
 			"setdamage": os.path.join(self.server_settings["BattlEye Directory"], "setdamage.log"),
 			"setpos": os.path.join(self.server_settings["BattlEye Directory"], "setpos.log")
+			}
+		
+		self.temp_logs = {
+			"addmagazinecargo": os.path.join(self.server_settings["temp_directory"], "addmagazinecargo.log"),
+			"createvehicle": os.path.join(self.server_settings["temp_directory"], "createvehicle.log"),
+			"mpeventhandler": os.path.join(self.server_settings["temp_directory"], "mpeventhandler.log"),
+			"publicvariable": os.path.join(self.server_settings["temp_directory"], "publicvariable.log"),
+			"remoteexec": os.path.join(self.server_settings["temp_directory"], "remoteexec.log"),
+			"scripts": os.path.join(self.server_settings["temp_directory"], "scripts.log"),
+			"setdamage": os.path.join(self.server_settings["temp_directory"], "setdamage.log"),
+			"setpos": os.path.join(self.server_settings["temp_directory"], "setpos.log")
 			}
 
 		self.backup_logs = {
@@ -80,53 +94,54 @@ class Scanner:
 
 		if not os.path.exists(os.path.join(self.server_settings["BattlEye Directory"], "pyBEscanner")):
 			os.mkdir(os.path.join(self.server_settings["BattlEye Directory"], "pyBEscanner"))
-
+			
+		if not os.path.exists(self.server_settings["temp_directory"]):
+			os.mkdir(self.server_settings["temp_directory"])
+		
 
 	def scan_battleye_logs(self, x, time="-1"):
 
-		if os.path.isfile(self.logs[x]) == True:
-			if self.server_settings[x] == "off":
-				print "Skipping " + x + ".log, scan option = off"
+		self.log_scanner.scan_log(self.temp_logs[x], self.backup_logs[x], self.whitelist_filters[x], self.banlist_filters[x], self.kicklist_filters[x])
+		if self.server_settings[x] == "off":
+			print "No actions taken " + x + ".log, scan option = off"
+		else:
+			if self.server_settings[x] == "strict":
+				# Strict Scanning
+				print x + " (strict)"
+				self.update_bans(x, self.log_scanner.banlist)
+				self.update_bans(x, self.log_scanner.kicklist)
+				self.update_bans(x, self.log_scanner.unknownlist, update=True) 
+				
+				# Logging
+				self.log(x, "bans", self.log_scanner.banlist)
+				self.log(x, "kicks", self.log_scanner.kicklist)
+				self.log(x, "unknown", self.log_scanner.unknownlist)
+
+			elif self.server_settings[x] == "standard+kick":
+				# Standard Scanning + Kicking
+				print x + " (standard+kick)"
+				self.update_bans(x, self.log_scanner.banlist, update=True)
+				self.update_kicks(x, self.log_scanner.kicklist)
+				self.update_kicks(x, self.log_scanner.unknownlist)
+				
+				# Logging
+				self.log(x, "bans", self.log_scanner.banlist)
+				self.log(x, "kicks", self.log_scanner.kicklist)
+				self.log(x, "unknown", self.log_scanner.unknownlist)
+				
+			elif self.server_settings[x] == "standard":
+				# Standard Scanning
+				print x + " (standard)"
+				self.update_bans(x, self.log_scanner.banlist, update=True)
+				self.update_kicks(x, self.log_scanner.kicklist)
+
+				# Logging
+				self.log(x, "bans", self.log_scanner.banlist)
+				self.log(x, "kicks", self.log_scanner.kicklist)
+				self.log(x, "unknown", self.log_scanner.unknownlist)
+
 			else:
-				log_scanner = Parser()
-				log_scanner.scan_log(self.logs[x], self.backup_logs[x], self.whitelist_filters[x], self.banlist_filters[x], self.kicklist_filters[x])
-				if self.server_settings[x] == "strict":
-					# Strict Scanning
-					print x + " (strict)"
-					self.update_bans(x, log_scanner.banlist)
-					self.update_bans(x, log_scanner.kicklist)
-					self.update_bans(x, log_scanner.unknownlist, update=True) 
-					
-					# Logging
-					self.log(x, "bans", log_scanner.banlist)
-					self.log(x, "kicks", log_scanner.kicklist)
-					self.log(x, "unknown", log_scanner.unknownlist)
-
-				elif self.server_settings[x] == "standard+kick":
-					# Standard Scanning + Kicking
-					print x + " (standard+kick)"
-					self.update_bans(x, log_scanner.banlist, update=True)
-					self.update_kicks(x, log_scanner.kicklist)
-					self.update_kicks(x, log_scanner.unknownlist)
-					
-					# Logging
-					self.log(x, "bans", log_scanner.banlist)
-					self.log(x, "kicks", log_scanner.kicklist)
-					self.log(x, "unknown", log_scanner.unknownlist)
-					
-				elif self.server_settings[x] == "standard":
-					# Standard Scanning
-					print x + " (standard)"
-					self.update_bans(x, log_scanner.banlist, update=True)
-					self.update_kicks(x, log_scanner.kicklist)
-
-					# Logging
-					self.log(x, "bans", log_scanner.banlist)
-					self.log(x, "kicks", log_scanner.kicklist)
-					self.log(x, "unknown", log_scanner.unknownlist)
-
-				else:
-					print x + " (unknown option)"
+				print x + " (unknown option)"
 						
 						
 	def update_bans(self, x, data, time="-1", update=False):
@@ -163,39 +178,28 @@ class Scanner:
 			f_log.close()
 				
 				
-	def start(self):
+	def scan(self):
+		battleye_logs = ["addmagazinecargo", "createvehicle", "mpeventhandler", "publicvariable", "remoteexec", "scripts", "setdamage", "setpos"]
 		
-		# Check for Log Files to Scan
-		self.scan_battleye_logs("addmagazinecargo")
-		self.scan_battleye_logs("createvehicle")
-		self.scan_battleye_logs("mpeventhandler")
-		self.scan_battleye_logs("publicvariable")
-		self.scan_battleye_logs("remoteexec")
-		self.scan_battleye_logs("scripts")
-		self.scan_battleye_logs("setdamage")
-		self.scan_battleye_logs("setpos")
+		self.log_scanner = Parser(time.time(), float(self.server_settings["OffSet"]))
+		
+		for log in battleye_logs:
+			if os.path.isfile(self.battleye_logs[log]) == True:
+				shutil.move(self.battleye_logs[log], self.temp_logs[log])
 
+		for log in battleye_logs:
+			if os.path.isfile(self.temp_logs[log]) == True:
+				self.scan_battleye_logs(log)
 
-
-		if os.path.isfile(self.server_settings["Server Console Log"]) == True:
-			# TODO: Server Log Scan
-			pass
-
-		if os.path.isfile(self.server_settings["Server RPT Log"]) == True:
-			# TODO: Server Log Scan
-			pass
-				
 		
 class Parser:		
-	def __init__(self):
-		pass
+	def __init__(self, scan_time, offset):
+		self.scan_time = scan_time
+		self.offset = offset
 
 		
-
 	def scan_log(self, logfile, backupfile, whitelist_filters, banlist_filters, kicklist_filters):
 	
-#log_scanner.scan_log(self.logs[x], self.backup_logs[x], self.whitelist_filters[x], self.banlist_filters[x], self.kicklist_filters[x])
-
 		# Entries
 		entries_date = []
 		entries_guid = []
@@ -216,6 +220,24 @@ class Parser:
 		kick_entries_ip = []
 		kick_entries_code = []
 		kick_entries_name = []
+		
+
+		# Check for Offset BattlEye Logs + Load File
+		offset_data_file = logfile + ".pickle"
+		if os.path.isfile(offset_data_file) == True:
+			f_offset_data_file = open(offset_data_file, 'rb')
+			offset_data = pickle.load(f_offset_data_file)
+			print "Retreiving " + str(offset_data)
+			if offset_data != []:
+				entries_date.append(offset_data[0])
+				entries_guid.append(offset_data[1])
+				entries_ip.append(offset_data[2])
+				entries_code.append(offset_data[3])
+				entries_name.append(offset_data[4])
+			f_offset_data_file.close()
+			
+		# Initialize New OffSet Data
+		offset_data = []
 		
 		# Scan BattlEye Logs
 		f_backup = open(backupfile, "a")
@@ -245,10 +267,29 @@ class Parser:
 		
 		#print "DEBUG : length of entries code " + str(len(entries_code))
 
-		# Empty Logfile after reading it
-			# Possible race condition between parsing file & emptying file. If battleye updates it, lost entries...
-			# TODO: Replace with code that wipes entries based on line number ???
-		self.purge(logfile)
+		os.remove(logfile)
+		
+		# Check for battleye offset condition
+		if len(entries_date) > 0:
+			x = time.mktime(time.localtime(self.scan_time))
+			x2 = time.mktime((time.strptime(entries_date[-1], "%d.%m.%Y %H:%M:%S: ")))
+			print x - x2
+			
+			if ((x - x2) < self.offset) == True:
+				offset_data.append(entries_date.pop())
+				offset_data.append(entries_guid.pop())
+				offset_data.append(entries_ip.pop())
+				offset_data.append(entries_code.pop())
+				offset_data.append(entries_name.pop())
+				print "Adding " + str(offset_data)
+			else:
+				print "Resetting Offset Data " + str(time.mktime(time.localtime(self.scan_time)) - time.mktime((time.strptime(entries_date[-1], "%d.%m.%Y %H:%M:%S: "))))
+				print self.offset
+			
+		# Update offset_data_file
+		f_offset_data_file = open(offset_data_file, 'wb')
+		pickle.dump(offset_data, f_offset_data_file)
+		f_offset_data_file.close()
 		
 		if os.path.isfile(whitelist_filters) == True:		
 			# Remove whitelisted entries
@@ -338,11 +379,7 @@ class Parser:
 					"code":entries_code,
 					"name":entries_name
 					}
-
 		
-	def purge(self, logfile):
-		open(logfile, 'w').close()
-		#pass
 
 
 		

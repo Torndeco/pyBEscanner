@@ -9,20 +9,26 @@ import copy
 
 import battleye_modules
 import rcon_modules
+from sys import exit
 
 class Main:
 	def __init__(self):
+		print
 		self.main_dir = os.getcwd()
 		self.conf_dir = os.path.join(self.main_dir, 'conf')
+
 		self.conf_file = os.path.join(self.main_dir, 'conf', 'servers.ini')
 		if not os.path.isfile(os.path.join(self.main_dir, 'pyBEscanner.py')):
 			print "Wrong working Directory"
+			exit()
 		else:
 			if not os.path.exists(self.conf_dir):
 				print "Missing Conf Directory @ " + self.conf_dir
+				exit()
 			else:
 				if not os.path.isfile(self.conf_file):
-					print "Missing Server Configs @ " + self.conf_file
+					print "Missing Server Configs @ " + self.conf_file	
+					exit()
 
 
 	def loadconfig(self):
@@ -45,6 +51,7 @@ class Main:
 		default["setdamage"] = self.config.get("Default", "scan_setdamage")
 		default["setpos"] = self.config.get("Default", "scan_setpos")
 		default["server_log"] = self.config.get("Default", "scan_server_log")
+		default["OffSet"] = self.config.get("Default", "OffSet")
 
 		x = 0
 
@@ -88,16 +95,17 @@ class Main:
 			if self.config.has_option(self.server_settings[x], "scan_server_log") == True:
 				temp["server_log"] = self.config.get(self.server_settings[x], "scan_server_log")
 
+			if self.config.has_option(self.server_settings[x], "temp_directory") == True:
+				temp["temp_directory"] = self.config.get(self.server_settings[x], "temp_directory")
+			else:
+				temp["temp_directory"] = os.path.join(temp["BattlEye Directory"], self.config.get("Default", "temp_directory"))
+
+				
 			self.server_settings[x] = temp
 			x = x + 1
 
-
-			
-		# Check if bans.txt timestamp has changed + if so reload bans
-
 		
 	def start(self):
-		## Add Threading HERE
 		while True:
 			print
 			print "Reloading Config"
@@ -119,7 +127,7 @@ class Main:
 					open(bans_file, 'w').close()
 				self.server_settings[x]["Bans.txt Timestamp"] = os.path.getmtime(bans_file)
 				server_scan = battleye_modules.Scanner(self.server_settings[x])
-				server_scan.start()
+				server_scan.scan()
 				x = x + 1
 			
 			
