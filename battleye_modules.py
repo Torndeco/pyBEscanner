@@ -22,70 +22,83 @@ class Scanner:
 	
 		self.backuplog_dir = os.path.join(self.server_settings["BattlEye Directory"], datetime.datetime.now().strftime("BattlEye Logs - %Y-%m-%d"))
 		
+		
 		self.battleye_logs = {
 			"addmagazinecargo": os.path.join(self.server_settings["BattlEye Directory"], "addmagazinecargo.log"),
 			"createvehicle": os.path.join(self.server_settings["BattlEye Directory"], "createvehicle.log"),
+			"deletevehicle": os.path.join(self.server_settings["BattlEye Directory"], "deletevehicle.log"),
 			"mpeventhandler": os.path.join(self.server_settings["BattlEye Directory"], "mpeventhandler.log"),
 			"publicvariable": os.path.join(self.server_settings["BattlEye Directory"], "publicvariable.log"),
 			"remoteexec": os.path.join(self.server_settings["BattlEye Directory"], "remoteexec.log"),
 			"scripts": os.path.join(self.server_settings["BattlEye Directory"], "scripts.log"),
 			"setdamage": os.path.join(self.server_settings["BattlEye Directory"], "setdamage.log"),
-			"setpos": os.path.join(self.server_settings["BattlEye Directory"], "setpos.log")
+			"setpos": os.path.join(self.server_settings["BattlEye Directory"], "setpos.log"),
+			"setvariable": os.path.join(self.server_settings["BattlEye Directory"], "setvariable.log")
 			}
 		
 		self.temp_logs = {
 			"addmagazinecargo": os.path.join(self.server_settings["temp_directory"], "addmagazinecargo.log"),
 			"createvehicle": os.path.join(self.server_settings["temp_directory"], "createvehicle.log"),
+			"deletevehicle": os.path.join(self.server_settings["temp_directory"], "deletevehicle.log"),
 			"mpeventhandler": os.path.join(self.server_settings["temp_directory"], "mpeventhandler.log"),
 			"publicvariable": os.path.join(self.server_settings["temp_directory"], "publicvariable.log"),
 			"remoteexec": os.path.join(self.server_settings["temp_directory"], "remoteexec.log"),
 			"scripts": os.path.join(self.server_settings["temp_directory"], "scripts.log"),
 			"setdamage": os.path.join(self.server_settings["temp_directory"], "setdamage.log"),
-			"setpos": os.path.join(self.server_settings["temp_directory"], "setpos.log")
+			"setpos": os.path.join(self.server_settings["temp_directory"], "setpos.log"),
+			"setvariable": os.path.join(self.server_settings["temp_directory"], "setpos.log")
 			}
 
 		self.backup_logs = {
 			"addmagazinecargo": os.path.join(self.backuplog_dir, "addmagazinecargo.log"),
 			"createvehicle": os.path.join(self.backuplog_dir, "createvehicle.log"),
+			"deletevehicle": os.path.join(self.backuplog_dir, "deletevehicle.log"),
 			"mpeventhandler": os.path.join(self.backuplog_dir, "mpeventhandler.log"),
 			"publicvariable": os.path.join(self.backuplog_dir, "publicvariable.log"),
 			"remoteexec": os.path.join(self.backuplog_dir, "remoteexec.log"),
 			"scripts": os.path.join(self.backuplog_dir, "scripts.log"),
 			"setdamage": os.path.join(self.backuplog_dir, "setdamage.log"),
-			"setpos": os.path.join(self.backuplog_dir, "setpos.log")
+			"setpos": os.path.join(self.backuplog_dir, "setpos.log"),
+			"setvariable": os.path.join(self.backuplog_dir, "setvariable.log")
 			}			
 
 		self.banlist_filters = {
 			"addmagazinecargo": os.path.join(self.server_settings["BattlEye Directory"], "pyBEscanner", "addmagazinecargo.banlist"),
 			"createvehicle": os.path.join(self.server_settings["BattlEye Directory"], "pyBEscanner", "createvehicle.banlist"),
+			"deletevehicle": os.path.join(self.server_settings["BattlEye Directory"], "pyBEscanner", "deletevehicle.banlist"),
 			"mpeventhandler": os.path.join(self.server_settings["BattlEye Directory"], "pyBEscanner", "mpeventhandler.banlist"),
 			"publicvariable": os.path.join(self.server_settings["BattlEye Directory"], "pyBEscanner", "publicvariable.banlist"),
 			"remoteexec": os.path.join(self.server_settings["BattlEye Directory"], "pyBEscanner", "remoteexec.banlist"),
 			"scripts": os.path.join(self.server_settings["BattlEye Directory"], "pyBEscanner", "scripts.banlist"),
 			"setdamage": os.path.join(self.server_settings["BattlEye Directory"], "pyBEscanner", "setdamage.banlist"),
-			"setpos": os.path.join(self.server_settings["BattlEye Directory"], "pyBEscanner", "setpos.banlist")
+			"setpos": os.path.join(self.server_settings["BattlEye Directory"], "pyBEscanner", "setpos.banlist"),
+			"setvariable": os.path.join(self.server_settings["BattlEye Directory"], "pyBEscanner", "setvariable.banlist")
 			}
 			
 		self.kicklist_filters = {
 			"addmagazinecargo": os.path.join(self.server_settings["BattlEye Directory"], "pyBEscanner", "addmagazinecargo.kicklist"),
 			"createvehicle": os.path.join(self.server_settings["BattlEye Directory"], "pyBEscanner", "createvehicle.kicklist"),
+			"deletevehicle": os.path.join(self.server_settings["BattlEye Directory"], "pyBEscanner", "deletevehicle.kicklist"),
 			"mpeventhandler": os.path.join(self.server_settings["BattlEye Directory"], "pyBEscanner", "mpeventhandler.kicklist"),
 			"publicvariable": os.path.join(self.server_settings["BattlEye Directory"], "pyBEscanner", "publicvariable.kicklist"),
 			"remoteexec": os.path.join(self.server_settings["BattlEye Directory"], "pyBEscanner", "remoteexec.kicklist"),
 			"scripts": os.path.join(self.server_settings["BattlEye Directory"], "pyBEscanner", "scripts.kicklist"),
 			"setdamage": os.path.join(self.server_settings["BattlEye Directory"], "pyBEscanner", "setdamage.kicklist"),
-			"setpos": os.path.join(self.server_settings["BattlEye Directory"], "pyBEscanner", "setpos.kicklist")
+			"setpos": os.path.join(self.server_settings["BattlEye Directory"], "pyBEscanner", "setpos.kicklist"),
+			"setvariable": os.path.join(self.server_settings["BattlEye Directory"], "pyBEscanner", "setvariable.kicklist")
 			}
 
 		self.whitelist_filters = {
 			"addmagazinecargo": os.path.join(self.server_settings["BattlEye Directory"], "pyBEscanner", "addmagazinecargo.whitelist"),
 			"createvehicle": os.path.join(self.server_settings["BattlEye Directory"], "pyBEscanner", "createvehicle.whitelist"),
+			"deletevehicle": os.path.join(self.server_settings["BattlEye Directory"], "pyBEscanner", "deletevehicle.whitelist"),
 			"mpeventhandler": os.path.join(self.server_settings["BattlEye Directory"], "pyBEscanner", "mpeventhandler.whitelist"),
 			"publicvariable": os.path.join(self.server_settings["BattlEye Directory"], "pyBEscanner", "publicvariable.whitelist"),
 			"remoteexec": os.path.join(self.server_settings["BattlEye Directory"], "pyBEscanner", "remoteexec.whitelist"),
 			"scripts": os.path.join(self.server_settings["BattlEye Directory"], "pyBEscanner", "scripts.whitelist"),
 			"setdamage": os.path.join(self.server_settings["BattlEye Directory"], "pyBEscanner", "setdamage.whitelist"),
-			"setpos": os.path.join(self.server_settings["BattlEye Directory"], "pyBEscanner", "setpos.whitelist")
+			"setpos": os.path.join(self.server_settings["BattlEye Directory"], "pyBEscanner", "setpos.whitelist"),
+			"setvariable": os.path.join(self.server_settings["BattlEye Directory"], "pyBEscanner", "setvariable.whitelist")
 			}
 			
 		# Create Backup Folder if it doesnt exist
@@ -179,7 +192,7 @@ class Scanner:
 				
 				
 	def scan(self):
-		battleye_logs = ["addmagazinecargo", "createvehicle", "mpeventhandler", "publicvariable", "remoteexec", "scripts", "setdamage", "setpos"]
+		battleye_logs = ["addmagazinecargo", "createvehicle", "mpeventhandler", "publicvariable", "remoteexec", "scripts", "setdamage", "setpos", "setvariable"]
 		
 		self.log_scanner = Parser(time.time(), float(self.server_settings["OffSet"]))
 		
@@ -227,7 +240,7 @@ class Parser:
 		if os.path.isfile(offset_data_file) == True:
 			f_offset_data_file = open(offset_data_file, 'rb')
 			offset_data = pickle.load(f_offset_data_file)
-			print "Retreiving " + str(offset_data)
+			#print "Retreiving " + str(offset_data)
 			if offset_data != []:
 				entries_date.append(offset_data[0])
 				entries_guid.append(offset_data[1])
@@ -273,7 +286,7 @@ class Parser:
 		if len(entries_date) > 0:
 			x = time.mktime(time.localtime(self.scan_time))
 			x2 = time.mktime((time.strptime(entries_date[-1], "%d.%m.%Y %H:%M:%S: ")))
-			print x - x2
+			#print x - x2
 			
 			if ((x - x2) < self.offset) == True:
 				offset_data.append(entries_date.pop())
@@ -281,10 +294,10 @@ class Parser:
 				offset_data.append(entries_ip.pop())
 				offset_data.append(entries_code.pop())
 				offset_data.append(entries_name.pop())
-				print "Adding " + str(offset_data)
-			else:
-				print "Resetting Offset Data " + str(time.mktime(time.localtime(self.scan_time)) - time.mktime((time.strptime(entries_date[-1], "%d.%m.%Y %H:%M:%S: "))))
-				print self.offset
+				#print "Adding " + str(offset_data)
+			#else:
+				#print "Resetting Offset Data " + str(time.mktime(time.localtime(self.scan_time)) - time.mktime((time.strptime(entries_date[-1], "%d.%m.%Y %H:%M:%S: "))))
+				#print self.offset
 			
 		# Update offset_data_file
 		f_offset_data_file = open(offset_data_file, 'wb')

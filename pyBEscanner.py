@@ -44,12 +44,14 @@ class Main:
 
 		default["addmagazinecargo"] = self.config.get("Default", "scan_addmagazinecargo")		
 		default["createvehicle"] = self.config.get("Default", "scan_createvehicle")
+		default["deletevehicle"] = self.config.get("Default", "scan_deletevehicle")
 		default["mpeventhandler"] = self.config.get("Default", "scan_mpeventhandler")
 		default["publicvariable"] = self.config.get("Default", "scan_publicvariable")
 		default["remoteexec"] = self.config.get("Default", "scan_remoteexec")
 		default["scripts"] = self.config.get("Default", "scan_scripts")
 		default["setdamage"] = self.config.get("Default", "scan_setdamage")
 		default["setpos"] = self.config.get("Default", "scan_setpos")
+		default["setvariable"] = self.config.get("Default", "scan_setvariable")
 		default["server_log"] = self.config.get("Default", "scan_server_log")
 		default["OffSet"] = self.config.get("Default", "OffSet")
 
@@ -73,6 +75,9 @@ class Main:
 				
 			if self.config.has_option(self.server_settings[x], "scan_createvehicle") == True:
 				temp["createvehicle"] = self.config.get(self.server_settings[x], "scan_createvehicle")
+				
+			if self.config.has_option(self.server_settings[x], "scan_deletevehicle") == True:
+				temp["deletevehicle"] = self.config.get(self.server_settings[x], "scan_deletevehicle")
 
 			if self.config.has_option(self.server_settings[x], "scan_mpeventhandler") == True:
 				temp["mpeventhandler"] = self.config.get(self.server_settings[x], "scan_mpeventhandler")
@@ -91,6 +96,9 @@ class Main:
 				
 			if self.config.has_option(self.server_settings[x], "scan_setpos") == True:
 				temp["setpos"] = self.config.get(self.server_settings[x], "scan_setpos")
+				
+			if self.config.has_option(self.server_settings[x], "scan_setvariable") == True:
+				temp["setvariable"] = self.config.get(self.server_settings[x], "scan_setvariable")
 
 			if self.config.has_option(self.server_settings[x], "scan_server_log") == True:
 				temp["server_log"] = self.config.get(self.server_settings[x], "scan_server_log")
