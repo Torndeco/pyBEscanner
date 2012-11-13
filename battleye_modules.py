@@ -192,7 +192,7 @@ class Scanner:
 				
 				
 	def scan(self):
-		battleye_logs = ["addmagazinecargo", "createvehicle", "mpeventhandler", "publicvariable", "remoteexec", "scripts", "setdamage", "setpos", "setvariable"]
+		battleye_logs = ["addmagazinecargo", "createvehicle", "deletevehicle", "mpeventhandler", "publicvariable", "remoteexec", "scripts", "setdamage", "setpos", "setvariable"]
 		
 		self.log_scanner = Parser(time.time(), float(self.server_settings["OffSet"]))
 		

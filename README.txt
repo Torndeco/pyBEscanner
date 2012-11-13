@@ -49,9 +49,6 @@ Known Issues
 	* No python rcon networking code
 	* No / very little exception handling code...  
 		If there is a typo in filter files will cause app to crash
-	* If logged code entry contains more than one line, 
-		race condition between reading file versus battleye
-	* Health may cause Dementia, Hair Loss, Loss of Life
 
 
 Notes:-  
@@ -59,5 +56,3 @@ Notes:-
 	* So Temp workaround till i get around to creating rcon networking code...
 		Using ziello2k https://github.com/ziellos2k/BattleNET 
 		Source file is included for the paranoid people out there...
-		
-	* Some settings in servers.ini are just placeholders... and have no function yet...
