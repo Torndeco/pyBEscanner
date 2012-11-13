@@ -234,8 +234,9 @@ class Parser:
 		kick_entries_code = []
 		kick_entries_name = []
 		
-
-		# Check for Offset BattlEye Logs + Load File
+		
+		
+		# Check for Offset pickle file / Initialize OffSet Data
 		offset_data_file = logfile + ".pickle"
 		if os.path.isfile(offset_data_file) == True:
 			f_offset_data_file = open(offset_data_file, 'rb')
@@ -248,10 +249,9 @@ class Parser:
 				entries_code.append(offset_data[3])
 				entries_name.append(offset_data[4])
 			f_offset_data_file.close()
-			
-		# Initialize New OffSet Data
-		offset_data = []
-		
+		else:
+			offset_data = []
+
 		# Scan BattlEye Logs
 		f_backup = open(backupfile, "a")
 		with open(logfile) as f_log:
@@ -393,8 +393,6 @@ class Parser:
 					"name":entries_name
 					}
 		
-
-
 		
 class Bans:
 	def __init__(self, bans_file):
