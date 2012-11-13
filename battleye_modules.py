@@ -46,7 +46,7 @@ class Scanner:
 			"scripts": os.path.join(self.server_settings["temp_directory"], "scripts.log"),
 			"setdamage": os.path.join(self.server_settings["temp_directory"], "setdamage.log"),
 			"setpos": os.path.join(self.server_settings["temp_directory"], "setpos.log"),
-			"setvariable": os.path.join(self.server_settings["temp_directory"], "setpos.log")
+			"setvariable": os.path.join(self.server_settings["temp_directory"], "setvariable.log")
 			}
 
 		self.backup_logs = {
