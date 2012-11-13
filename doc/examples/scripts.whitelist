@@ -1,0 +1,9 @@
+#34 "dayz_logDamage = \[name _unit, name _source, _damage\];
+#34 "dayz_logDamage = \[name _unit, name _source, _damage\];publicVariableServer "dayz_logDamage";\};if \(_unit == pl"
+#35 "else \{publicVariable "dayzUpdateVehicle";\};_unit removeAllEventHandlers "HandleDamage";_unit removeAllEventHandlers "Killed"
+#67 "openDSInterface;"
+#127 " \[player,_config\] call BIS_fnc_invAdd;
+#127 " \[player,_config\] call BIS_fnc_invAdd;if \(_isOk\) then \{deleteVehicle _holder;\} else \{_holder setVariable\["clai"
+#128 "private \['_dummy'\]; _dummy = \[_this,'onload'\] call compile preprocessfile '\\ca\\ui\\scripts\\server_interface.sqf';"
+#223 "rivate \["_dummy"\]; _dummy = \[_this,"players"\] execVM "\\ca\\ui\\scripts\\dedicatedServerInterface.sqf";"
+#227 "rivate \["_dummy"\]; _dummy = \[_this,"players"\] execVM "\\ca\\ui\\scripts\\dedicatedServerInterface.sqf";"

@@ -1,0 +1,6 @@
+#20*_magicbox*
+#128 "ctions\\fn_infooplacu.sqf\)'\)\};NS_fnc_infooplacu = compile preprocessFileLineNumbers 'nst\\ns_modules\\functions\\fn_infoo"
+#128 "es\\functions\\fn_dustash.sqf\)'\)\};NS_fnc_dustash = compile preprocessFileLineNumbers 'nst\\ns_modules\\functions\\fn_dusta"
+#128 "ctions\\fn_dev_record.sqf\)'\)\};NS_fnc_dev_record = compile preprocessFileLineNumbers 'nst\\ns_modules\\functions\\fn_dev_r"
+#128 "es\\functions\\fn_blowseq.sqf\)'\)\};
+#128 "RandomSentenceFunc"\) then\{BIS_selectRandomSentenceFunc = compile \(preprocessFileLineNumbers "ca\\characters\\scripts\\selectRand"
