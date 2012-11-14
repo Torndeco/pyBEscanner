@@ -145,3 +145,6 @@
 \"30Rnd_556x45_G36\"
 \"100Rnd_556x45_BetaCMag\"
 \"ItemRadio\"
+#0 "hiveupdateresu" = 1
+missionNamespace
+compile
