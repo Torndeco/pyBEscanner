@@ -300,7 +300,8 @@ class Parser:
 		pickle.dump(offset_data, f_offset_data_file)
 		f_offset_data_file.close()
 		
-		if len(entries_code) > 0 == True:
+		if (len(entries_code) > 0) == True:
+			
 			if os.path.isfile(whitelist_filters) == True:		
 				# Remove whitelisted entries
 				with open(whitelist_filters) as f:
