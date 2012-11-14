@@ -201,8 +201,7 @@ class Scanner:
 				shutil.move(self.battleye_logs[log], self.temp_logs[log])
 
 		for log in battleye_logs:
-			if os.path.isfile(self.temp_logs[log]) == True:
-				self.scan_battleye_logs(log)
+			self.scan_battleye_logs(log) # Scan Logs incase a .pickle file exists, with previous log entry
 
 		
 class Parser:		
@@ -241,7 +240,7 @@ class Parser:
 		if os.path.isfile(offset_data_file) == True:
 			f_offset_data_file = open(offset_data_file, 'rb')
 			offset_data = pickle.load(f_offset_data_file)
-			#print "Retreiving " + str(offset_data)
+			print "Loading " + str(offset_data)
 			if offset_data != []:
 				entries_date.append(offset_data[0])
 				entries_guid.append(offset_data[1])
@@ -249,40 +248,40 @@ class Parser:
 				entries_code.append(offset_data[3])
 				entries_name.append(offset_data[4])
 			f_offset_data_file.close()
-		else:
-			offset_data = []
 
 		# Scan BattlEye Logs
-		f_backup = open(backupfile, "a")
-		with open(logfile) as f_log:
-			for line in f_log:
-				## Append Lines to Backup Files
-				f_backup.write(line)
+		if os.path.isfile(logfile) == True:
+			f_backup = open(backupfile, "a")
+			with open(logfile) as f_log:
+				for line in f_log:
+					## Append Lines to Backup Files
+					f_backup.write(line)
 
-				temp = line.strip()
-				date = re.match('\A[0-3][0-9]\.[0-1][0-9]\.[0-9][0-9][0-9][0-9][ ][0-2][0-9][:][0-6][0-9][:][0-6][0-9][:]\s', temp)
-				temp = re.split('\A[0-3][0-9]\.[0-1][0-9]\.[0-9][0-9][0-9][0-9][ ][0-2][0-9][:][0-6][0-9][:][0-6][0-9][:]\s', temp)
-				if date == None:
-					x = len(entries_code) - 1
-					if x > 0:
-						entries_code[x] = entries_code[x] + line.strip()
-				else:
-					name = re.split(".\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}:\d{1,4}[0-9].",temp[1])
-					temp = re.split(".\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}:\d{1,4}[0-9].",line.strip())
-					ip = re.search("\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}:\d{1,4}[0-9]",line.strip())
-					code = re.split("\s-\s",temp[1])
-					entries_date.append(date.group())
-					entries_guid.append(code[0].strip(' '))
-					entries_ip.append(ip.group())
-					entries_code.append(code[1])
-					entries_name.append(name[0])	
-		f_backup.close()
+					temp = line.strip()
+					date = re.match('\A[0-3][0-9]\.[0-1][0-9]\.[0-9][0-9][0-9][0-9][ ][0-2][0-9][:][0-6][0-9][:][0-6][0-9][:]\s', temp)
+					temp = re.split('\A[0-3][0-9]\.[0-1][0-9]\.[0-9][0-9][0-9][0-9][ ][0-2][0-9][:][0-6][0-9][:][0-6][0-9][:]\s', temp)
+					if date == None:
+						x = len(entries_code) - 1
+						if x > 0:
+							entries_code[x] = entries_code[x] + line.strip()
+					else:
+						name = re.split(".\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}:\d{1,4}[0-9].",temp[1])
+						temp = re.split(".\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}:\d{1,4}[0-9].",line.strip())
+						ip = re.search("\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}:\d{1,4}[0-9]",line.strip())
+						code = re.split("\s-\s",temp[1])
+						entries_date.append(date.group())
+						entries_guid.append(code[0].strip(' '))
+						entries_ip.append(ip.group())
+						entries_code.append(code[1])
+						entries_name.append(name[0])	
+			f_backup.close()
 		
 		#print "DEBUG : length of entries code " + str(len(entries_code))
 
-		os.remove(logfile)
+			os.remove(logfile)
 		
 		# Check for battleye offset condition
+		offset_data = []
 		if len(entries_date) > 0:
 			x = time.mktime(time.localtime(self.scan_time))
 			x2 = time.mktime((time.strptime(entries_date[-1], "%d.%m.%Y %H:%M:%S: ")))
@@ -294,81 +293,78 @@ class Parser:
 				offset_data.append(entries_ip.pop())
 				offset_data.append(entries_code.pop())
 				offset_data.append(entries_name.pop())
-				#print "Adding " + str(offset_data)
-			else:
-				offset_data = []
-				#print "Resetting Offset Data " + str(time.mktime(time.localtime(self.scan_time)) - time.mktime((time.strptime(entries_date[-1], "%d.%m.%Y %H:%M:%S: "))))
-				#print self.offset
+				print "Saving  " + str(offset_data)
 			
 		# Update offset_data_file
 		f_offset_data_file = open(offset_data_file, 'wb')
 		pickle.dump(offset_data, f_offset_data_file)
 		f_offset_data_file.close()
 		
-		if os.path.isfile(whitelist_filters) == True:		
-			# Remove whitelisted entries
-			with open(whitelist_filters) as f:
-				for line in f:
-					temp = line.strip()
-					x = 0
-					while x != len(entries_code):
-						if re.search(temp, entries_code[x]) != None:
-							entries_date.pop(x)
-							entries_guid.pop(x)
-							entries_ip.pop(x)
-							entries_code.pop(x)
-							entries_name.pop(x)
-						else:
-							x = x + 1
-		else:
-			# If file = missing, create an empty file
-			open(whitelist_filters, 'w').close()
-
-		#print "DEBUG 2: length of entries code " + str(len(entries_code))
-
-		if banlist_filters != None:
-			if os.path.isfile(banlist_filters) == True:			
-				# Search for BlackListed Entries
-				with open(banlist_filters) as f:
+		if len(entries_code) > 0 == True:
+			if os.path.isfile(whitelist_filters) == True:		
+				# Remove whitelisted entries
+				with open(whitelist_filters) as f:
 					for line in f:
 						temp = line.strip()
 						x = 0
 						while x != len(entries_code):
-							if re.search(temp, entries_code[x]):
-								ban_entries_date.append(entries_date.pop(x))
-								ban_entries_guid.append(entries_guid.pop(x))
-								ban_entries_ip.append(entries_ip.pop(x))
-								ban_entries_code.append(entries_code.pop(x))
-								ban_entries_name.append(entries_name.pop(x))
+							if re.search(temp, entries_code[x]) != None:
+								entries_date.pop(x)
+								entries_guid.pop(x)
+								entries_ip.pop(x)
+								entries_code.pop(x)
+								entries_name.pop(x)
 							else:
 								x = x + 1
 			else:
 				# If file = missing, create an empty file
-				open(banlist_filters, 'w').close()
+				open(whitelist_filters, 'w').close()
 
-		#print "DEBUG 3: length of entries code " + str(len(entries_code))
-		
-		if kicklist_filters != None:
-			if os.path.isfile(kicklist_filters) == True:			
-				# Search for KickList Entries
-				with open(kicklist_filters) as f:
-					for line in f:
-						temp = line.strip()
-						x = 0
-						while x != len(entries_code):
-							if re.search(temp, entries_code[x]):
-								kick_entries_date.append(entries_date.pop(x))
-								kick_entries_guid.append(entries_guid.pop(x))
-								kick_entries_ip.append(entries_ip.pop(x))
-								kick_entries_code.append(entries_code.pop(x))
-								kick_entries_name.append(entries_name.pop(x))
-							else:
-								x = x + 1
-			else:
-				# If file = missing, create an empty file
-				open(kicklist_filters, 'w').close()
+			#print "DEBUG 2: length of entries code " + str(len(entries_code))
 
-		#print "DEBUG 4: length of entries code " + str(len(entries_code))
+			if banlist_filters != None:
+				if os.path.isfile(banlist_filters) == True:			
+					# Search for BlackListed Entries
+					with open(banlist_filters) as f:
+						for line in f:
+							temp = line.strip()
+							x = 0
+							while x != len(entries_code):
+								if re.search(temp, entries_code[x]):
+									ban_entries_date.append(entries_date.pop(x))
+									ban_entries_guid.append(entries_guid.pop(x))
+									ban_entries_ip.append(entries_ip.pop(x))
+									ban_entries_code.append(entries_code.pop(x))
+									ban_entries_name.append(entries_name.pop(x))
+								else:
+									x = x + 1
+				else:
+					# If file = missing, create an empty file
+					open(banlist_filters, 'w').close()
+
+			#print "DEBUG 3: length of entries code " + str(len(entries_code))
+			
+			if kicklist_filters != None:
+				if os.path.isfile(kicklist_filters) == True:			
+					# Search for KickList Entries
+					with open(kicklist_filters) as f:
+						for line in f:
+							temp = line.strip()
+							x = 0
+							while x != len(entries_code):
+								if re.search(temp, entries_code[x]):
+									kick_entries_date.append(entries_date.pop(x))
+									kick_entries_guid.append(entries_guid.pop(x))
+									kick_entries_ip.append(entries_ip.pop(x))
+									kick_entries_code.append(entries_code.pop(x))
+									kick_entries_name.append(entries_name.pop(x))
+								else:
+									x = x + 1
+				else:
+					# If file = missing, create an empty file
+					open(kicklist_filters, 'w').close()
+
+			#print "DEBUG 4: length of entries code " + str(len(entries_code))
 
 		self.banlist = {
 					"date":ban_entries_date,
