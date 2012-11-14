@@ -295,7 +295,8 @@ class Parser:
 				offset_data.append(entries_code.pop())
 				offset_data.append(entries_name.pop())
 				#print "Adding " + str(offset_data)
-			#else:
+			else:
+				offset_data = []
 				#print "Resetting Offset Data " + str(time.mktime(time.localtime(self.scan_time)) - time.mktime((time.strptime(entries_date[-1], "%d.%m.%Y %H:%M:%S: "))))
 				#print self.offset
 			
