@@ -142,5 +142,13 @@
 \"30Rnd_9x19_UZI_SD\"
 \"30Rnd_545x39_AKSD\"
 \"30Rnd_556x45_G36\"
+\"30Rnd_556x45_G36\"
 \"100Rnd_556x45_BetaCMag\"
 \"ItemRadio\"
+#0 "BAF_ied_v1" 0:0
+#9 "8Rnd_B_Saiga12_74Slug" 0:0
+#9 "8Rnd_B_Saiga12_Pellets" 0:0
+#9 "30Rnd_556x45_G36SD" 0:0
+#9 "64Rnd_9x19_Bizon" 0:0
+#9 "50Rnd_127x108_KORD" 0:0
+#9 "200Rnd_556x45_L110A1" 0:0
