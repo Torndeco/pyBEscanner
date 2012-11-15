@@ -6,6 +6,7 @@ import os
 import ConfigParser
 import time
 import copy
+import logging
 
 import battleye_modules
 import rcon_modules
@@ -41,6 +42,16 @@ class Main:
 		
 		## Scan Settings -- Default 
 		self.interval = int(self.config.get("Default", "interval", "60"))
+		
+		if self.config.has_option("Default", "Debug File"):
+			self.debug_file = self.config.get("Default", "Debug File")
+		else:
+			self.debug_file = os.path.join(self.main_dir, "debug.log")
+			
+		if self.config.has_option("Default", "Debug Level"):
+			self.debug_level = self.config.get("Default", "Debug Level")
+		else:
+			self.debug_level = "WARNING"
 
 		default["addmagazinecargo"] = self.config.get("Default", "scan_addmagazinecargo")		
 		default["createvehicle"] = self.config.get("Default", "scan_createvehicle")
@@ -54,7 +65,7 @@ class Main:
 		default["setvariable"] = self.config.get("Default", "scan_setvariable")
 		default["server_log"] = self.config.get("Default", "scan_server_log")
 		default["OffSet"] = self.config.get("Default", "OffSet")
-
+		
 		x = 0
 
 		while x < (len(self.server_settings)):
@@ -118,8 +129,8 @@ class Main:
 			print
 			print "Reloading Config"
 			self.loadconfig()
-
-
+			logging.basicConfig(filename=self.debug_file, level=self.debug_level)
+			
 			kick_list = []
 			ban_list = []
 			
@@ -130,6 +141,10 @@ class Main:
 				print "---------------------------------------------------------"
 				print "       Scanning " + str(self.server_settings[x]["ServerName"])
 				print "---------------------------------------------------------"
+				logging.info("")
+				logging.info("---------------------------------------------------------")
+				logging.info("       Scanning " + str(self.server_settings[x]["ServerName"]))
+				logging.info("---------------------------------------------------------")
 				bans_file = os.path.join(self.server_settings[x]["BattlEye Directory"], "bans.txt")
 				if os.path.isfile(bans_file) != True:
 					open(bans_file, 'w').close()
@@ -140,19 +155,19 @@ class Main:
 			
 			
 			x = 0
-			print "---------------------------------------------------------"
+			logging.info("---------------------------------------------------------")
 			while x < len(self.server_settings):
-				print "Checking for bans.txt changes -- " + str(self.server_settings[x]["ServerName"])
+				logging.info("Checking for bans.txt changes -- " + str(self.server_settings[x]["ServerName"]))
 				bans_file = os.path.join(self.server_settings[x]["BattlEye Directory"], "bans.txt")
 				if os.path.isfile(bans_file) != True:
 					open(bans_file, 'w').close()
 				if self.server_settings[x]["Bans.txt Timestamp"] != os.path.getmtime(bans_file):
-					print "Reload Bans"
+					logging.info("Reloading Bans")
 					rcon = rcon_modules.Rcon(self.server_settings[x]["ServerIP"], self.server_settings[x]["ServerPort"], self.server_settings[x]["RconPassword"])
 					rcon.reloadbans()
 				
 				x = x + 1
-			print "---------------------------------------------------------"
+			logging.info("---------------------------------------------------------")
 
 			time.sleep(self.interval)
 		

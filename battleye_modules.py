@@ -8,8 +8,12 @@ import string
 
 import rcon_modules
 
+import logging
+
 class Scanner:
 	def __init__(self, server_settings):
+
+		logger = logging.getLogger(__name__)	
 
 		self.server_settings = server_settings				
 		
@@ -117,7 +121,7 @@ class Scanner:
 
 		self.log_scanner.scan_log(self.temp_logs[x], self.backup_logs[x], self.whitelist_filters[x], self.banlist_filters[x], self.kicklist_filters[x])
 		if self.server_settings[x] == "off":
-			print "No actions taken " + x + ".log, scan option = off"
+			print x + " (off)"
 		else:
 			if self.server_settings[x] == "strict":
 				# Strict Scanning
@@ -171,7 +175,6 @@ class Scanner:
 				for x in range(len(self.ban_list)):
 					self.bans.addban(self.ban_list[x], time, self.ban_reason[x])
 				self.bans.closefile()
-		print
 	
 	
 	def update_kicks(self, x, data):
@@ -207,6 +210,8 @@ class Scanner:
 		
 class Parser:		
 	def __init__(self, scan_time, offset):
+		logger = logging.getLogger(__name__)
+		
 		self.scan_time = scan_time
 		self.offset = offset
 
@@ -238,10 +243,16 @@ class Parser:
 		
 		# Check for Offset pickle file / Initialize OffSet Data
 		offset_data_file = logfile + ".pickle"
+		debug_data_file = logfile + ".debug"
+
+		logging.info('')		
+		logging.info('Parsing ' + str(logfile))
+		logging.info('Checking of Offset Data File')
 		if os.path.isfile(offset_data_file) == True:
+			logging.info('Offset Data File Found')
 			f_offset_data_file = open(offset_data_file, 'rb')
 			offset_data = pickle.load(f_offset_data_file)
-			print "Loading " + str(offset_data)
+			logging.debug('Loading Offset Data = ' + str(offset_data))
 			if offset_data != []:
 				entries_date.append(offset_data[0])
 				entries_guid.append(offset_data[1])
@@ -249,6 +260,9 @@ class Parser:
 				entries_code.append(offset_data[3])
 				entries_name.append(offset_data[4])
 			f_offset_data_file.close()
+			logging.debug('Entries Data = ' + str(offset_data))
+		else:
+			logging.debug('No Offset Data File Found')
 
 		# Scan BattlEye Logs
 		if os.path.isfile(logfile) == True:
@@ -262,9 +276,11 @@ class Parser:
 					date = re.match('\A[0-3][0-9]\.[0-1][0-9]\.[0-9][0-9][0-9][0-9][ ][0-2][0-9][:][0-6][0-9][:][0-6][0-9][:]\s', temp)
 					temp = re.split('\A[0-3][0-9]\.[0-1][0-9]\.[0-9][0-9][0-9][0-9][ ][0-2][0-9][:][0-6][0-9][:][0-6][0-9][:]\s', temp)
 					if date == None:
-						x = len(entries_code) - 1
+						x = len(entries_date) - 1
 						if x > 0:
+							logging.debug('Detected Multiple lines = ' + str(entries_code[x]))
 							entries_code[x] = entries_code[x] + line.strip()
+							logging.debug('Updated line = ' + str(entries_code[x]))
 					else:
 						name = re.split(".\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}:\d{1,4}[0-9].",temp[1])
 						temp = re.split(".\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}:\d{1,4}[0-9].",line.strip())
@@ -277,8 +293,6 @@ class Parser:
 						entries_name.append(name[0])	
 			f_backup.close()
 		
-		#print "DEBUG : length of entries code " + str(len(entries_code))
-
 			os.remove(logfile)
 		
 		# Check for battleye offset condition
@@ -294,7 +308,7 @@ class Parser:
 				offset_data.append(entries_ip.pop())
 				offset_data.append(entries_code.pop())
 				offset_data.append(entries_name.pop())
-				print "Saving  " + str(offset_data)
+				logging.debug("Saving  " + str(offset_data))
 			
 		# Update offset_data_file
 		f_offset_data_file = open(offset_data_file, 'wb')
