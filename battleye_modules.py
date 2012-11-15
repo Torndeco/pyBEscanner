@@ -4,6 +4,7 @@ import os
 import shutil
 import pickle
 import time
+import string
 
 import rcon_modules
 
@@ -161,7 +162,7 @@ class Scanner:
 		for x in range(len(data["guid"])):
 			if self.ban_list.count(data["guid"][x]) == 0:
 				self.ban_list.append(data["guid"][x])
-				self.ban_reason.append("pyBEscanner: " + str(data["name"][x]) + " detected hacking on Server " + str(self.server_settings["ServerName"]) + " @ " + str(data["date"][x]))
+				self.ban_reason.append("pyBEscanner: " + str(data["name"][x]) + " banned - " + str(self.server_settings["ServerName"]) + " @ " + str(data["date"][x]))
 				print "       Banning Player " + str(data["name"][x])
 			
 		if update == True:
@@ -331,7 +332,7 @@ class Parser:
 							temp = line.strip()
 							x = 0
 							while x != len(entries_code):
-								if re.search(temp, entries_code[x]):
+								if re.search(temp, entries_code[x]) or re.search(temp, string.replace(entries_code[x], "\",\"", "")):
 									ban_entries_date.append(entries_date.pop(x))
 									ban_entries_guid.append(entries_guid.pop(x))
 									ban_entries_ip.append(entries_ip.pop(x))
@@ -353,7 +354,7 @@ class Parser:
 							temp = line.strip()
 							x = 0
 							while x != len(entries_code):
-								if re.search(temp, entries_code[x]):
+								if re.search(temp, entries_code[x]) or re.search(temp, string.replace(entries_code[x], "\",\"", "")):
 									kick_entries_date.append(entries_date.pop(x))
 									kick_entries_guid.append(entries_guid.pop(x))
 									kick_entries_ip.append(entries_ip.pop(x))
