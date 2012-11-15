@@ -277,7 +277,7 @@ class Parser:
 					temp = re.split('\A[0-3][0-9]\.[0-1][0-9]\.[0-9][0-9][0-9][0-9][ ][0-2][0-9][:][0-6][0-9][:][0-6][0-9][:]\s', temp)
 					if date == None:
 						x = len(entries_date) - 1
-						if x > 0:
+						if x >= 0:
 							logging.debug('Detected Multiple lines = ' + str(entries_code[x]))
 							entries_code[x] = entries_code[x] + line.strip()
 							logging.debug('Updated line = ' + str(entries_code[x]))
