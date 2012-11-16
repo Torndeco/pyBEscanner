@@ -29,39 +29,21 @@ Features (assuming not bugged)
 Directory Layout
 	<pyBEscanner install directory>pyBEscanner.py                 
 		[Main Python Script....   This is what u run]
+
 	<pyBEscanner install directory>/conf/servers.ini              
 		[Settings File, reloaded everytime before a log scan]
+		
 	<pyBEscanner install directory>/rcon/                         
 		[Using ziello2k C# Battlenet library, see note below]
 
-	<server battleye directory>/pyBEscanner                       
+	<server battleye directory>/pyBEscanner/filters                     
 		[Location of whitelist / blacklist filters]
-	<server battleye directory>/Battle Logs - %Year-%Month-%Day   
+
+	<server battleye directory>/Logs/Battle Logs - %Year-%Month-%Day   
 		[Location of archived battleye logs, 
 		also contains any bans/kicks/unknown logs]
-		
-
-Basic Usage Instructions
-
-	If u are using multiple servers, recommend u hardlink the bans.txt.
-	If byBEscanner detects bans.txt modified timestamp has changed it 
-	issues reloadbans via rcon
-
-	In pyBEscanner/doc/examples of filters are examples of filters u can use....
-	Plz note these are just to help u get started + arent anyway complete.
-	
-	The basic idea is you use the whitelisted filter
-	to filter out out normal ingame logs from battleye i.e
-		Value Restriction #21 "remExField" = \[<NULL-object>,<NULL-object>,"playmove","ZombieFeed[0-9]"\]
-	note:- the use of [0-9] so dont need to add in 10 different entries, 
-	while still beening strict in what it filters out
-		
-	This way u are left with smaller logs to look over
-	Then as u encounter new hacks u add them to the banlist filters
-	Basicly teaching the tool to ban for them the next time around..
 	
 	
-
 Requirements
 	Python 2.7
 	

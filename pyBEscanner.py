@@ -53,17 +53,17 @@ class Main:
 		else:
 			self.debug_level = "WARNING"
 
-		default["addmagazinecargo"] = self.config.get("Default", "scan_addmagazinecargo")		
-		default["createvehicle"] = self.config.get("Default", "scan_createvehicle")
-		default["deletevehicle"] = self.config.get("Default", "scan_deletevehicle")
-		default["mpeventhandler"] = self.config.get("Default", "scan_mpeventhandler")
-		default["publicvariable"] = self.config.get("Default", "scan_publicvariable")
-		default["remoteexec"] = self.config.get("Default", "scan_remoteexec")
-		default["scripts"] = self.config.get("Default", "scan_scripts")
-		default["setdamage"] = self.config.get("Default", "scan_setdamage")
-		default["setpos"] = self.config.get("Default", "scan_setpos")
-		default["setvariable"] = self.config.get("Default", "scan_setvariable")
-		default["server_log"] = self.config.get("Default", "scan_server_log")
+		default["addmagazinecargo"] = self.config.get("Default", "Scan Addmagazinecargo")		
+		default["createvehicle"] = self.config.get("Default", "Scan Createvehicle")
+		default["deletevehicle"] = self.config.get("Default", "Scan Deletevehicle")
+		default["mpeventhandler"] = self.config.get("Default", "Scan Mpeventhandler")
+		default["publicvariable"] = self.config.get("Default", "Scan Publicvariable")
+		default["remoteexec"] = self.config.get("Default", "Scan Remoteexec")
+		default["scripts"] = self.config.get("Default", "Scan Scripts")
+		default["setdamage"] = self.config.get("Default", "Scan Setdamage")
+		default["setpos"] = self.config.get("Default", "Scan Setpos")
+		default["setvariable"] = self.config.get("Default", "Scan Setvariable")
+		default["server_log"] = self.config.get("Default", "Scan Server Log")
 		default["OffSet"] = self.config.get("Default", "OffSet")
 		
 		x = 0
@@ -81,43 +81,43 @@ class Main:
 			temp["Server RPT Log"] = self.config.get(self.server_settings[x], "Server RPT Log")
 
 			## Scan Settings -- Server Specfic
-			if self.config.has_option(self.server_settings[x], "scan_addmagazinecargo") == True:
-				temp["addmagazinecargo"] = self.config.get(self.server_settings[x], "scan_addmagazinecargo")
+			if self.config.has_option(self.server_settings[x], "Scan Addmagazinecargo") == True:
+				temp["addmagazinecargo"] = self.config.get(self.server_settings[x], "Scan Addmagazinecargo")
 				
-			if self.config.has_option(self.server_settings[x], "scan_createvehicle") == True:
-				temp["createvehicle"] = self.config.get(self.server_settings[x], "scan_createvehicle")
+			if self.config.has_option(self.server_settings[x], "Scan Createvehicle") == True:
+				temp["createvehicle"] = self.config.get(self.server_settings[x], "Scan Createvehicle")
 				
-			if self.config.has_option(self.server_settings[x], "scan_deletevehicle") == True:
-				temp["deletevehicle"] = self.config.get(self.server_settings[x], "scan_deletevehicle")
+			if self.config.has_option(self.server_settings[x], "Scan Deletevehicle") == True:
+				temp["deletevehicle"] = self.config.get(self.server_settings[x], "Scan Deletevehicle")
 
-			if self.config.has_option(self.server_settings[x], "scan_mpeventhandler") == True:
-				temp["mpeventhandler"] = self.config.get(self.server_settings[x], "scan_mpeventhandler")
+			if self.config.has_option(self.server_settings[x], "Scan Mpeventhandler") == True:
+				temp["mpeventhandler"] = self.config.get(self.server_settings[x], "Scan Mpeventhandler")
 
-			if self.config.has_option(self.server_settings[x], "scan_publicvariable") == True:
-				temp["publicvariable"] = self.config.get(self.server_settings[x], "scan_publicvariable")
+			if self.config.has_option(self.server_settings[x], "Scan Publicvariable") == True:
+				temp["publicvariable"] = self.config.get(self.server_settings[x], "Scan Publicvariable")
 
-			if self.config.has_option(self.server_settings[x], "scan_remoteexec") == True:
-				temp["remoteexec"] = self.config.get(self.server_settings[x], "scan_remoteexec")
+			if self.config.has_option(self.server_settings[x], "Scan Remoteexec") == True:
+				temp["remoteexec"] = self.config.get(self.server_settings[x], "Scan Remoteexec")
 
-			if self.config.has_option(self.server_settings[x], "scan_scripts") == True:
-				temp["scripts"] = self.config.get(self.server_settings[x], "scan_scripts")
+			if self.config.has_option(self.server_settings[x], "Scan Scripts") == True:
+				temp["scripts"] = self.config.get(self.server_settings[x], "Scan Scripts")
 		
-			if self.config.has_option(self.server_settings[x], "scan_setdamage") == True:
-				temp["setdamage"] = self.config.get(self.server_settings[x], "scan_setdamage")
+			if self.config.has_option(self.server_settings[x], "Scan Setdamage") == True:
+				temp["setdamage"] = self.config.get(self.server_settings[x], "Scan Setdamage")
 				
-			if self.config.has_option(self.server_settings[x], "scan_setpos") == True:
-				temp["setpos"] = self.config.get(self.server_settings[x], "scan_setpos")
+			if self.config.has_option(self.server_settings[x], "Scan Setpos") == True:
+				temp["setpos"] = self.config.get(self.server_settings[x], "Scan Setpos")
 				
-			if self.config.has_option(self.server_settings[x], "scan_setvariable") == True:
-				temp["setvariable"] = self.config.get(self.server_settings[x], "scan_setvariable")
+			if self.config.has_option(self.server_settings[x], "Scan Setvariable") == True:
+				temp["setvariable"] = self.config.get(self.server_settings[x], "Scan Setvariable")
 
-			if self.config.has_option(self.server_settings[x], "scan_server_log") == True:
-				temp["server_log"] = self.config.get(self.server_settings[x], "scan_server_log")
+			if self.config.has_option(self.server_settings[x], "Scan Server_log") == True:
+				temp["server_log"] = self.config.get(self.server_settings[x], "Scan Server Log")
 
-			if self.config.has_option(self.server_settings[x], "temp_directory") == True:
-				temp["temp_directory"] = self.config.get(self.server_settings[x], "temp_directory")
+			if self.config.has_option(self.server_settings[x], "Temp Directory") == True:
+				temp["temp_directory"] = self.config.get(self.server_settings[x], "Temp Directory")
 			else:
-				temp["temp_directory"] = os.path.join(temp["BattlEye Directory"], self.config.get("Default", "temp_directory"))
+				temp["temp_directory"] = os.path.join(temp["BattlEye Directory"], "pyBEscanner", "Temp")
 
 				
 			self.server_settings[x] = temp
