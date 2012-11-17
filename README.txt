@@ -33,6 +33,10 @@ Directory Layout
 	<pyBEscanner install directory>/conf/servers.ini              
 		[Settings File, reloaded everytime before a log scan]
 		
+	<pyBEscanner install directory>/filters>
+		[Filter file directorys, were filters are located.
+		If u arent using Custom Filter Setting]
+		
 	<pyBEscanner install directory>/rcon/                         
 		[Using ziello2k C# Battlenet library, see note below]
 
@@ -67,3 +71,4 @@ Notes:-
 		Source file is included for the paranoid people out there...
 	* U can alter the settings & pyBEscanner filters, while the 
 		program is running. Just avoid typo mistakes :)
+	* http://www.pythonregex.com/  Nice website to test out your filter rules on

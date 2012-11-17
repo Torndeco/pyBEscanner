@@ -34,7 +34,7 @@ class Main:
 		self.config = ConfigParser.ConfigParser()
 		self.config.read(self.conf_file)
 		if self.config.has_option("Default", "Version"):
-			if self.config.get("Default", "Version") != "1":
+			if self.config.get("Default", "Version") != "2":
 				print "-------------------------------------------------"
 				print "ERROR: Bad conf/servers.ini version"
 				print "-------------------------------------------------"
@@ -56,9 +56,32 @@ class Main:
 
 		default = {}
 		
+		options = [
+					["Scan Addbackpackcargo", "addbackpackcargo"], 
+					["Scan Addmagazinecargo", "addmagazinecargo"], 
+					["Scan Createvehicle", "createvehicle"],
+					["Scan Deletevehicle", "deletevehicle"],
+					["Scan Mpeventhandler", "mpeventhandler"],
+					["Scan Publicvariable", "publicvariable"],
+					["Scan Remoteexec", "remoteexec"],
+					["Scan Scripts", "scripts"],
+					["Scan Setdamage", "setdamage"],
+					["Scan Setpos", "setpos"],
+					["Scan Setvariable", "setvariable"],
+					["Scan Server Log", "server_log"],
+					["OffSet", "OffSet"],
+					["Ban Message", "Ban Message"],
+					["Filters Location", "Filters Location"]
+				]
+				
+		
 		## Scan Settings -- Default 
 		self.interval = int(self.config.get("Default", "interval", "60"))
 		
+		for x in range(len(options)):
+			default[options[x][1]] = self.config.get("Default", options[x][0])
+		
+		## Debug Settings
 		if self.config.has_option("Default", "Debug File"):
 			self.debug_file = self.config.get("Default", "Debug File")
 		else:
@@ -68,22 +91,6 @@ class Main:
 			self.debug_level = self.config.get("Default", "Debug Level")
 		else:
 			self.debug_level = "WARNING"
-			
-		default["Ban Message"] = self.config.get("Default", "Ban Message")
-
-		default["addbackpackcargo"] = self.config.get("Default", "Scan Addbackpackcargo")		
-		default["addmagazinecargo"] = self.config.get("Default", "Scan Addmagazinecargo")		
-		default["createvehicle"] = self.config.get("Default", "Scan Createvehicle")
-		default["deletevehicle"] = self.config.get("Default", "Scan Deletevehicle")
-		default["mpeventhandler"] = self.config.get("Default", "Scan Mpeventhandler")
-		default["publicvariable"] = self.config.get("Default", "Scan Publicvariable")
-		default["remoteexec"] = self.config.get("Default", "Scan Remoteexec")
-		default["scripts"] = self.config.get("Default", "Scan Scripts")
-		default["setdamage"] = self.config.get("Default", "Scan Setdamage")
-		default["setpos"] = self.config.get("Default", "Scan Setpos")
-		default["setvariable"] = self.config.get("Default", "Scan Setvariable")
-		default["server_log"] = self.config.get("Default", "Scan Server Log")
-		default["OffSet"] = self.config.get("Default", "OffSet")
 		
 		x = 0
 		while x < (len(self.server_settings)):
@@ -97,52 +104,17 @@ class Main:
 			temp["BattlEye Directory"] = self.config.get(self.server_settings[x], "BattlEye Directory")
 			temp["Server Console Log"] = self.config.get(self.server_settings[x], "Server Console Log")
 			temp["Server RPT Log"] = self.config.get(self.server_settings[x], "Server RPT Log")
-
-			## Scan Settings -- Server Specfic
-			if self.config.has_option(self.server_settings[x], "Scan Addbackpackcargo") == True:
-				temp["addbackpackcargo"] = self.config.get(self.server_settings[x], "Scan Addbackpackcargo")
-
-			if self.config.has_option(self.server_settings[x], "Scan Addmagazinecargo") == True:
-				temp["addmagazinecargo"] = self.config.get(self.server_settings[x], "Scan Addmagazinecargo")
-				
-			if self.config.has_option(self.server_settings[x], "Scan Createvehicle") == True:
-				temp["createvehicle"] = self.config.get(self.server_settings[x], "Scan Createvehicle")
-				
-			if self.config.has_option(self.server_settings[x], "Scan Deletevehicle") == True:
-				temp["deletevehicle"] = self.config.get(self.server_settings[x], "Scan Deletevehicle")
-
-			if self.config.has_option(self.server_settings[x], "Scan Mpeventhandler") == True:
-				temp["mpeventhandler"] = self.config.get(self.server_settings[x], "Scan Mpeventhandler")
-
-			if self.config.has_option(self.server_settings[x], "Scan Publicvariable") == True:
-				temp["publicvariable"] = self.config.get(self.server_settings[x], "Scan Publicvariable")
-
-			if self.config.has_option(self.server_settings[x], "Scan Remoteexec") == True:
-				temp["remoteexec"] = self.config.get(self.server_settings[x], "Scan Remoteexec")
-
-			if self.config.has_option(self.server_settings[x], "Scan Scripts") == True:
-				temp["scripts"] = self.config.get(self.server_settings[x], "Scan Scripts")
-		
-			if self.config.has_option(self.server_settings[x], "Scan Setdamage") == True:
-				temp["setdamage"] = self.config.get(self.server_settings[x], "Scan Setdamage")
-				
-			if self.config.has_option(self.server_settings[x], "Scan Setpos") == True:
-				temp["setpos"] = self.config.get(self.server_settings[x], "Scan Setpos")
-				
-			if self.config.has_option(self.server_settings[x], "Scan Setvariable") == True:
-				temp["setvariable"] = self.config.get(self.server_settings[x], "Scan Setvariable")
-
-			if self.config.has_option(self.server_settings[x], "Scan Server_log") == True:
-				temp["server_log"] = self.config.get(self.server_settings[x], "Scan Server Log")
-
-			if self.config.has_option(self.server_settings[x], "Temp Directory") == True:
-				temp["temp_directory"] = self.config.get(self.server_settings[x], "Temp Directory")
+			temp["Temp Directory"] = os.path.join(temp["BattlEye Directory"], "pyBEscanner", "Temp")		
+											
+			for y in range(len(options)):
+				if self.config.has_option(self.server_settings[x], options[y][0]) == True:
+					temp[options[y][1]] = self.config.get("Default", options[y][0])
+					
+			if temp["Filters Location"] == "Custom":
+				temp["Filters Location"] = os.path.join(temp["BattlEye Directory"], "pyBEscanner", "filters")
 			else:
-				temp["temp_directory"] = os.path.join(temp["BattlEye Directory"], "pyBEscanner", "Temp")
+				temp["Filters Location"] = os.path.join(self.main_dir, "filters", temp["Filters Location"])
 
-			if self.config.has_option(self.server_settings[x], "Ban Message") == True:
-				temp["temp_directory"] = self.config.get(self.server_settings[x], "Ban Message")
-				
 			self.server_settings[x] = temp
 			x = x + 1
 
