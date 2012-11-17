@@ -171,13 +171,23 @@ class Scanner:
 			else:
 				print x + " (unknown option)"
 						
-						
-	def update_bans(self, x, data, time="-1", update=False):
+
+	def kick_ban_msg(self, template, player_name, server_name, log_file, date_time):
+		tmp = string.replace(template, "PLAYER_NAME", player_name)
+		tmp = string.replace(tmp, "SERVER_NAME", server_name)
+		tmp = string.replace(tmp, "LOG_FILE", log_file)
+		tmp = string.replace(tmp, "DATE_TIME", date_time)
+		return tmp
+	
+	
+	def update_bans(self, log_file, data, time="-1", update=False):
+
 		for x in range(len(data["guid"])):
 			if self.ban_list.count(data["guid"][x]) == 0:
 				self.ban_list.append(data["guid"][x])
-				self.ban_reason.append("pyBEscanner: " + str(data["name"][x]) + " banned - " + str(self.server_settings["ServerName"]) + " @ " + str(data["date"][x]))
-				print "       Banning Player " + str(data["name"][x])
+				ban_message = self.kick_ban_msg(self.server_settings["Ban Message"], str(data["name"][x]), str(self.server_settings["ServerName"]), log_file, str(data["date"][x]))
+				self.ban_reason.append(ban_message)
+				print ("Banning Player " + str(data["name"][x]))
 			
 		if update == True:
 			if self.ban_list != []:

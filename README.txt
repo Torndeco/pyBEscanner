@@ -43,8 +43,14 @@ Directory Layout
 		[Location of archived battleye logs, 
 		also contains any bans/kicks/unknown logs]
 	
+
+Installlation
+	Copy conf/servers-example.ini -> conf/servers.ini
+	Edit conf/servers.ini
+	Start pyBEscanner.py
 	
-Requirements
+
+	Requirements
 	Python 2.7
 	
 
@@ -59,3 +65,5 @@ Notes:-
 	* So Temp workaround till i get around to creating rcon networking code...
 		Using ziello2k https://github.com/ziellos2k/BattleNET 
 		Source file is included for the paranoid people out there...
+	* U can alter the settings & pyBEscanner filters, while the 
+		program is running. Just avoid typo mistakes :)

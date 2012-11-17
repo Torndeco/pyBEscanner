@@ -31,9 +31,25 @@ class Main:
 					print "Missing Server Configs @ " + self.conf_file	
 					exit()
 
+		self.config = ConfigParser.ConfigParser()
+		self.config.read(self.conf_file)
+		if self.config.has_option("Default", "Version"):
+			if self.config.get("Default", "Version") != "1":
+				print "-------------------------------------------------"
+				print "ERROR: Bad conf/servers.ini version"
+				print "-------------------------------------------------"
+				print "Check conf/servers-examples.ini for changes"
+				exit()
+		else:
+			print "-------------------------------------------------"
+			print "ERROR: Bad conf/servers.ini version"
+			print "-------------------------------------------------"
+			print "Check conf/servers-examples.ini for changes"
+			exit()
+
 
 	def loadconfig(self):
-		self.config = ConfigParser.ConfigParser()
+
 		self.config.read(self.conf_file)
 		self.server_settings = self.config.sections()
 		self.server_settings.remove("Default")
@@ -52,6 +68,8 @@ class Main:
 			self.debug_level = self.config.get("Default", "Debug Level")
 		else:
 			self.debug_level = "WARNING"
+			
+		default["Ban Message"] = self.config.get("Default", "Ban Message")
 
 		default["addbackpackcargo"] = self.config.get("Default", "Scan Addbackpackcargo")		
 		default["addmagazinecargo"] = self.config.get("Default", "Scan Addmagazinecargo")		
@@ -68,7 +86,6 @@ class Main:
 		default["OffSet"] = self.config.get("Default", "OffSet")
 		
 		x = 0
-
 		while x < (len(self.server_settings)):
 			temp = copy.copy(default)
 			
@@ -123,6 +140,8 @@ class Main:
 			else:
 				temp["temp_directory"] = os.path.join(temp["BattlEye Directory"], "pyBEscanner", "Temp")
 
+			if self.config.has_option(self.server_settings[x], "Ban Message") == True:
+				temp["temp_directory"] = self.config.get(self.server_settings[x], "Ban Message")
 				
 			self.server_settings[x] = temp
 			x = x + 1
