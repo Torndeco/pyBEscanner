@@ -53,6 +53,7 @@ class Main:
 		else:
 			self.debug_level = "WARNING"
 
+		default["addbackpackcargo"] = self.config.get("Default", "Scan Addbackpackcargo")		
 		default["addmagazinecargo"] = self.config.get("Default", "Scan Addmagazinecargo")		
 		default["createvehicle"] = self.config.get("Default", "Scan Createvehicle")
 		default["deletevehicle"] = self.config.get("Default", "Scan Deletevehicle")
@@ -81,6 +82,9 @@ class Main:
 			temp["Server RPT Log"] = self.config.get(self.server_settings[x], "Server RPT Log")
 
 			## Scan Settings -- Server Specfic
+			if self.config.has_option(self.server_settings[x], "Scan Addbackpackcargo") == True:
+				temp["addbackpackcargo"] = self.config.get(self.server_settings[x], "Scan Addbackpackcargo")
+
 			if self.config.has_option(self.server_settings[x], "Scan Addmagazinecargo") == True:
 				temp["addmagazinecargo"] = self.config.get(self.server_settings[x], "Scan Addmagazinecargo")
 				

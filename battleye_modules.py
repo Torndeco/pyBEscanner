@@ -30,6 +30,7 @@ class Scanner:
 		
 		
 		self.battleye_logs = {
+			"addbackpackcargo": os.path.join(self.server_settings["BattlEye Directory"], "addbackpackcargo.log"),
 			"addmagazinecargo": os.path.join(self.server_settings["BattlEye Directory"], "addmagazinecargo.log"),
 			"createvehicle": os.path.join(self.server_settings["BattlEye Directory"], "createvehicle.log"),
 			"deletevehicle": os.path.join(self.server_settings["BattlEye Directory"], "deletevehicle.log"),
@@ -43,6 +44,7 @@ class Scanner:
 			}
 		
 		self.temp_logs = {
+			"addbackpackcargo": os.path.join(self.server_settings["temp_directory"], "addbackpackcargo.log"),
 			"addmagazinecargo": os.path.join(self.server_settings["temp_directory"], "addmagazinecargo.log"),
 			"createvehicle": os.path.join(self.server_settings["temp_directory"], "createvehicle.log"),
 			"deletevehicle": os.path.join(self.server_settings["temp_directory"], "deletevehicle.log"),
@@ -56,6 +58,7 @@ class Scanner:
 			}
 
 		self.backup_logs = {
+			"addbackpackcargo": os.path.join(self.backuplog_dir, "addbackpackcargo.log"),
 			"addmagazinecargo": os.path.join(self.backuplog_dir, "addmagazinecargo.log"),
 			"createvehicle": os.path.join(self.backuplog_dir, "createvehicle.log"),
 			"deletevehicle": os.path.join(self.backuplog_dir, "deletevehicle.log"),
@@ -69,6 +72,7 @@ class Scanner:
 			}			
 
 		self.banlist_filters = {
+			"addbackpackcargo": os.path.join(self.filters_dir, "addbackpackcargo.banlist"),
 			"addmagazinecargo": os.path.join(self.filters_dir, "addmagazinecargo.banlist"),
 			"createvehicle": os.path.join(self.filters_dir, "createvehicle.banlist"),
 			"deletevehicle": os.path.join(self.filters_dir, "deletevehicle.banlist"),
@@ -82,6 +86,7 @@ class Scanner:
 			}
 			
 		self.kicklist_filters = {
+			"addbackpackcargo": os.path.join(self.filters_dir, "addbackpackcargo.kicklist"),
 			"addmagazinecargo": os.path.join(self.filters_dir, "addmagazinecargo.kicklist"),
 			"createvehicle": os.path.join(self.filters_dir, "createvehicle.kicklist"),
 			"deletevehicle": os.path.join(self.filters_dir, "deletevehicle.kicklist"),
@@ -95,6 +100,7 @@ class Scanner:
 			}
 
 		self.whitelist_filters = {
+			"addbackpackcargo": os.path.join(self.filters_dir, "addbackpackcargo.whitelist"),
 			"addmagazinecargo": os.path.join(self.filters_dir, "addmagazinecargo.whitelist"),
 			"createvehicle": os.path.join(self.filters_dir, "createvehicle.whitelist"),
 			"deletevehicle": os.path.join(self.filters_dir, "deletevehicle.whitelist"),
@@ -200,7 +206,7 @@ class Scanner:
 				
 				
 	def scan(self):
-		battleye_logs = ["addmagazinecargo", "createvehicle", "deletevehicle", "mpeventhandler", "publicvariable", "remoteexec", "scripts", "setdamage", "setpos", "setvariable"]
+		battleye_logs = ["addbackpackcargo", "addmagazinecargo", "createvehicle", "deletevehicle", "mpeventhandler", "publicvariable", "remoteexec", "scripts", "setdamage", "setpos", "setvariable"]
 		
 		self.log_scanner = Parser(time.time(), float(self.server_settings["OffSet"]))
 		
