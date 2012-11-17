@@ -195,6 +195,8 @@ class Scanner:
 				for x in range(len(self.ban_list)):
 					self.bans.addban(self.ban_list[x], time, self.ban_reason[x])
 				self.bans.closefile()
+				self.ban_list = []
+				self.ban_reason = []
 	
 	
 	def update_kicks(self, x, data):
