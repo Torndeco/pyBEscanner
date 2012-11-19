@@ -274,7 +274,7 @@ class Parser:
 
 					temp = line.strip()
 					date = re.match('\A[0-3][0-9]\.[0-1][0-9]\.[0-9][0-9][0-9][0-9][ ][0-2][0-9][:][0-6][0-9][:][0-6][0-9][:]\s', temp)
-					temp = re.split('\A[0-3][0-9]\.[0-1][0-9]\.[0-9][0-9][0-9][0-9][ ][0-2][0-9][:][0-6][0-9][:][0-6][0-9][:]\s', temp)
+					temp = re.split('\A[0-3][0-9]\.[0-1][0-9]\.[0-9][0-9][0-9][0-9][ ][0-2][0-9][:][0-6][0-9][:][0-6][0-9][:]\s', temp, 1)
 					if date is None:
 						x = len(entries_date) - 1
 						if x >= 0:
@@ -282,10 +282,10 @@ class Parser:
 							entries_code[x] = entries_code[x] + line.strip()
 							logging.debug('Updated line = ' + str(entries_code[x]))
 					else:
-						name = re.split(".\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}:\d{1,4}[0-9].", temp[1])
-						temp = re.split(".\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}:\d{1,4}[0-9].", line.strip())
+						name = re.split(".\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}:\d{1,4}[0-9].", temp[1], 1)
+						temp = re.split(".\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}:\d{1,4}[0-9].", line.strip(), 1)
 						ip = re.search("\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}:\d{1,4}[0-9]", line.strip())
-						code = re.split("\s-\s", temp[1])
+						code = re.split("\s-\s", temp[1], 1)
 						entries_date.append(date.group())
 						entries_guid.append(code[0].strip(' '))
 						entries_ip.append(ip.group())
