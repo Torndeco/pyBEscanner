@@ -122,9 +122,6 @@ class Main:
 			self.loadconfig()
 			logging.basicConfig(filename=self.debug_file, level=self.debug_level)
 
-			kick_list = []
-			ban_list = []
-
 			x = 0
 			while x < len(self.server_settings):
 				print
