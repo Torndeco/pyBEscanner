@@ -206,7 +206,21 @@ class Scanner:
 
 		for log in battleye_logs:
 			if os.path.isfile(self.battleye_logs[log]) is True:
-				shutil.move(self.battleye_logs[log], self.temp_logs[log])
+				if os.path.isfile(self.temp_logs[log]) is True:
+					os.remove(self.temp_logs[log])
+					print self.temp_logs[log]
+				error_count = 0
+				while True:
+					try:
+						shutil.move(self.battleye_logs[log], self.temp_logs[log])
+						break
+					except WindowsError:
+						if error_loop >= 5:
+							print "Error file " + log + " in usage by a process, skipping..."
+							break
+						else:
+							error_loop = error_loop + 1
+							time.sleep(1)
 
 		for log in battleye_logs:
 			self.scan_battleye_logs(log)  # Scan Logs incase a .pickle file exists, with previous log entry
