@@ -2,14 +2,12 @@ import datetime
 import re
 import os
 import shutil
-import pickle
 import time
 import string
+import logging
+import cPickle as pickle
 
 import rcon_modules
-
-import logging
-
 
 class Scanner:
 	def __init__(self, server_settings):
@@ -101,6 +99,18 @@ class Scanner:
 								"setpos": os.path.join(self.server_settings["Filters Location"], "setpos.whitelist"),
 								"setvariable": os.path.join(self.server_settings["Filters Location"], "setvariable.whitelist")}
 
+		self.banlist_spam_filters = {"addbackpackcargo": os.path.join(self.server_settings["Filters Location"], "spam", "addbackpackcargo.spam-banlist"),
+									"addmagazinecargo": os.path.join(self.server_settings["Filters Location"], "spam", "addmagazinecargo.spam-banlist"),
+									"createvehicle": os.path.join(self.server_settings["Filters Location"], "spam", "createvehicle.spam-banlist"),
+									"deletevehicle": os.path.join(self.server_settings["Filters Location"], "spam," "deletevehicle.spam-banlist"),
+									"mpeventhandler": os.path.join(self.server_settings["Filters Location"], "spam", "mpeventhandler.spam-banlist"),
+									"publicvariable": os.path.join(self.server_settings["Filters Location"], "spam", "publicvariable.spam-banlist"),
+									"remoteexec": os.path.join(self.server_settings["Filters Location"], "spam", "remoteexec.spam-banlist"),
+									"scripts": os.path.join(self.server_settings["Filters Location"], "spam", "scripts.spam-banlist"),
+									"setdamage": os.path.join(self.server_settings["Filters Location"], "spam", "setdamage.spam-banlist"),
+									"setpos": os.path.join(self.server_settings["Filters Location"], "spam", "setpos.spam-banlist"),
+									"setvariable": os.path.join(self.server_settings["Filters Location"], "spam", "setvariable.spam-banlist")}
+
 		# Create Backup Folder if it doesnt exist
 		if not os.path.exists(self.backuplog_dir):
 			os.makedirs(self.backuplog_dir)
@@ -116,7 +126,12 @@ class Scanner:
 
 	def scan_battleye_logs(self, x):
 
-		self.log_scanner.scan_log(self.temp_logs[x], self.backup_logs[x], self.whitelist_filters[x], self.banlist_filters[x], self.kicklist_filters[x])
+		self.log_scanner.scan_log(self.temp_logs[x],
+							self.backup_logs[x],
+							self.whitelist_filters[x],
+							self.banlist_filters[x],
+							self.kicklist_filters[x],
+							self.banlist_spam_filters[x])
 		if self.server_settings[x] == "off":
 			print x + " (off)"
 		else:
@@ -209,7 +224,7 @@ class Scanner:
 				if os.path.isfile(self.temp_logs[log]) is True:
 					os.remove(self.temp_logs[log])
 					print self.temp_logs[log]
-				error_count = 0
+				error_loop = 0
 				while True:
 					try:
 						shutil.move(self.battleye_logs[log], self.temp_logs[log])
@@ -223,7 +238,8 @@ class Scanner:
 							time.sleep(1)
 
 		for log in battleye_logs:
-			self.scan_battleye_logs(log)  # Scan Logs incase a .pickle file exists, with previous log entry
+			self.scan_battleye_logs(log)
+
 
 
 class Parser:
@@ -232,8 +248,9 @@ class Parser:
 
 		self.scan_time = scan_time
 		self.offset = offset
+		self.decoder = decoder()
 
-	def scan_log(self, logfile, backupfile, whitelist_filters, banlist_filters, kicklist_filters):
+	def scan_log(self, logfile, backupfile, whitelist_filters, banlist_filters, kicklist_filters, spam_filters):
 
 		# Entries
 		entries_date = []
@@ -257,7 +274,8 @@ class Parser:
 		kick_entries_name = []
 
 		# Check for Offset pickle file / Initialize OffSet Data
-		offset_data_file = logfile + ".pickle"
+		offset_data_file = logfile + ".offset"
+		spam_data_file = logfile + ".spam"
 
 		logging.info('')
 		logging.info('Parsing ' + str(logfile))
@@ -288,7 +306,7 @@ class Parser:
 
 					temp = line.strip()
 					date = re.match('\A[0-3][0-9]\.[0-1][0-9]\.[0-9][0-9][0-9][0-9][ ][0-2][0-9][:][0-6][0-9][:][0-6][0-9][:]\s', temp)
-					temp = re.split('\A[0-3][0-9]\.[0-1][0-9]\.[0-9][0-9][0-9][0-9][ ][0-2][0-9][:][0-6][0-9][:][0-6][0-9][:]\s', temp, 1)
+					temp = re.split('\A[0-3][0-9]\.[0-1][0-9]\.[0-9][0-9][0-9][0-9][ ][0-2][0-9][:][0-6][0-9][:][0-6][0-9][:]\s', temp)
 					if date is None:
 						x = len(entries_date) - 1
 						if x >= 0:
@@ -296,10 +314,10 @@ class Parser:
 							entries_code[x] = entries_code[x] + line.strip()
 							logging.debug('Updated line = ' + str(entries_code[x]))
 					else:
-						name = re.split(".\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}:\d{1,4}[0-9].", temp[1], 1)
-						temp = re.split(".\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}:\d{1,4}[0-9].", line.strip(), 1)
+						name = re.split(".\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}:\d{1,4}[0-9].", temp[1])
+						temp = re.split(".\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}:\d{1,4}[0-9].", line.strip())
 						ip = re.search("\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}:\d{1,4}[0-9]", line.strip())
-						code = re.split("\s-\s", temp[1], 1)
+						code = re.split("\s-\s", temp[1])
 						entries_date.append(date.group())
 						entries_guid.append(code[0].strip(' '))
 						entries_ip.append(ip.group())
@@ -331,6 +349,12 @@ class Parser:
 
 		if (len(entries_code) > 0) is True:
 
+			# Spam Detection
+			# THIS IS NOT FUNCTIONAL YET IN ANYWAY WAY DONT UNCOMMENT!!!!!!!!!!
+			#self.spam_dection = Spam(spam_data_file, spam_filters)
+			#self.spam_dection.load()
+			#self.spam_dection.scan(x)
+
 			if os.path.isfile(whitelist_filters) is True:
 				# Remove whitelisted entries
 				with open(whitelist_filters) as f:
@@ -361,7 +385,7 @@ class Parser:
 							temp = line.strip()
 							x = 0
 							while x != len(entries_code):
-								if re.search(temp, entries_code[x]) or re.search(temp, string.replace(entries_code[x], "\",\"", "")):
+								if re.search(temp, entries_code[x]) or re.search(temp, self.decoder.decode_string(entries_code[x])):
 									ban_entries_date.append(entries_date.pop(x))
 									ban_entries_guid.append(entries_guid.pop(x))
 									ban_entries_ip.append(entries_ip.pop(x))
@@ -383,7 +407,7 @@ class Parser:
 							temp = line.strip()
 							x = 0
 							while x != len(entries_code):
-								if re.search(temp, entries_code[x]) or re.search(temp, string.replace(entries_code[x], "\",\"", "")):
+								if re.search(temp, entries_code[x]) or re.search(temp, self.decoder.decode_string(entries_code[x])):
 									kick_entries_date.append(entries_date.pop(x))
 									kick_entries_guid.append(entries_guid.pop(x))
 									kick_entries_ip.append(entries_ip.pop(x))
@@ -417,6 +441,8 @@ class Parser:
 
 
 class Bans:
+
+
 	def __init__(self, bans_file):
 		self.bans_file = bans_file
 
@@ -431,3 +457,122 @@ class Bans:
 
 	def removeban(self, guid, time, reason):
 		pass
+
+
+class decoder:
+
+
+	def __init__(self):
+		self.pattern = ["[\"][\s\+,\"][\"]]", "[\"][\s+,\"]*[\+,]+[\s+,\"]*[\"]]"]
+
+	def decode_string(self, txt):
+		temp_txt = txt
+		for x in range(len(self.pattern)):
+			temp_txt = re.sub(self.pattern[x], "", temp_txt)
+
+		return temp_txt
+
+
+class Spam:
+
+
+	def __init__(self, spam_data_file, spam_rules_file):
+		self.spam_data_file = spam_data_file
+		self.spam_rules_file = spam_rules_file
+
+		self.players = {}
+		self.rules = {} # {Regrex rule:[[triggers][actions], [triggers2][actions2]]}
+
+		self.hackers = {}
+
+	def add_data(self, entries_date, entries_guid, entries_ip, entries_code, entries_name):
+		# Loop through entries
+		for x in range(len(entries_date)):
+			if entries_guid[x] not in self.players: # Check if Player GUID exists in data
+				self.players[entries_guid[x]] = {"Name": entries_name[x], "IP":entries_ip}  # Add GUID + Player Name
+
+			# Loop through self.filters & check if entries_code[x] is a match
+			for rule in self.rules.keys():
+				if re.search(rule, entries_code[x]) or re.search(rule, self.decoder.decode_string(entries_code[x])):   # TODO: Find regrex filter alternative than hardcoded this in everywhere....
+					time_stamp = time.mktime((time.strptime(entries_date[x], "%d.%m.%Y %H:%M:%S: ")))
+					self.players[entries_guid[x]]["Rules"][rule] = [time_stamp][entries_code[x]]
+
+
+	def scan(self, scan_time):
+
+		# Loop through Players (unique id = GUID)
+		for guid in self.players: # Loop through PLAYERS
+			for rule in self.players[guid]["Rules"]: # Loop Logged Rules Detection
+				if rule not in self.filters.keys(): # Check if old rule logged
+					del self.players[guid]["Rules"][rule] # Remove Old Rule
+				else:
+					#[[Timestamp][Code]] = self.players[entries_guid[x]][Rules][filter]
+					data = self.players[guid]["Rules"][rule] # Current logged rule data = [[Timestamp, Code], [T2,C2]]
+
+					x = 0
+					while x <= len(data):
+						code_time = data[x][0] # Timestamp
+						for y in range(len(self.rules[rule])):
+							max_count = self.rules[rule][y][0]
+							max_time =  self.rules[rule][y][1]
+							action = self.rules[rule][y][2]
+							if max_count <= len(data):
+								if (data[x][0] - code_time) <= self.rules[rule][y][0]:
+									self.addhacker()
+									break
+						if scan_time - code_time > max_time:
+							self.players[guid]["Rules"][rule].pop[0]   # Remove old entry
+						else:
+							x = x + 1
+
+	def load(self):
+			# GUID : Player Info Dict{}
+				#{GUID: PlayerInfo{}}
+					#{Name: Player Name}
+					#{IP: Player IP}
+					#{Rules: Regrex Filters{}}
+						# regrex-filter1: [Timestamp][Code]
+						# regrex-filter2: [Timestamp][Code]
+						# regrex-filter3: [Timestamp][Code]
+		logging.info("Checking for " + self.spam_data_file)
+		if os.path.isfile(self.spam_data_file) is True:
+			logging.info("Spam File Detected")
+			f_spam_data_file = open(self.spam_data_file, 'rb')
+			self.players = pickle.load(f_spam_data_file)
+			logging.info("Loaded Spam Data")
+			f_spam_data_file.close()
+		else:
+			self.players = {}
+
+
+			# self.rules = {}
+				# Regrex Rule: [[count, time elapsed, action], [2x]]
+		logging.info("Checking for " + self.spam_rules_file)
+		if os.path.isfile(self.spam_data_file) is True:
+			logging.info("Spam Rule File Detected")
+			f_spam_rules_file = open(self.spam_rules_file, 'rb')
+			self.rules = pickle.load(self.f_spam_rules_file)
+			logging.info("Loaded Spam Data")
+			f_spam_rules_file.close()
+		else:
+			self.rules = {}
+
+	def save(self):
+		# Update players data
+		f_spam_data_file = open(self.f_spam_data_file, 'wb')
+		pickle.dump(self.players, f_spam_data_file)
+		f_spam_data_file.close()
+
+	def addHacker(self):
+		pass
+
+	def getHackersLog(self):
+		pass
+
+	def clean(self):
+		# Remove Hackers From self.players
+		# Reset hackers variables
+		# Remove Hackers from self.players
+		pass
+
+
