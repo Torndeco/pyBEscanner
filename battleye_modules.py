@@ -12,8 +12,8 @@ import rcon_modules
 class Scanner:
 	def __init__(self, server_settings):
 
-		logger = logging.getLogger(__name__)
-		print server_settings["Filters Location"]
+		self.logger = logging.getLogger(__name__)
+		self.logger.debug("Filters --> " + str(server_settings["Filters Location"]))
 
 		self.server_settings = server_settings
 
@@ -171,6 +171,7 @@ class Scanner:
 				self.log(x, "unknown", self.log_scanner.unknownlist)
 
 			else:
+				self.logger.warning(x + " (unknown option)")
 				print x + " (unknown option)"
 
 	def kick_ban_msg(self, template, player_name, server_name, log_file, date_time):
@@ -187,6 +188,7 @@ class Scanner:
 				self.ban_list.append(data["guid"][x])
 				ban_message = self.kick_ban_msg(self.server_settings["Ban Message"], str(data["name"][x]), str(self.server_settings["ServerName"]), log_file, str(data["date"][x]))
 				self.ban_reason.append(ban_message)
+				self.logger.info("Banning Player " + str(data["name"][x]))
 				print ("Banning Player " + str(data["name"][x]))
 
 		if update is True:
@@ -223,7 +225,7 @@ class Scanner:
 			if os.path.isfile(self.battleye_logs[log]) is True:
 				if os.path.isfile(self.temp_logs[log]) is True:
 					os.remove(self.temp_logs[log])
-					print self.temp_logs[log]
+					self.logger.info("Removing Old Temp File - " + self.temp_logs[log])
 				error_loop = 0
 				while True:
 					try:
@@ -232,6 +234,7 @@ class Scanner:
 					except WindowsError:
 						if error_loop >= 5:
 							print "Error file " + log + " in usage by a process, skipping..."
+							self.logger.critical("Error file " + log + " in usage by a process, skipping...")
 							break
 						else:
 							error_loop = error_loop + 1
@@ -244,7 +247,7 @@ class Scanner:
 
 class Parser:
 	def __init__(self, scan_time, offset):
-		logger = logging.getLogger(__name__)
+		self.logger = logging.getLogger(__name__)
 
 		self.scan_time = scan_time
 		self.offset = offset
@@ -275,16 +278,15 @@ class Parser:
 
 		# Check for Offset pickle file / Initialize OffSet Data
 		offset_data_file = logfile + ".offset"
-		spam_data_file = logfile + ".spam"
 
-		logging.info('')
-		logging.info('Parsing ' + str(logfile))
-		logging.info('Checking of Offset Data File')
+		self.logger.debug('')
+		self.logger.debug('Parsing ' + str(logfile))
+		self.logger.debug('Checking of Offset Data File')
 		if os.path.isfile(offset_data_file) is True:
-			logging.info('Offset Data File Found')
+			self.logger.debug('Offset Data File Found')
 			f_offset_data_file = open(offset_data_file, 'rb')
 			offset_data = pickle.load(f_offset_data_file)
-			logging.debug('Loading Offset Data = ' + str(offset_data))
+			self.logger.debug('Loading Offset Data = ' + str(offset_data))
 			if offset_data != []:
 				entries_date.append(offset_data[0])
 				entries_guid.append(offset_data[1])
@@ -292,9 +294,9 @@ class Parser:
 				entries_code.append(offset_data[3])
 				entries_name.append(offset_data[4])
 			f_offset_data_file.close()
-			logging.debug('Entries Data = ' + str(offset_data))
+			self.logger.debug('Entries Data = ' + str(offset_data))
 		else:
-			logging.debug('No Offset Data File Found')
+			self.logger.debug('No Offset Data File Found')
 
 		# Scan BattlEye Logs
 		if os.path.isfile(logfile) is True:
@@ -310,9 +312,9 @@ class Parser:
 					if date is None:
 						x = len(entries_date) - 1
 						if x >= 0:
-							logging.debug('Detected Multiple lines = ' + str(entries_code[x]))
+							self.logger.debug('Detected Multiple lines = ' + str(entries_code[x]))
 							entries_code[x] = entries_code[x] + line.strip()
-							logging.debug('Updated line = ' + str(entries_code[x]))
+							self.logger.debug('Updated line = ' + str(entries_code[x]))
 					else:
 						name = re.split(".\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}:\d{1,4}[0-9].", temp[1], 1)
 						temp = re.split(".\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}:\d{1,4}[0-9].", line.strip(), 1)
@@ -332,7 +334,6 @@ class Parser:
 		if len(entries_date) > 0:
 			x = time.mktime(time.localtime(self.scan_time))
 			x2 = time.mktime((time.strptime(entries_date[-1], "%d.%m.%Y %H:%M:%S: ")))
-			#print x - x2
 
 			if ((x - x2) < self.offset) is True:
 				offset_data.append(entries_date.pop())
@@ -340,7 +341,7 @@ class Parser:
 				offset_data.append(entries_ip.pop())
 				offset_data.append(entries_code.pop())
 				offset_data.append(entries_name.pop())
-				logging.debug("Saving  " + str(offset_data))
+				self.logger.debug("Saving  " + str(offset_data))
 
 		# Update offset_data_file
 		f_offset_data_file = open(offset_data_file, 'wb')
@@ -372,10 +373,10 @@ class Parser:
 								x = x + 1
 			else:
 				# If file = missing, create an empty file
+				self.logger.info("Create missing filter " + str(whitelist_filters))
 				print "Create missing filter " + str(whitelist_filters)
 				open(whitelist_filters, 'w').close()
 
-			#print "DEBUG 2: length of entries code " + str(len(entries_code))
 
 			if banlist_filters is not None:
 				if os.path.isfile(banlist_filters) is True:
@@ -397,8 +398,6 @@ class Parser:
 					# If file = missing, create an empty file
 					open(banlist_filters, 'w').close()
 
-			#print "DEBUG 3: length of entries code " + str(len(entries_code))
-
 			if kicklist_filters is not None:
 				if os.path.isfile(kicklist_filters) is True:
 					# Search for KickList Entries
@@ -419,7 +418,6 @@ class Parser:
 					# If file = missing, create an empty file
 					open(kicklist_filters, 'w').close()
 
-			#print "DEBUG 4: length of entries code " + str(len(entries_code))
 
 		self.banlist = {"date": ban_entries_date,
 						"guid": ban_entries_guid,
@@ -477,6 +475,8 @@ class Spam:
 
 
 	def __init__(self, spam_data_file, spam_rules_file):
+		self.logger = logging.getLogger(__name__)
+
 		self.spam_data_file = spam_data_file
 		self.spam_rules_file = spam_rules_file
 
@@ -518,7 +518,7 @@ class Spam:
 							action = self.rules[rule][y][2]
 							if max_count <= len(data):
 								if (data[x][0] - code_time) <= self.rules[rule][y][0]:
-									self.addhacker()
+									self.addhacker(action)
 									break
 						if scan_time - code_time > max_time:
 							self.players[guid]["Rules"][rule].pop[0]   # Remove old entry
@@ -534,12 +534,12 @@ class Spam:
 						# regrex-filter1: [Timestamp][Code]
 						# regrex-filter2: [Timestamp][Code]
 						# regrex-filter3: [Timestamp][Code]
-		logging.info("Checking for " + self.spam_data_file)
+		self.logger.debug("Checking for " + self.spam_data_file)
 		if os.path.isfile(self.spam_data_file) is True:
-			logging.info("Spam File Detected")
+			self.logger.debug("Spam File Detected")
 			f_spam_data_file = open(self.spam_data_file, 'rb')
 			self.players = pickle.load(f_spam_data_file)
-			logging.info("Loaded Spam Data")
+			self.logger.debug("Loaded Spam Data")
 			f_spam_data_file.close()
 		else:
 			self.players = {}
@@ -547,14 +547,16 @@ class Spam:
 
 			# self.rules = {}
 				# Regrex Rule: [[count, time elapsed, action], [2x]]
-		logging.info("Checking for " + self.spam_rules_file)
-		if os.path.isfile(self.spam_data_file) is True:
-			logging.info("Spam Rule File Detected")
-			f_spam_rules_file = open(self.spam_rules_file, 'rb')
-			self.rules = pickle.load(self.f_spam_rules_file)
-			logging.info("Loaded Spam Data")
-			f_spam_rules_file.close()
+		self.logger.debug("Checking for " + self.spam_rules_file)
+
+		if os.path.isfile(self.spam_rules_file) is True:
+			with open(self.spam_rules_file) as f:
+				for line in f:
+					# data = [0-max_count, 1-time elapsed, 2-action, 3-regrex rule]
+					data = re.split(" ", line, 4)
+					self.rules[data[3]].append([data[0], data[1], data[2]])
 		else:
+			open(self.spam_rules_file, 'w').close()
 			self.rules = {}
 
 	def save(self):
@@ -563,7 +565,7 @@ class Spam:
 		pickle.dump(self.players, f_spam_data_file)
 		f_spam_data_file.close()
 
-	def addHacker(self):
+	def addHacker(self, action):
 		pass
 
 	def getHackersLog(self):
@@ -574,5 +576,3 @@ class Spam:
 		# Reset hackers variables
 		# Remove Hackers from self.players
 		pass
-
-
