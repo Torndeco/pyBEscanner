@@ -72,3 +72,7 @@ Notes:-
 	* U can alter the settings & pyBEscanner filters, while the 
 		program is running. Just avoid typo mistakes :)
 	* http://www.pythonregex.com/  Nice website to test out your filter rules on
+	* If u are using the latest commit version of pyBEscanner, u will notice in battleye directory/pyBEscanner/temp/*.pickle files.
+		It is safe to remove these files, as have change over to a different format.
+			New format has file extentions .offset & .spam
+			Format change was done for tiny performance gains..
