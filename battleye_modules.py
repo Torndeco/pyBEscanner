@@ -99,17 +99,17 @@ class Scanner:
 								"setpos": os.path.join(self.server_settings["Filters Location"], "setpos.whitelist"),
 								"setvariable": os.path.join(self.server_settings["Filters Location"], "setvariable.whitelist")}
 
-		self.banlist_spam_filters = {"addbackpackcargo": os.path.join(self.server_settings["Filters Location"], "spam", "addbackpackcargo.spam-banlist"),
-									"addmagazinecargo": os.path.join(self.server_settings["Filters Location"], "spam", "addmagazinecargo.spam-banlist"),
-									"createvehicle": os.path.join(self.server_settings["Filters Location"], "spam", "createvehicle.spam-banlist"),
-									"deletevehicle": os.path.join(self.server_settings["Filters Location"], "spam," "deletevehicle.spam-banlist"),
-									"mpeventhandler": os.path.join(self.server_settings["Filters Location"], "spam", "mpeventhandler.spam-banlist"),
-									"publicvariable": os.path.join(self.server_settings["Filters Location"], "spam", "publicvariable.spam-banlist"),
-									"remoteexec": os.path.join(self.server_settings["Filters Location"], "spam", "remoteexec.spam-banlist"),
-									"scripts": os.path.join(self.server_settings["Filters Location"], "spam", "scripts.spam-banlist"),
-									"setdamage": os.path.join(self.server_settings["Filters Location"], "spam", "setdamage.spam-banlist"),
-									"setpos": os.path.join(self.server_settings["Filters Location"], "spam", "setpos.spam-banlist"),
-									"setvariable": os.path.join(self.server_settings["Filters Location"], "spam", "setvariable.spam-banlist")}
+		self.banlist_spam_filters = {"addbackpackcargo": os.path.join(self.server_settings["Filters Location"], "addbackpackcargo.spam-rules"),
+									"addmagazinecargo": os.path.join(self.server_settings["Filters Location"], "addmagazinecargo.spam-rules"),
+									"createvehicle": os.path.join(self.server_settings["Filters Location"], "createvehicle.spam-rules"),
+									"deletevehicle": os.path.join(self.server_settings["Filters Location"], "deletevehicle.spam-rules"),
+									"mpeventhandler": os.path.join(self.server_settings["Filters Location"], "mpeventhandler.spam-rules"),
+									"publicvariable": os.path.join(self.server_settings["Filters Location"], "publicvariable.spam-rules"),
+									"remoteexec": os.path.join(self.server_settings["Filters Location"], "remoteexec.spam-rules"),
+									"scripts": os.path.join(self.server_settings["Filters Location"], "scripts.spam-rules"),
+									"setdamage": os.path.join(self.server_settings["Filters Location"], "setdamage.spam-rules"),
+									"setpos": os.path.join(self.server_settings["Filters Location"], "setpos.spam-rules"),
+									"setvariable": os.path.join(self.server_settings["Filters Location"], "setvariable.spam-rules")}
 
 		# Create Backup Folder if it doesnt exist
 		if not os.path.exists(self.backuplog_dir):
@@ -124,14 +124,23 @@ class Scanner:
 		if not os.path.exists(self.server_settings["Temp Directory"]):
 			os.mkdir(self.server_settings["Temp Directory"])
 
+
 	def scan_battleye_logs(self, x):
 
-		self.log_scanner.scan_log(self.temp_logs[x],
-							self.backup_logs[x],
-							self.whitelist_filters[x],
-							self.banlist_filters[x],
-							self.kicklist_filters[x],
-							self.banlist_spam_filters[x])
+		if self.server_settings["Spam Filters"] == "on":
+			self.log_scanner.scan_log(self.temp_logs[x],
+								self.backup_logs[x],
+								self.whitelist_filters[x],
+								self.banlist_filters[x],
+								self.kicklist_filters[x],
+								self.banlist_spam_filters[x])
+		else:
+			self.log_scanner.scan_log(self.temp_logs[x],
+								self.backup_logs[x],
+								self.whitelist_filters[x],
+								self.banlist_filters[x],
+								self.kicklist_filters[x],
+								None)
 		if self.server_settings[x] == "off":
 			print x + " (off)"
 		else:
@@ -251,7 +260,7 @@ class Parser:
 
 		self.scan_time = scan_time
 		self.offset = offset
-		self.decoder = decoder()
+		self.decoder = Decoder()
 
 	def scan_log(self, logfile, backupfile, whitelist_filters, banlist_filters, kicklist_filters, spam_filters):
 
@@ -278,6 +287,7 @@ class Parser:
 
 		# Check for Offset pickle file / Initialize OffSet Data
 		offset_data_file = logfile + ".offset"
+		spam_data_file = logfile + ".spam"
 
 		self.logger.debug('')
 		self.logger.debug('Parsing ' + str(logfile))
@@ -352,9 +362,10 @@ class Parser:
 
 			# Spam Detection
 			# THIS IS NOT FUNCTIONAL YET IN ANYWAY WAY DONT UNCOMMENT!!!!!!!!!!
-			#self.spam_dection = Spam(spam_data_file, spam_filters)
-			#self.spam_dection.load()
-			#self.spam_dection.scan(x)
+			if spam_filters is not None:
+				self.spam_dection = Spam(spam_data_file, spam_filters)
+				self.spam_dection.load()
+				self.spam_dection.scan(x)
 
 			if os.path.isfile(whitelist_filters) is True:
 				# Remove whitelisted entries
@@ -457,7 +468,7 @@ class Bans:
 		pass
 
 
-class decoder:
+class Decoder:
 
 
 	def __init__(self):
@@ -499,7 +510,6 @@ class Spam:
 
 
 	def scan(self, scan_time):
-
 		# Loop through Players (unique id = GUID)
 		for guid in self.players: # Loop through PLAYERS
 			for rule in self.players[guid]["Rules"]: # Loop Logged Rules Detection
@@ -512,14 +522,13 @@ class Spam:
 					x = 0
 					while x <= len(data):
 						code_time = data[x][0] # Timestamp
-						for y in range(len(self.rules[rule])):
-							max_count = self.rules[rule][y][0]
-							max_time =  self.rules[rule][y][1]
-							action = self.rules[rule][y][2]
-							if max_count <= len(data):
-								if (data[x][0] - code_time) <= self.rules[rule][y][0]:
-									self.addhacker(action)
-									break
+						max_count = self.rules[rule][0]
+						max_time =  self.rules[rule][1]
+						action = self.rules[rule][2]
+						if max_count <= len(data):
+							if (data[x][0] - code_time) <= self.rules[rule][0]:
+								self.addhacker(action)
+								break
 						if scan_time - code_time > max_time:
 							self.players[guid]["Rules"][rule].pop[0]   # Remove old entry
 						else:
@@ -548,13 +557,12 @@ class Spam:
 			# self.rules = {}
 				# Regrex Rule: [[count, time elapsed, action], [2x]]
 		self.logger.debug("Checking for " + self.spam_rules_file)
-
 		if os.path.isfile(self.spam_rules_file) is True:
 			with open(self.spam_rules_file) as f:
 				for line in f:
 					# data = [0-max_count, 1-time elapsed, 2-action, 3-regrex rule]
 					data = re.split(" ", line, 4)
-					self.rules[data[3]].append([data[0], data[1], data[2]])
+					self.rules[data[3]] = [data[0], data[1], data[2]]
 		else:
 			open(self.spam_rules_file, 'w').close()
 			self.rules = {}
