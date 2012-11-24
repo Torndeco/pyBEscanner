@@ -12,7 +12,7 @@ import rcon_modules
 class Scanner:
 	def __init__(self, server_settings):
 
-		self.logger = logging.getLogger(__name__)
+		self.logger = logging.getLogger("Battleye Scanner ")
 		self.logger.debug("Filters --> " + str(server_settings["Filters Location"]))
 
 		self.server_settings = server_settings
@@ -256,7 +256,7 @@ class Scanner:
 
 class Parser:
 	def __init__(self, scan_time, offset):
-		self.logger = logging.getLogger(__name__)
+		self.logger = logging.getLogger("Parser ")
 
 		self.scan_time = scan_time
 		self.offset = offset
@@ -363,9 +363,10 @@ class Parser:
 			# Spam Detection
 			# THIS IS NOT FUNCTIONAL YET IN ANYWAY WAY DONT UNCOMMENT!!!!!!!!!!
 			if spam_filters is not None:
-				self.spam_dection = Spam(spam_data_file, spam_filters)
-				self.spam_dection.load()
-				self.spam_dection.scan(x)
+				self.spam_detection = Spam(spam_data_file, spam_filters)
+				self.spam_detection.load()
+				self.spam_detection.scan(x)
+				self.spam_detection.save()
 
 			if os.path.isfile(whitelist_filters) is True:
 				# Remove whitelisted entries
@@ -486,7 +487,7 @@ class Spam:
 
 
 	def __init__(self, spam_data_file, spam_rules_file):
-		self.logger = logging.getLogger(__name__)
+		self.logger = logging.getLogger("Spam ")
 
 		self.spam_data_file = spam_data_file
 		self.spam_rules_file = spam_rules_file
@@ -543,6 +544,7 @@ class Spam:
 						# regrex-filter1: [Timestamp][Code]
 						# regrex-filter2: [Timestamp][Code]
 						# regrex-filter3: [Timestamp][Code]
+		self.logger.debug(" ")
 		self.logger.debug("Checking for " + self.spam_data_file)
 		if os.path.isfile(self.spam_data_file) is True:
 			self.logger.debug("Spam File Detected")
@@ -569,7 +571,10 @@ class Spam:
 
 	def save(self):
 		# Update players data
-		f_spam_data_file = open(self.f_spam_data_file, 'wb')
+		self.logger.debug("Saving Spam Info")
+		self.logger.debug(self.spam_data_file)
+		self.logger.debug(str(self.players))
+		f_spam_data_file = open(self.spam_data_file, 'wb')
 		pickle.dump(self.players, f_spam_data_file)
 		f_spam_data_file.close()
 
