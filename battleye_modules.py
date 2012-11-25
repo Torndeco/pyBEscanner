@@ -235,7 +235,7 @@ class Scanner:
 	def scan(self):
 		battleye_logs = ["addbackpackcargo", "addmagazinecargo", "attachto", "createvehicle", "deletevehicle", "mpeventhandler", "publicvariable", "remoteexec", "scripts", "setdamage", "setpos", "setvariable"]
 
-		self.log_scanner = Parser(time.time(), float(self.server_settings["OffSet"]))
+		self.log_scanner = Parser(self, time.time(), float(self.server_settings["OffSet"]))
 
 		for log in battleye_logs:
 			if os.path.isfile(self.battleye_logs[log]) is True:
@@ -262,7 +262,8 @@ class Scanner:
 
 
 class Parser:
-	def __init__(self, scan_time, offset):
+	def __init__(self, parent, scan_time, offset):
+		self.parent = parent
 		self.logger = logging.getLogger("Parser ")
 
 		self.logger.debug("Scan Time = " + str(scan_time))
@@ -370,10 +371,11 @@ class Parser:
 			# Spam Detection
 			# THIS IS NOT FUNCTIONAL YET IN ANYWAY WAY DONT UNCOMMENT!!!!!!!!!!
 			if spam_filters is not None:
-				self.spam_detection = Spam(spam_data_file, spam_filters)
+				self.spam_detection = Spam(self, spam_data_file, spam_filters, logfile)
 				self.spam_detection.load()
 				self.spam_detection.add_data(entries_date, entries_guid, entries_ip, entries_code, entries_name)
 				self.spam_detection.scan(x)
+				self.spam_detection.sync()
 				self.spam_detection.save()
 
 			if os.path.isfile(whitelist_filters) is True:
@@ -494,16 +496,18 @@ class Decoder:
 class Spam:
 
 
-	def __init__(self, spam_data_file, spam_rules_file):
+	def __init__(self, parent, spam_data_file, spam_rules_file, logname):
+		self.parent = parent
 		self.logger = logging.getLogger("Spam ")
 
 		self.spam_data_file = spam_data_file
 		self.spam_rules_file = spam_rules_file
+		self.logname = logname
 
 		self.players = {}
 		self.rules = {} # {Regrex rule:[[triggers][actions], [triggers2][actions2]]}
 
-		self.hackers = {}
+		self.hackers = []
 
 	def add_data(self, entries_date, entries_guid, entries_ip, entries_code, entries_name):
 		# Loop through entries
@@ -535,12 +539,13 @@ class Spam:
 					x = 0
 					while x < len(data):
 						code_time = data[x][0] # Timestamp
+						code_entry = data[x][1]
 						max_count = int(self.rules[rule][0])
 						max_time =  int(self.rules[rule][1])
 						action = self.rules[rule][2]
 						if max_count < len(data):
 							if (data[x][0] - code_time) <= self.rules[rule][0]:
-								self.addHacker(action)
+								self.addHacker(guid, action, code_time, code_entry)
 						if scan_time - code_time > max_time:
 							self.players[guid]["Rules"][rule].pop(0)   # Remove old entry
 						else:
@@ -593,15 +598,50 @@ class Spam:
 		pickle.dump(self.players, f_spam_data_file)
 		f_spam_data_file.close()
 
-	def addHacker(self, action):
-		print "HACKER DETECTED OMG"
-		pass
+	def addHacker(self, guid, action, code_time, code_entry):
 
-	def getHackersLog(self):
-		pass
+		for guid in self.hackers[guid]:
+			self.hackers[guid] = {"Name": self.players[guid]["Name"],
+							"IP": self.players[guid]["IP"],
+							"Actions": {}}
+		for action in self.hackers[guid]["Action"]:
+			self.hackers[guid]["Action"][action] = [code_time, code_entry]
+		else:
+			temp = self.hackers[guid]["Action"][action]
+			temp.append([code_time, code_entry])
+			self.hackers[guid]["Action"][action] = temp
 
-	def clean(self):
-		# Remove Hackers From self.players
-		# Reset hackers variables
-		# Remove Hackers from self.players
-		pass
+	def sync(self):
+		banlist = {"date": [], "guid": [], "ip": [], "code": [], "name": []}
+		kicklist = {"date": [], "guid": [], "ip": [], "code": [], "name": []}
+
+    		f_log = open((os.path.join(self.parent.parent.backuplog_dir, self.logname + "-spam.txt")), "a")
+		for guid in self.hackers:
+			name = self.hackers[guid]["Name"]
+			ip = self.hackers[guid]["IP"]
+			for action in self.hackers[guid]["Action"]:
+				f_log.write("")
+				f_log.write("Player Name = " + name)
+				f_log.write("Action = " + name)
+				data = self.hackers[guid]["Action"][action]
+				for x in range(len(data)):
+					f_log.write(str(data[x][0]) + ": " + str(name) + " " + str(ip) + " " + str(guid) + " - " + str(data[x][1]))
+				if action == "BAN":
+					banlist["date"].append(data[x][0])
+					banlist["guid"].append(guid)
+					banlist["ip"].append(ip)
+					banlist["code"].append(data[x][1])
+					banlist["name"].append(name)
+				elif action == "KICK":
+					kicklist["date"].append(data[x][0])
+					kicklist["guid"].append(guid)
+					kicklist["ip"].append(ip)
+					kicklist["code"].append(data[x][1])
+					kicklist["name"].append(name)
+				else:
+					pass
+
+		f_log.close()
+		self.hackers = {}
+		#self.parent.parent.update_bans(self.logname, banlist, update=True)
+		#self.parent.parent.update_kicks(self.logname, banlist, update=True)
