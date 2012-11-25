@@ -35,7 +35,7 @@ class Main:
 		self.config = ConfigParser.ConfigParser()
 		self.config.read(self.conf_file)
 		if self.config.has_option("Default", "Version"):
-			if self.config.get("Default", "Version") != "3":
+			if self.config.get("Default", "Version") != "4":
 				print "-------------------------------------------------"
 				print "ERROR: Bad conf/servers.ini version"
 				print "-------------------------------------------------"
@@ -58,6 +58,7 @@ class Main:
 
 		options = [["Scan Addbackpackcargo", "addbackpackcargo"],
 					["Scan Addmagazinecargo", "addmagazinecargo"],
+					["Scan Attachto", "attachto"],
 					["Scan Createvehicle", "createvehicle"],
 					["Scan Deletevehicle", "deletevehicle"],
 					["Scan Mpeventhandler", "mpeventhandler"],

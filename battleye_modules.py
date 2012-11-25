@@ -29,6 +29,7 @@ class Scanner:
 
 		self.battleye_logs = {"addbackpackcargo": os.path.join(self.server_settings["BattlEye Directory"], "addbackpackcargo.log"),
 							"addmagazinecargo": os.path.join(self.server_settings["BattlEye Directory"], "addmagazinecargo.log"),
+							"attachto": os.path.join(self.server_settings["BattlEye Directory"], "attachto.log"),
 							"createvehicle": os.path.join(self.server_settings["BattlEye Directory"], "createvehicle.log"),
 							"deletevehicle": os.path.join(self.server_settings["BattlEye Directory"], "deletevehicle.log"),
 							"mpeventhandler": os.path.join(self.server_settings["BattlEye Directory"], "mpeventhandler.log"),
@@ -41,6 +42,7 @@ class Scanner:
 
 		self.temp_logs = {"addbackpackcargo": os.path.join(self.server_settings["Temp Directory"], "addbackpackcargo.log"),
 						"addmagazinecargo": os.path.join(self.server_settings["Temp Directory"], "addmagazinecargo.log"),
+						"attachto": os.path.join(self.server_settings["Temp Directory"], "attachto.log"),
 						"createvehicle": os.path.join(self.server_settings["Temp Directory"], "createvehicle.log"),
 						"deletevehicle": os.path.join(self.server_settings["Temp Directory"], "deletevehicle.log"),
 						"mpeventhandler": os.path.join(self.server_settings["Temp Directory"], "mpeventhandler.log"),
@@ -52,64 +54,69 @@ class Scanner:
 						"setvariable": os.path.join(self.server_settings["Temp Directory"], "setvariable.log")}
 
 		self.backup_logs = {"addbackpackcargo": os.path.join(self.backuplog_dir, "addbackpackcargo.log"),
-							"addmagazinecargo": os.path.join(self.backuplog_dir, "addmagazinecargo.log"),
-							"createvehicle": os.path.join(self.backuplog_dir, "createvehicle.log"),
-							"deletevehicle": os.path.join(self.backuplog_dir, "deletevehicle.log"),
-							"mpeventhandler": os.path.join(self.backuplog_dir, "mpeventhandler.log"),
-							"publicvariable": os.path.join(self.backuplog_dir, "publicvariable.log"),
-							"remoteexec": os.path.join(self.backuplog_dir, "remoteexec.log"),
-							"scripts": os.path.join(self.backuplog_dir, "scripts.log"),
-							"setdamage": os.path.join(self.backuplog_dir, "setdamage.log"),
-							"setpos": os.path.join(self.backuplog_dir, "setpos.log"),
-							"setvariable": os.path.join(self.backuplog_dir, "setvariable.log")}
+						"addmagazinecargo": os.path.join(self.backuplog_dir, "addmagazinecargo.log"),
+						"attachto": os.path.join(self.backuplog_dir, "attachto.log"),
+						"createvehicle": os.path.join(self.backuplog_dir, "createvehicle.log"),
+						"deletevehicle": os.path.join(self.backuplog_dir, "deletevehicle.log"),
+						"mpeventhandler": os.path.join(self.backuplog_dir, "mpeventhandler.log"),
+						"publicvariable": os.path.join(self.backuplog_dir, "publicvariable.log"),
+						"remoteexec": os.path.join(self.backuplog_dir, "remoteexec.log"),
+						"scripts": os.path.join(self.backuplog_dir, "scripts.log"),
+						"setdamage": os.path.join(self.backuplog_dir, "setdamage.log"),
+						"setpos": os.path.join(self.backuplog_dir, "setpos.log"),
+						"setvariable": os.path.join(self.backuplog_dir, "setvariable.log")}
 
 		self.banlist_filters = {"addbackpackcargo": os.path.join(self.server_settings["Filters Location"], "addbackpackcargo.banlist"),
-								"addmagazinecargo": os.path.join(self.server_settings["Filters Location"], "addmagazinecargo.banlist"),
-								"createvehicle": os.path.join(self.server_settings["Filters Location"], "createvehicle.banlist"),
-								"deletevehicle": os.path.join(self.server_settings["Filters Location"], "deletevehicle.banlist"),
-								"mpeventhandler": os.path.join(self.server_settings["Filters Location"], "mpeventhandler.banlist"),
-								"publicvariable": os.path.join(self.server_settings["Filters Location"], "publicvariable.banlist"),
-								"remoteexec": os.path.join(self.server_settings["Filters Location"], "remoteexec.banlist"),
-								"scripts": os.path.join(self.server_settings["Filters Location"], "scripts.banlist"),
-								"setdamage": os.path.join(self.server_settings["Filters Location"], "setdamage.banlist"),
-								"setpos": os.path.join(self.server_settings["Filters Location"], "setpos.banlist"),
-								"setvariable": os.path.join(self.server_settings["Filters Location"], "setvariable.banlist")}
+							"addmagazinecargo": os.path.join(self.server_settings["Filters Location"], "addmagazinecargo.banlist"),
+							"attachto": os.path.join(self.server_settings["Filters Location"], "attachto.banlist"),
+							"createvehicle": os.path.join(self.server_settings["Filters Location"], "createvehicle.banlist"),
+							"deletevehicle": os.path.join(self.server_settings["Filters Location"], "deletevehicle.banlist"),
+							"mpeventhandler": os.path.join(self.server_settings["Filters Location"], "mpeventhandler.banlist"),
+							"publicvariable": os.path.join(self.server_settings["Filters Location"], "publicvariable.banlist"),
+							"remoteexec": os.path.join(self.server_settings["Filters Location"], "remoteexec.banlist"),
+							"scripts": os.path.join(self.server_settings["Filters Location"], "scripts.banlist"),
+							"setdamage": os.path.join(self.server_settings["Filters Location"], "setdamage.banlist"),
+							"setpos": os.path.join(self.server_settings["Filters Location"], "setpos.banlist"),
+							"setvariable": os.path.join(self.server_settings["Filters Location"], "setvariable.banlist")}
 
 		self.kicklist_filters = {"addbackpackcargo": os.path.join(self.server_settings["Filters Location"], "addbackpackcargo.kicklist"),
-								"addmagazinecargo": os.path.join(self.server_settings["Filters Location"], "addmagazinecargo.kicklist"),
-								"createvehicle": os.path.join(self.server_settings["Filters Location"], "createvehicle.kicklist"),
-								"deletevehicle": os.path.join(self.server_settings["Filters Location"], "deletevehicle.kicklist"),
-								"mpeventhandler": os.path.join(self.server_settings["Filters Location"], "mpeventhandler.kicklist"),
-								"publicvariable": os.path.join(self.server_settings["Filters Location"], "publicvariable.kicklist"),
-								"remoteexec": os.path.join(self.server_settings["Filters Location"], "remoteexec.kicklist"),
-								"scripts": os.path.join(self.server_settings["Filters Location"], "scripts.kicklist"),
-								"setdamage": os.path.join(self.server_settings["Filters Location"], "setdamage.kicklist"),
-								"setpos": os.path.join(self.server_settings["Filters Location"], "setpos.kicklist"),
-								"setvariable": os.path.join(self.server_settings["Filters Location"], "setvariable.kicklist")}
+							"addmagazinecargo": os.path.join(self.server_settings["Filters Location"], "addmagazinecargo.kicklist"),
+							"attachto": os.path.join(self.server_settings["Filters Location"], "attachto.kicklist"),
+							"createvehicle": os.path.join(self.server_settings["Filters Location"], "createvehicle.kicklist"),
+							"deletevehicle": os.path.join(self.server_settings["Filters Location"], "deletevehicle.kicklist"),
+							"mpeventhandler": os.path.join(self.server_settings["Filters Location"], "mpeventhandler.kicklist"),
+							"publicvariable": os.path.join(self.server_settings["Filters Location"], "publicvariable.kicklist"),
+							"remoteexec": os.path.join(self.server_settings["Filters Location"], "remoteexec.kicklist"),
+							"scripts": os.path.join(self.server_settings["Filters Location"], "scripts.kicklist"),
+							"setdamage": os.path.join(self.server_settings["Filters Location"], "setdamage.kicklist"),
+							"setpos": os.path.join(self.server_settings["Filters Location"], "setpos.kicklist"),
+							"setvariable": os.path.join(self.server_settings["Filters Location"], "setvariable.kicklist")}
 
 		self.whitelist_filters = {"addbackpackcargo": os.path.join(self.server_settings["Filters Location"], "addbackpackcargo.whitelist"),
-								"addmagazinecargo": os.path.join(self.server_settings["Filters Location"], "addmagazinecargo.whitelist"),
-								"createvehicle": os.path.join(self.server_settings["Filters Location"], "createvehicle.whitelist"),
-								"deletevehicle": os.path.join(self.server_settings["Filters Location"], "deletevehicle.whitelist"),
-								"mpeventhandler": os.path.join(self.server_settings["Filters Location"], "mpeventhandler.whitelist"),
-								"publicvariable": os.path.join(self.server_settings["Filters Location"], "publicvariable.whitelist"),
-								"remoteexec": os.path.join(self.server_settings["Filters Location"], "remoteexec.whitelist"),
-								"scripts": os.path.join(self.server_settings["Filters Location"], "scripts.whitelist"),
-								"setdamage": os.path.join(self.server_settings["Filters Location"], "setdamage.whitelist"),
-								"setpos": os.path.join(self.server_settings["Filters Location"], "setpos.whitelist"),
-								"setvariable": os.path.join(self.server_settings["Filters Location"], "setvariable.whitelist")}
+							"addmagazinecargo": os.path.join(self.server_settings["Filters Location"], "addmagazinecargo.whitelist"),
+							"attachto": os.path.join(self.server_settings["Filters Location"], "attachto.whitelist"),
+							"createvehicle": os.path.join(self.server_settings["Filters Location"], "createvehicle.whitelist"),
+							"deletevehicle": os.path.join(self.server_settings["Filters Location"], "deletevehicle.whitelist"),
+							"mpeventhandler": os.path.join(self.server_settings["Filters Location"], "mpeventhandler.whitelist"),
+							"publicvariable": os.path.join(self.server_settings["Filters Location"], "publicvariable.whitelist"),
+							"remoteexec": os.path.join(self.server_settings["Filters Location"], "remoteexec.whitelist"),
+							"scripts": os.path.join(self.server_settings["Filters Location"], "scripts.whitelist"),
+							"setdamage": os.path.join(self.server_settings["Filters Location"], "setdamage.whitelist"),
+							"setpos": os.path.join(self.server_settings["Filters Location"], "setpos.whitelist"),
+							"setvariable": os.path.join(self.server_settings["Filters Location"], "setvariable.whitelist")}
 
 		self.banlist_spam_filters = {"addbackpackcargo": os.path.join(self.server_settings["Filters Location"], "addbackpackcargo.spam-rules"),
-									"addmagazinecargo": os.path.join(self.server_settings["Filters Location"], "addmagazinecargo.spam-rules"),
-									"createvehicle": os.path.join(self.server_settings["Filters Location"], "createvehicle.spam-rules"),
-									"deletevehicle": os.path.join(self.server_settings["Filters Location"], "deletevehicle.spam-rules"),
-									"mpeventhandler": os.path.join(self.server_settings["Filters Location"], "mpeventhandler.spam-rules"),
-									"publicvariable": os.path.join(self.server_settings["Filters Location"], "publicvariable.spam-rules"),
-									"remoteexec": os.path.join(self.server_settings["Filters Location"], "remoteexec.spam-rules"),
-									"scripts": os.path.join(self.server_settings["Filters Location"], "scripts.spam-rules"),
-									"setdamage": os.path.join(self.server_settings["Filters Location"], "setdamage.spam-rules"),
-									"setpos": os.path.join(self.server_settings["Filters Location"], "setpos.spam-rules"),
-									"setvariable": os.path.join(self.server_settings["Filters Location"], "setvariable.spam-rules")}
+								"addmagazinecargo": os.path.join(self.server_settings["Filters Location"], "addmagazinecargo.spam-rules"),
+								"attachto": os.path.join(self.server_settings["Filters Location"], "attachto.spam-rules"),
+								"createvehicle": os.path.join(self.server_settings["Filters Location"], "createvehicle.spam-rules"),
+								"deletevehicle": os.path.join(self.server_settings["Filters Location"], "deletevehicle.spam-rules"),
+								"mpeventhandler": os.path.join(self.server_settings["Filters Location"], "mpeventhandler.spam-rules"),
+								"publicvariable": os.path.join(self.server_settings["Filters Location"], "publicvariable.spam-rules"),
+								"remoteexec": os.path.join(self.server_settings["Filters Location"], "remoteexec.spam-rules"),
+								"scripts": os.path.join(self.server_settings["Filters Location"], "scripts.spam-rules"),
+								"setdamage": os.path.join(self.server_settings["Filters Location"], "setdamage.spam-rules"),
+								"setpos": os.path.join(self.server_settings["Filters Location"], "setpos.spam-rules"),
+								"setvariable": os.path.join(self.server_settings["Filters Location"], "setvariable.spam-rules")}
 
 		# Create Backup Folder if it doesnt exist
 		if not os.path.exists(self.backuplog_dir):
@@ -226,7 +233,7 @@ class Scanner:
 			f_log.close()
 
 	def scan(self):
-		battleye_logs = ["addbackpackcargo", "addmagazinecargo", "createvehicle", "deletevehicle", "mpeventhandler", "publicvariable", "remoteexec", "scripts", "setdamage", "setpos", "setvariable"]
+		battleye_logs = ["addbackpackcargo", "addmagazinecargo", "attachto", "createvehicle", "deletevehicle", "mpeventhandler", "publicvariable", "remoteexec", "scripts", "setdamage", "setpos", "setvariable"]
 
 		self.log_scanner = Parser(time.time(), float(self.server_settings["OffSet"]))
 
