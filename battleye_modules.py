@@ -508,10 +508,6 @@ class Spam:
 					if entries_guid[x] not in self.players: # Check if Player GUID exists in data
 						self.players[entries_guid[x]] = {"Name": entries_name[x], "IP":entries_ip[x], "Rules":{}}  # Add GUID + Player Name
 					time_stamp = time.mktime((time.strptime(entries_date[x], "%d.%m.%Y %H:%M:%S: ")))
-					print
-					print str(self.players[entries_guid[x]]["Rules"])
-					print str([time_stamp, entries_code[x]])
-					print str(rule)
 					data = self.players[entries_guid[x]]["Rules"].get(rule, [])
 					data.append([time_stamp, entries_code[x]])
 					self.players[entries_guid[x]]["Rules"][rule] = data
@@ -522,7 +518,7 @@ class Spam:
 		# Loop through Players (unique id = GUID)
 		player_guid_list = self.players.keys()
 		for guid in player_guid_list: # Loop through PLAYERS
-			print str(self.players[guid])
+			self.logger.debug(str(self.players[guid]))
 			player_logged_rules = self.players[guid]["Rules"].keys()
 			for rule in player_logged_rules: # Loop Logged Rules Detection
 				if rule not in self.rules.keys(): # Check if old rule logged
@@ -530,21 +526,17 @@ class Spam:
 				else:
 					#[[Timestamp][Code]] = self.players[entries_guid[x]][Rules][filter]
 					data = self.players[guid]["Rules"][rule] # Current logged rule data = [[Timestamp, Code], [T2,C2]]
-
 					x = 0
 					while x < len(data):
-						print str(data)
-						print str(data[x])
 						code_time = data[x][0] # Timestamp
-						max_count = self.rules[rule][0]
-						max_time =  self.rules[rule][1]
+						max_count = int(self.rules[rule][0])
+						max_time =  int(self.rules[rule][1])
 						action = self.rules[rule][2]
-						if max_count <= len(data):
+						if max_count < len(data):
 							if (data[x][0] - code_time) <= self.rules[rule][0]:
-								self.addhacker(action)
-								#break
+								self.addHacker(action)
 						if scan_time - code_time > max_time:
-							self.players[guid]["Rules"][rule].pop[0]   # Remove old entry
+							self.players[guid]["Rules"][rule].pop(0)   # Remove old entry
 						else:
 							x = x + 1
 					if self.players[guid]["Rules"][rule] == []:
@@ -596,6 +588,7 @@ class Spam:
 		f_spam_data_file.close()
 
 	def addHacker(self, action):
+		print "HACKER DETECTED OMG"
 		pass
 
 	def getHackersLog(self):
