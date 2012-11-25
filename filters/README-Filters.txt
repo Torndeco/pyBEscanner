@@ -18,13 +18,20 @@ Spam Filters are slighty different beast, while they are essential just regrex e
 There is a slighty different format
 
 <Number of detections> <elapsed time in seconds> <action> <regrex rule>
+Possible <action> values are just KICK or BAN atm...
 
-For example the spam rule
+For example
 10 15 BAN .
 
 10 detections within 15 seconds regrex rule . (basicly matches everything) results in a player ban...
 
-Possible <action> values are just KICK or BAN atm...
 
-Note:- Spam Filters are not funcitonal just yet...
-Will be ready do soon...
+Now lets say u wanted 2 different rules but with the same regrex rule...
+Just alter the regrex slighty so it still catches what u want
+
+10 15 BAN .
+4 1 BAN ..
+
+
+
+Note:- Spam Filters are just logging atm, just be carefull
