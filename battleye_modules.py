@@ -317,9 +317,9 @@ class Parser:
 					## Append Lines to Backup Files
 					f_backup.write(line)
 
-					temp = line.strip()
-					date = re.match('\A[0-3][0-9]\.[0-1][0-9]\.[0-9][0-9][0-9][0-9][ ][0-2][0-9][:][0-6][0-9][:][0-6][0-9][:]\s', temp)
-					temp = re.split('\A[0-3][0-9]\.[0-1][0-9]\.[0-9][0-9][0-9][0-9][ ][0-2][0-9][:][0-6][0-9][:][0-6][0-9][:]\s', temp, 1)
+					line_stripped = line.strip()
+					date = re.match('\A[0-3][0-9]\.[0-1][0-9]\.[0-9][0-9][0-9][0-9][ ][0-2][0-9][:][0-6][0-9][:][0-6][0-9][:]\s', line_stripped)
+					temp = re.split('\A[0-3][0-9]\.[0-1][0-9]\.[0-9][0-9][0-9][0-9][ ][0-2][0-9][:][0-6][0-9][:][0-6][0-9][:]\s', line_stripped, 1)
 					if date is None:
 						x = len(entries_date) - 1
 						if x >= 0:
@@ -327,13 +327,12 @@ class Parser:
 							entries_code[x] = entries_code[x] + line.strip()
 							self.logger.debug('Updated line = ' + str(entries_code[x]))
 					else:
-						name = re.split(".\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}:\d{1,4}[0-9].", temp[1], 1)
-						temp = re.split(".\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}:\d{1,4}[0-9].", line.strip(), 1)
-						ip = re.search("\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}:\d{1,4}[0-9]", line.strip())
-						code = re.split("\s-\s", temp[1], 1)
-						entries_date.append(date.group())
-						entries_guid.append(code[0].strip(' '))
-						entries_ip.append(ip.group())
+						name = re.split("\s.\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}:\d{1,4}[0-9].\s", temp[1], 1)
+						ip = re.search("\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}:\d{1,4}[0-9]", line_stripped).group(0)
+						code = re.split("\s-\s", name[1], 1)
+						entries_date.append(date.group()[:-2])
+						entries_guid.append(code[0])
+						entries_ip.append(ip)
 						entries_code.append(code[1])
 						entries_name.append(name[0])
 			f_backup.close()
@@ -344,7 +343,7 @@ class Parser:
 		offset_data = []
 		if len(entries_date) > 0:
 			x = time.mktime(time.localtime(self.scan_time))
-			x2 = time.mktime((time.strptime(entries_date[-1], "%d.%m.%Y %H:%M:%S: ")))
+			x2 = time.mktime((time.strptime(entries_date[-1], "%d.%m.%Y %H:%M:%S")))
 
 			if ((x - x2) < self.offset) is True:
 				offset_data.append(entries_date.pop())
@@ -507,7 +506,7 @@ class Spam:
 				if re.search(rule, entries_code[x]) or re.search(rule, self.decoder.decode_string(entries_code[x])):   # TODO: Find regrex filter alternative than hardcoded this in everywhere....
 					if entries_guid[x] not in self.players: # Check if Player GUID exists in data
 						self.players[entries_guid[x]] = {"Name": entries_name[x], "IP":entries_ip[x], "Rules":{}}  # Add GUID + Player Name
-					time_stamp = time.mktime((time.strptime(entries_date[x], "%d.%m.%Y %H:%M:%S: ")))
+					time_stamp = time.mktime((time.strptime(entries_date[x], "%d.%m.%Y %H:%M:%S")))
 					data = self.players[entries_guid[x]]["Rules"].get(rule, [])
 					data.append([time_stamp, entries_code[x]])
 					self.players[entries_guid[x]]["Rules"][rule] = data
