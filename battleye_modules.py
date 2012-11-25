@@ -258,6 +258,7 @@ class Parser:
 	def __init__(self, scan_time, offset):
 		self.logger = logging.getLogger("Parser ")
 
+		self.logger.debug("Scan Time = " + str(scan_time))
 		self.scan_time = scan_time
 		self.offset = offset
 		self.decoder = Decoder()
@@ -365,6 +366,7 @@ class Parser:
 			if spam_filters is not None:
 				self.spam_detection = Spam(spam_data_file, spam_filters)
 				self.spam_detection.load()
+				self.spam_detection.add_data(entries_date, entries_guid, entries_ip, entries_code, entries_name)
 				self.spam_detection.scan(x)
 				self.spam_detection.save()
 
@@ -500,28 +502,39 @@ class Spam:
 	def add_data(self, entries_date, entries_guid, entries_ip, entries_code, entries_name):
 		# Loop through entries
 		for x in range(len(entries_date)):
-			if entries_guid[x] not in self.players: # Check if Player GUID exists in data
-				self.players[entries_guid[x]] = {"Name": entries_name[x], "IP":entries_ip}  # Add GUID + Player Name
-
 			# Loop through self.filters & check if entries_code[x] is a match
 			for rule in self.rules.keys():
 				if re.search(rule, entries_code[x]) or re.search(rule, self.decoder.decode_string(entries_code[x])):   # TODO: Find regrex filter alternative than hardcoded this in everywhere....
+					if entries_guid[x] not in self.players: # Check if Player GUID exists in data
+						self.players[entries_guid[x]] = {"Name": entries_name[x], "IP":entries_ip[x], "Rules":{}}  # Add GUID + Player Name
 					time_stamp = time.mktime((time.strptime(entries_date[x], "%d.%m.%Y %H:%M:%S: ")))
-					self.players[entries_guid[x]]["Rules"][rule] = [time_stamp][entries_code[x]]
+					print
+					print str(self.players[entries_guid[x]]["Rules"])
+					print str([time_stamp, entries_code[x]])
+					print str(rule)
+					data = self.players[entries_guid[x]]["Rules"].get(rule, [])
+					data.append([time_stamp, entries_code[x]])
+					self.players[entries_guid[x]]["Rules"][rule] = data
+					#self.players[entries_guid[x]]["Rules"][rule].append([time_stamp, entries_code[x]])
 
 
 	def scan(self, scan_time):
 		# Loop through Players (unique id = GUID)
-		for guid in self.players: # Loop through PLAYERS
-			for rule in self.players[guid]["Rules"]: # Loop Logged Rules Detection
-				if rule not in self.filters.keys(): # Check if old rule logged
+		player_guid_list = self.players.keys()
+		for guid in player_guid_list: # Loop through PLAYERS
+			print str(self.players[guid])
+			player_logged_rules = self.players[guid]["Rules"].keys()
+			for rule in player_logged_rules: # Loop Logged Rules Detection
+				if rule not in self.rules.keys(): # Check if old rule logged
 					del self.players[guid]["Rules"][rule] # Remove Old Rule
 				else:
 					#[[Timestamp][Code]] = self.players[entries_guid[x]][Rules][filter]
 					data = self.players[guid]["Rules"][rule] # Current logged rule data = [[Timestamp, Code], [T2,C2]]
 
 					x = 0
-					while x <= len(data):
+					while x < len(data):
+						print str(data)
+						print str(data[x])
 						code_time = data[x][0] # Timestamp
 						max_count = self.rules[rule][0]
 						max_time =  self.rules[rule][1]
@@ -529,11 +542,15 @@ class Spam:
 						if max_count <= len(data):
 							if (data[x][0] - code_time) <= self.rules[rule][0]:
 								self.addhacker(action)
-								break
+								#break
 						if scan_time - code_time > max_time:
 							self.players[guid]["Rules"][rule].pop[0]   # Remove old entry
 						else:
 							x = x + 1
+					if self.players[guid]["Rules"][rule] == []:
+						del self.players[guid]["Rules"][rule]  # Remove Rule if no-more logged entries present
+			if self.players[guid]["Rules"] == {}:
+				del self.players[guid] # Remove Player Info if no-more logged entries present
 
 	def load(self):
 			# GUID : Player Info Dict{}
