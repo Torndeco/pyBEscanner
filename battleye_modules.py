@@ -140,14 +140,16 @@ class Scanner:
 								self.whitelist_filters[x],
 								self.banlist_filters[x],
 								self.kicklist_filters[x],
-								self.banlist_spam_filters[x])
+								self.banlist_spam_filters[x],
+								x)
 		else:
 			self.log_scanner.scan_log(self.temp_logs[x],
 								self.backup_logs[x],
 								self.whitelist_filters[x],
 								self.banlist_filters[x],
 								self.kicklist_filters[x],
-								None)
+								None,
+								x)
 		if self.server_settings[x] == "off":
 			print x + " (off)"
 		else:
@@ -271,7 +273,7 @@ class Parser:
 		self.offset = offset
 		self.decoder = Decoder()
 
-	def scan_log(self, logfile, backupfile, whitelist_filters, banlist_filters, kicklist_filters, spam_filters):
+	def scan_log(self, logfile, backupfile, whitelist_filters, banlist_filters, kicklist_filters, spam_filters, logname):
 
 		# Entries
 		entries_date = []
@@ -371,7 +373,7 @@ class Parser:
 			# Spam Detection
 			# THIS IS NOT FUNCTIONAL YET IN ANYWAY WAY DONT UNCOMMENT!!!!!!!!!!
 			if spam_filters is not None:
-				self.spam_detection = Spam(self, spam_data_file, spam_filters, logfile)
+				self.spam_detection = Spam(self, spam_data_file, spam_filters, logname)
 				self.spam_detection.load()
 				self.spam_detection.add_data(entries_date, entries_guid, entries_ip, entries_code, entries_name)
 				self.spam_detection.scan(x)
@@ -507,7 +509,7 @@ class Spam:
 		self.players = {}
 		self.rules = {} # {Regrex rule:[[triggers][actions], [triggers2][actions2]]}
 
-		self.hackers = []
+		self.hackers = {}
 		self.decoder = Decoder()
 
 	def add_data(self, entries_date, entries_guid, entries_ip, entries_code, entries_name):
@@ -601,48 +603,49 @@ class Spam:
 
 	def addHacker(self, guid, action, code_time, code_entry):
 
-		for guid in self.hackers[guid]:
+		if guid not in self.hackers.keys():
 			self.hackers[guid] = {"Name": self.players[guid]["Name"],
 							"IP": self.players[guid]["IP"],
-							"Actions": {}}
-		for action in self.hackers[guid]["Action"]:
-			self.hackers[guid]["Action"][action] = [code_time, code_entry]
+							"Action": {}}
+		if action not in self.hackers[guid]["Action"].keys():
+			self.hackers[guid]["Action"][action] = [[code_time, code_entry]]
 		else:
 			temp = self.hackers[guid]["Action"][action]
 			temp.append([code_time, code_entry])
 			self.hackers[guid]["Action"][action] = temp
 
 	def sync(self):
-		banlist = {"date": [], "guid": [], "ip": [], "code": [], "name": []}
-		kicklist = {"date": [], "guid": [], "ip": [], "code": [], "name": []}
+		if self.hackers != {}:
+			banlist = {"date": [], "guid": [], "ip": [], "code": [], "name": []}
+			kicklist = {"date": [], "guid": [], "ip": [], "code": [], "name": []}
 
-    		f_log = open((os.path.join(self.parent.parent.backuplog_dir, self.logname + "-spam.txt")), "a")
-		for guid in self.hackers:
-			name = self.hackers[guid]["Name"]
-			ip = self.hackers[guid]["IP"]
-			for action in self.hackers[guid]["Action"]:
-				f_log.write("")
-				f_log.write("Player Name = " + name)
-				f_log.write("Action = " + name)
-				data = self.hackers[guid]["Action"][action]
-				for x in range(len(data)):
-					f_log.write(str(data[x][0]) + ": " + str(name) + " " + str(ip) + " " + str(guid) + " - " + str(data[x][1]))
-				if action == "BAN":
-					banlist["date"].append(data[x][0])
-					banlist["guid"].append(guid)
-					banlist["ip"].append(ip)
-					banlist["code"].append(data[x][1])
-					banlist["name"].append(name)
-				elif action == "KICK":
-					kicklist["date"].append(data[x][0])
-					kicklist["guid"].append(guid)
-					kicklist["ip"].append(ip)
-					kicklist["code"].append(data[x][1])
-					kicklist["name"].append(name)
-				else:
-					pass
+	    		f_log = open((os.path.join(self.parent.parent.backuplog_dir, self.logname + "-spam.txt")), "a")
+			for guid in self.hackers:
+				name = self.hackers[guid]["Name"]
+				ip = self.hackers[guid]["IP"]
+				for action in self.hackers[guid]["Action"]:
+					f_log.write("\n")
+					f_log.write("Player Name = " + name + "\n")
+					f_log.write("\tAction = " + action + "\n")
+					data = self.hackers[guid]["Action"][action]
+					for x in range(len(data)):
+						f_log.write("\t\t" + str(data[x][0]) + ": " + str(name) + " " + str(ip) + " " + str(guid) + " - " + str(data[x][1]) + "\n")
+					if action == "BAN":
+						banlist["date"].append(data[x][0])
+						banlist["guid"].append(guid)
+						banlist["ip"].append(ip)
+						banlist["code"].append(data[x][1])
+						banlist["name"].append(name)
+					elif action == "KICK":
+						kicklist["date"].append(data[x][0])
+						kicklist["guid"].append(guid)
+						kicklist["ip"].append(ip)
+						kicklist["code"].append(data[x][1])
+						kicklist["name"].append(name)
+					else:
+						pass
 
-		f_log.close()
-		self.hackers = {}
-		#self.parent.parent.update_bans(self.logname, banlist, update=True)
-		#self.parent.parent.update_kicks(self.logname, banlist, update=True)
+			f_log.close()
+			self.hackers = {}
+			#self.parent.parent.update_bans(self.logname, banlist, update=True)
+			#self.parent.parent.update_kicks(self.logname, banlist, update=True)
