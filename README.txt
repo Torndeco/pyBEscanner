@@ -48,13 +48,13 @@ Directory Layout
 		also contains any bans/kicks/unknown logs]
 	
 
-Installlation
+Installation
 	Copy conf/servers-example.ini -> conf/servers.ini
 	Edit conf/servers.ini
 	Start pyBEscanner.py
 	
 
-	Requirements
+Requirements
 	Python 2.7
 	
 
@@ -66,16 +66,14 @@ Known Issues
 
 Notes:-  
 	* Havent written any rcon code written for python yet...
-	* So Temp workaround till i get around to creating rcon networking code...
+	* So Temp work-around till i get around to creating rcon networking code...
 		Using ziello2k https://github.com/ziellos2k/BattleNET 
 		Source file is included for the paranoid people out there...
 	* U can alter the settings & pyBEscanner filters, while the 
 		program is running. Just avoid typo mistakes :)
-	* http://www.pythonregex.com/  Nice website to test out your filter rules on
 	
 Important Notes with latest commits
 	* If u are using the latest commit version of pyBEscanner, 
 	  U will notice in battleye directory/pyBEscanner/temp/*.pickle files.
-		It is safe to remove these files, as have change over to a different format.
-			New format has file extentions .offset & .spam
-			Format change was done for tiny performance gains..
+		It is safe to remove these files, no-longer used
+			New format has file extentions are .offset & .spam
