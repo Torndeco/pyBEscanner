@@ -508,6 +508,7 @@ class Spam:
 		self.rules = {} # {Regrex rule:[[triggers][actions], [triggers2][actions2]]}
 
 		self.hackers = []
+		self.decoder = Decoder()
 
 	def add_data(self, entries_date, entries_guid, entries_ip, entries_code, entries_name):
 		# Loop through entries
