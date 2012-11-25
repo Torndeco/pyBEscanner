@@ -229,7 +229,7 @@ class Scanner:
 		if data["date"] != []:
 			f_log = open((os.path.join(self.backuplog_dir, x + "-" + action + ".txt")), "a")
 			for x in range(len(data["date"])):
-				f_log.write(str(data["date"][x]) + str(data["name"][x]) + "(" + str(data["ip"][x]) + ") " + str(data["guid"][x]) + " - " + str(data["code"][x]) + "\n")
+				f_log.write(str(data["date"][x]) + ": " + str(data["name"][x]) + ": (" + str(data["ip"][x]) + ") " + str(data["guid"][x]) + " - " + str(data["code"][x]) + "\n")
 			f_log.close()
 
 	def scan(self):
