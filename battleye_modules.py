@@ -29,6 +29,7 @@ class Scanner:
 
 		self.battleye_logs = {"addbackpackcargo": os.path.join(self.server_settings["BattlEye Directory"], "addbackpackcargo.log"),
 							"addmagazinecargo": os.path.join(self.server_settings["BattlEye Directory"], "addmagazinecargo.log"),
+							"addweaponcargo": os.path.join(self.server_settings["BattlEye Directory"], "addweaponcargo.log"),
 							"attachto": os.path.join(self.server_settings["BattlEye Directory"], "attachto.log"),
 							"createvehicle": os.path.join(self.server_settings["BattlEye Directory"], "createvehicle.log"),
 							"deletevehicle": os.path.join(self.server_settings["BattlEye Directory"], "deletevehicle.log"),
@@ -42,6 +43,7 @@ class Scanner:
 
 		self.temp_logs = {"addbackpackcargo": os.path.join(self.server_settings["Temp Directory"], "addbackpackcargo.log"),
 						"addmagazinecargo": os.path.join(self.server_settings["Temp Directory"], "addmagazinecargo.log"),
+						"addweaponcargo": os.path.join(self.server_settings["Temp Directory"], "addweaponcargo.log"),
 						"attachto": os.path.join(self.server_settings["Temp Directory"], "attachto.log"),
 						"createvehicle": os.path.join(self.server_settings["Temp Directory"], "createvehicle.log"),
 						"deletevehicle": os.path.join(self.server_settings["Temp Directory"], "deletevehicle.log"),
@@ -55,6 +57,7 @@ class Scanner:
 
 		self.backup_logs = {"addbackpackcargo": os.path.join(self.backuplog_dir, "addbackpackcargo.log"),
 						"addmagazinecargo": os.path.join(self.backuplog_dir, "addmagazinecargo.log"),
+						"addweaponcargo": os.path.join(self.backuplog_dir, "addweaponcargo.log"),
 						"attachto": os.path.join(self.backuplog_dir, "attachto.log"),
 						"createvehicle": os.path.join(self.backuplog_dir, "createvehicle.log"),
 						"deletevehicle": os.path.join(self.backuplog_dir, "deletevehicle.log"),
@@ -68,6 +71,7 @@ class Scanner:
 
 		self.banlist_filters = {"addbackpackcargo": os.path.join(self.server_settings["Filters Location"], "addbackpackcargo.banlist"),
 							"addmagazinecargo": os.path.join(self.server_settings["Filters Location"], "addmagazinecargo.banlist"),
+							"addweaponcargo": os.path.join(self.server_settings["Filters Location"], "addweaponcargo.banlist"),
 							"attachto": os.path.join(self.server_settings["Filters Location"], "attachto.banlist"),
 							"createvehicle": os.path.join(self.server_settings["Filters Location"], "createvehicle.banlist"),
 							"deletevehicle": os.path.join(self.server_settings["Filters Location"], "deletevehicle.banlist"),
@@ -81,6 +85,7 @@ class Scanner:
 
 		self.kicklist_filters = {"addbackpackcargo": os.path.join(self.server_settings["Filters Location"], "addbackpackcargo.kicklist"),
 							"addmagazinecargo": os.path.join(self.server_settings["Filters Location"], "addmagazinecargo.kicklist"),
+							"addweaponcargo": os.path.join(self.server_settings["Filters Location"], "addweaponcargo.kicklist"),
 							"attachto": os.path.join(self.server_settings["Filters Location"], "attachto.kicklist"),
 							"createvehicle": os.path.join(self.server_settings["Filters Location"], "createvehicle.kicklist"),
 							"deletevehicle": os.path.join(self.server_settings["Filters Location"], "deletevehicle.kicklist"),
@@ -94,6 +99,7 @@ class Scanner:
 
 		self.whitelist_filters = {"addbackpackcargo": os.path.join(self.server_settings["Filters Location"], "addbackpackcargo.whitelist"),
 							"addmagazinecargo": os.path.join(self.server_settings["Filters Location"], "addmagazinecargo.whitelist"),
+							"addweaponcargo": os.path.join(self.server_settings["Filters Location"], "addweaponcargo.whitelist"),
 							"attachto": os.path.join(self.server_settings["Filters Location"], "attachto.whitelist"),
 							"createvehicle": os.path.join(self.server_settings["Filters Location"], "createvehicle.whitelist"),
 							"deletevehicle": os.path.join(self.server_settings["Filters Location"], "deletevehicle.whitelist"),
@@ -107,6 +113,7 @@ class Scanner:
 
 		self.banlist_spam_filters = {"addbackpackcargo": os.path.join(self.server_settings["Filters Location"], "addbackpackcargo.spam-rules"),
 								"addmagazinecargo": os.path.join(self.server_settings["Filters Location"], "addmagazinecargo.spam-rules"),
+								"addweaponcargo": os.path.join(self.server_settings["Filters Location"], "addweaponcargo.spam-rules"),
 								"attachto": os.path.join(self.server_settings["Filters Location"], "attachto.spam-rules"),
 								"createvehicle": os.path.join(self.server_settings["Filters Location"], "createvehicle.spam-rules"),
 								"deletevehicle": os.path.join(self.server_settings["Filters Location"], "deletevehicle.spam-rules"),
@@ -235,7 +242,19 @@ class Scanner:
 			f_log.close()
 
 	def scan(self):
-		battleye_logs = ["addbackpackcargo", "addmagazinecargo", "attachto", "createvehicle", "deletevehicle", "mpeventhandler", "publicvariable", "remoteexec", "scripts", "setdamage", "setpos", "setvariable"]
+		battleye_logs = ["addbackpackcargo",
+						"addmagazinecargo",
+						"addweaponcargo",
+						"attachto",
+						"createvehicle",
+						"deletevehicle",
+						"mpeventhandler",
+						"publicvariable",
+						"remoteexec",
+						"scripts",
+						"setdamage",
+						"setpos",
+						"setvariable"]
 
 		self.log_scanner = Parser(self, time.time(), float(self.server_settings["OffSet"]))
 
