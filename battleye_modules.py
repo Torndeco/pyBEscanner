@@ -661,10 +661,7 @@ class Spam:
 						kicklist["ip"].append(ip)
 						kicklist["code"].append(data[x][1])
 						kicklist["name"].append(name)
-					else:
-						pass
-
 			f_log.close()
 			self.hackers = {}
-			#self.parent.parent.update_bans(self.logname, banlist, update=True)
-			#self.parent.parent.update_kicks(self.logname, banlist, update=True)
+			self.parent.parent.update_bans(self.logname, banlist, update=True)
+			self.parent.parent.update_kicks(self.logname, kicklist)

@@ -6,9 +6,9 @@ A simple python application with goal of scanning arma2 + battlelog files.
 This this not protect against people using a battleye bypass
 
 
-Features (assuming not bugged)
+Features:
 
-	* Multiple Servers ( No multi-threading support, it scans 1 at a time )
+	* Multiple Servers ( No multi-threading support, it scans 1 server at a time )
 	* Scans battlelogs
 	* Whitelist + Blanlist + Kicklist filters with regrex features
 		http://docs.python.org/2/library/re.html
@@ -24,7 +24,13 @@ Features (assuming not bugged)
 					   + kick for unknown code entries... 
 		Strict         - Ban for everything not in
 						whitelist filter
-
+	* Ability to detect multiple attempts i.e user spamming an logfile
+		i.e 
+			If u could ban a player than appears in setpos.log 
+			10 times in 5 seconds if u wanted to...
+		Or
+			U can also add in different triggers i.e different triggers for 
+			pipebombs / grenades etc...
 
 Directory Layout
 	<pyBEscanner install directory>pyBEscanner.py                 

@@ -31,7 +31,3 @@ Just alter the regrex slighty so it still catches what u want
 
 10 15 BAN .
 4 1 BAN ..
-
-
-
-Note:- Spam Filters are just logging atm, just be carefull
