@@ -35,7 +35,7 @@ class Main:
 		self.config = ConfigParser.ConfigParser()
 		self.config.read(self.conf_file)
 		if self.config.has_option("Default", "Version"):
-			if self.config.get("Default", "Version") != "5":
+			if self.config.get("Default", "Version") != "6":
 				print "-------------------------------------------------"
 				print "ERROR: Bad conf/servers.ini version"
 				print "-------------------------------------------------"
@@ -70,6 +70,7 @@ class Main:
 					["Scan Setpos", "setpos"],
 					["Scan Setvariable", "setvariable"],
 					["Scan Server Log", "server_log"],
+					["Scan Teamswitch", "teamswitch"],
 					["Spam Filters", "Spam Filters"],
 					["OffSet", "OffSet"],
 					["Ban Message", "Ban Message"],

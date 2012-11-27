@@ -39,7 +39,8 @@ class Scanner:
 							"scripts": os.path.join(self.server_settings["BattlEye Directory"], "scripts.log"),
 							"setdamage": os.path.join(self.server_settings["BattlEye Directory"], "setdamage.log"),
 							"setpos": os.path.join(self.server_settings["BattlEye Directory"], "setpos.log"),
-							"setvariable": os.path.join(self.server_settings["BattlEye Directory"], "setvariable.log")}
+							"setvariable": os.path.join(self.server_settings["BattlEye Directory"], "setvariable.log"),
+							"teamswitch": os.path.join(self.server_settings["BattlEye Directory"], "teamswitch.log")}
 
 		self.temp_logs = {"addbackpackcargo": os.path.join(self.server_settings["Temp Directory"], "addbackpackcargo.log"),
 						"addmagazinecargo": os.path.join(self.server_settings["Temp Directory"], "addmagazinecargo.log"),
@@ -53,7 +54,8 @@ class Scanner:
 						"scripts": os.path.join(self.server_settings["Temp Directory"], "scripts.log"),
 						"setdamage": os.path.join(self.server_settings["Temp Directory"], "setdamage.log"),
 						"setpos": os.path.join(self.server_settings["Temp Directory"], "setpos.log"),
-						"setvariable": os.path.join(self.server_settings["Temp Directory"], "setvariable.log")}
+						"setvariable": os.path.join(self.server_settings["Temp Directory"], "setvariable.log"),
+						"teamswitch": os.path.join(self.server_settings["Temp Directory"], "teamswitch.log")}
 
 		self.backup_logs = {"addbackpackcargo": os.path.join(self.backuplog_dir, "addbackpackcargo.log"),
 						"addmagazinecargo": os.path.join(self.backuplog_dir, "addmagazinecargo.log"),
@@ -67,7 +69,8 @@ class Scanner:
 						"scripts": os.path.join(self.backuplog_dir, "scripts.log"),
 						"setdamage": os.path.join(self.backuplog_dir, "setdamage.log"),
 						"setpos": os.path.join(self.backuplog_dir, "setpos.log"),
-						"setvariable": os.path.join(self.backuplog_dir, "setvariable.log")}
+						"setvariable": os.path.join(self.backuplog_dir, "setvariable.log"),
+						"teamswitch": os.path.join(self.backuplog_dir, "teamswitch.log")}
 
 		self.banlist_filters = {"addbackpackcargo": os.path.join(self.server_settings["Filters Location"], "addbackpackcargo.banlist"),
 							"addmagazinecargo": os.path.join(self.server_settings["Filters Location"], "addmagazinecargo.banlist"),
@@ -81,7 +84,8 @@ class Scanner:
 							"scripts": os.path.join(self.server_settings["Filters Location"], "scripts.banlist"),
 							"setdamage": os.path.join(self.server_settings["Filters Location"], "setdamage.banlist"),
 							"setpos": os.path.join(self.server_settings["Filters Location"], "setpos.banlist"),
-							"setvariable": os.path.join(self.server_settings["Filters Location"], "setvariable.banlist")}
+							"setvariable": os.path.join(self.server_settings["Filters Location"], "setvariable.banlist"),
+							"teamswitch": os.path.join(self.server_settings["Filters Location"], "teamswitch.banlist")}
 
 		self.kicklist_filters = {"addbackpackcargo": os.path.join(self.server_settings["Filters Location"], "addbackpackcargo.kicklist"),
 							"addmagazinecargo": os.path.join(self.server_settings["Filters Location"], "addmagazinecargo.kicklist"),
@@ -95,7 +99,8 @@ class Scanner:
 							"scripts": os.path.join(self.server_settings["Filters Location"], "scripts.kicklist"),
 							"setdamage": os.path.join(self.server_settings["Filters Location"], "setdamage.kicklist"),
 							"setpos": os.path.join(self.server_settings["Filters Location"], "setpos.kicklist"),
-							"setvariable": os.path.join(self.server_settings["Filters Location"], "setvariable.kicklist")}
+							"setvariable": os.path.join(self.server_settings["Filters Location"], "setvariable.kicklist"),
+							"teamswitch": os.path.join(self.server_settings["Filters Location"], "teamswitch.kicklist")}
 
 		self.whitelist_filters = {"addbackpackcargo": os.path.join(self.server_settings["Filters Location"], "addbackpackcargo.whitelist"),
 							"addmagazinecargo": os.path.join(self.server_settings["Filters Location"], "addmagazinecargo.whitelist"),
@@ -109,9 +114,10 @@ class Scanner:
 							"scripts": os.path.join(self.server_settings["Filters Location"], "scripts.whitelist"),
 							"setdamage": os.path.join(self.server_settings["Filters Location"], "setdamage.whitelist"),
 							"setpos": os.path.join(self.server_settings["Filters Location"], "setpos.whitelist"),
-							"setvariable": os.path.join(self.server_settings["Filters Location"], "setvariable.whitelist")}
+							"setvariable": os.path.join(self.server_settings["Filters Location"], "setvariable.whitelist"),
+							"teamswitch": os.path.join(self.server_settings["Filters Location"], "teamswitch.whitelist")}
 
-		self.banlist_spam_filters = {"addbackpackcargo": os.path.join(self.server_settings["Filters Location"], "addbackpackcargo.spam-rules"),
+		self.spamlist_filters = {"addbackpackcargo": os.path.join(self.server_settings["Filters Location"], "addbackpackcargo.spam-rules"),
 								"addmagazinecargo": os.path.join(self.server_settings["Filters Location"], "addmagazinecargo.spam-rules"),
 								"addweaponcargo": os.path.join(self.server_settings["Filters Location"], "addweaponcargo.spam-rules"),
 								"attachto": os.path.join(self.server_settings["Filters Location"], "attachto.spam-rules"),
@@ -123,7 +129,8 @@ class Scanner:
 								"scripts": os.path.join(self.server_settings["Filters Location"], "scripts.spam-rules"),
 								"setdamage": os.path.join(self.server_settings["Filters Location"], "setdamage.spam-rules"),
 								"setpos": os.path.join(self.server_settings["Filters Location"], "setpos.spam-rules"),
-								"setvariable": os.path.join(self.server_settings["Filters Location"], "setvariable.spam-rules")}
+								"setvariable": os.path.join(self.server_settings["Filters Location"], "setvariable.spam-rules"),
+								"teamswitch": os.path.join(self.server_settings["Filters Location"], "teamswitch.spam-rules")}
 
 		# Create Backup Folder if it doesnt exist
 		if not os.path.exists(self.backuplog_dir):
@@ -147,7 +154,7 @@ class Scanner:
 								self.whitelist_filters[x],
 								self.banlist_filters[x],
 								self.kicklist_filters[x],
-								self.banlist_spam_filters[x],
+								self.spamlist_filters[x],
 								x)
 		else:
 			self.log_scanner.scan_log(self.temp_logs[x],
@@ -254,7 +261,8 @@ class Scanner:
 						"scripts",
 						"setdamage",
 						"setpos",
-						"setvariable"]
+						"setvariable",
+						"teamswitch"]
 
 		self.log_scanner = Parser(self, time.time(), float(self.server_settings["OffSet"]))
 
