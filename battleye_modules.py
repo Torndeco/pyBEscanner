@@ -177,7 +177,7 @@ class Scanner:
 				# Logging
 				self.log(x, "bans", self.log_scanner.banlist)
 				self.log(x, "kicks", self.log_scanner.kicklist)
-				self.log(x, "unknown", self.log_scanner.unknownlist)
+				self.log(x, "bans", self.log_scanner.unknownlist)
 
 			elif self.server_settings[x] == "standard+kick":
 				# Standard Scanning + Kicking
@@ -189,7 +189,7 @@ class Scanner:
 				# Logging
 				self.log(x, "bans", self.log_scanner.banlist)
 				self.log(x, "kicks", self.log_scanner.kicklist)
-				self.log(x, "unknown", self.log_scanner.unknownlist)
+				self.log(x, "kicks", self.log_scanner.unknownlist)
 
 			elif self.server_settings[x] == "standard":
 				# Standard Scanning
