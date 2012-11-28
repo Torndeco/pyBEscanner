@@ -120,12 +120,16 @@ class Main:
 			x = x + 1
 
 	def start(self):
+		old_config_timestamp = None
 		while True:
-			print
-			print "Reloading Config"
-			self.loadconfig()
-			logging.basicConfig(filename=self.debug_file, level=self.debug_level)
-
+			new_config_timestamp = os.path.getmtime(self.conf_file)
+			if old_config_timestamp != new_config_timestamp:
+				print "---------------------------------------------------------"
+				print "       Loading Config File"
+				print "---------------------------------------------------------"
+				self.loadconfig()
+				logging.basicConfig(filename=self.debug_file, level=self.debug_level)
+				old_config_timestamp = new_config_timestamp
 			x = 0
 			while x < len(self.server_settings):
 				print
