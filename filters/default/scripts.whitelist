@@ -1,3 +1,6 @@
+#2 "until \{!\(IsNull \(findDisplay 46\)\)\};\(findDisplay 46\) displayAddEventHandler \["keyDown", "_this call fnc_keyDown"\]; diag_log fo"
+#23 "ong! disconnect and try again!", "BLACK OUT",1\];player enableSimulation false;\};\};dayz_losChance = \{private\["_agent","_max"
+#26 "until \{!\(IsNull \(findDisplay 46\)\)\};\(findDisplay 46\) displayAddEventHandler \["keyDown", "_this call fnc_keyDown"\]; diag_log fo"
 #34 "dayz_logDamage = \[name _unit, name _source, _damage\];
 #34 "dayz_logDamage = \[name _unit, name _source, _damage\];publicVariableServer "dayz_logDamage";\};if \(_unit == pl"
 #35 "else \{publicVariable "dayzUpdateVehicle";\};_unit removeAllEventHandlers "HandleDamage";_unit removeAllEventHandlers "Killed"
