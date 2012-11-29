@@ -561,6 +561,7 @@ class Spam:
 			self.logger.debug(str(self.players[guid]))
 			player_logged_rules = self.players[guid]["Rules"].keys()
 			for rule in player_logged_rules: # Loop Logged Rules Detection
+				print str(rule)
 				if rule not in self.rules.keys(): # Check if old rule logged
 					del self.players[guid]["Rules"][rule] # Remove Old Rule
 				else:
@@ -574,8 +575,10 @@ class Spam:
 						max_time =  int(self.rules[rule][1])
 						action = self.rules[rule][2]
 						if max_count < len(data):
+							print "Checking"
 							if (data[x+max_count][0] - data[x][0]) <= self.rules[rule][0]:
-								self.addHacker(guid, action, code_time, code_entry)
+								print "Adding hacker"
+								self.addHacker(guid, action, time.strftime("%d.%m.%Y %H:%M:%S", time.localtime(code_time)), code_entry)
 						if scan_time - code_time > max_time:
 							self.players[guid]["Rules"][rule].pop(0)   # Remove old entry
 						else:
@@ -613,11 +616,13 @@ class Spam:
 			with open(self.spam_rules_file) as f:
 				for line in f:
 					# data = [0-max_count, 1-time elapsed, 2-action, 3-regrex rule]
-					data = re.split(" ", line, 4)
+					data = re.split(" ", line.strip(), 4)
 					self.rules[data[3]] = [float(data[0]), data[1], data[2]]
 		else:
 			open(self.spam_rules_file, 'w').close()
 			self.rules = {}
+		print str(self.rules.keys())
+		print ">>>>>>>>>>>>>>>>>>>>>>>>>>"
 
 	def save(self):
 		# Update players data
