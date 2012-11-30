@@ -1,9 +1,11 @@
 "dayz_logDamage" = \[".*",".*",.*\]
 #0 "player.*" = <NULL-object>
+#6 "remExField" = \[,<NULL-object>,"say",\["z_spotted_[0-9]",40\]\]
+#6 "remExField" = \[,<NULL-object>,"say",\["z_spotted_[0-9][0-9]",40\]\]
 #7 "dayzDeath" = \[".*",0,<NULL-object>,".*",".*"\]
 Value Restriction #21 "remExField" = \[<NULL-object>,<NULL-object>,"playmove","ZombieFeed[0-9]"\]
-Value Restriction #21 "remExField" = \[<NULL-object>,<NULL-object>,"playmove","ZombieStandingAttack[0-9]"\]
-Value Restriction #21 "remExField" = \[<NULL-object>,<NULL-object>,"playmove","ZombieStandingAttack[0-9][0-9]"\]
+Value Restriction #(?:6|21) "remExField" = \[<NULL-object>,<NULL-object>,"playmove","ZombieStandingAttack[0-9]"\]
+Value Restriction #(?:6|21) "remExField" = \[<NULL-object>,<NULL-object>,"playmove","ZombieStandingAttack[0-9][0-9]"\]
 Value Restriction #(?:10|21) "remExField" = \[<NULL-object>,<NULL-object>,"switchmove",""\]
 Value Restriction #(?:10|21) "remExField" = \[<NULL-object>,<NULL-object>,"switchmove","aidlpknlmstpsnonwnondnon_player_idlesteady[0-9][0-9]"\]
 Value Restriction #(?:10|21) "remExField" = \[<NULL-object>,<NULL-object>,"switchmove","aidlpknlmstpsraswpstdnon_player_idlesteady[0-9][0-9]"\]

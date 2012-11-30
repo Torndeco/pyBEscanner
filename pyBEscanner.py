@@ -69,7 +69,6 @@ class Main:
 					["Scan Setdamage", "setdamage"],
 					["Scan Setpos", "setpos"],
 					["Scan Setvariable", "setvariable"],
-					["Scan Server Log", "server_log"],
 					["Scan Teamswitch", "teamswitch"],
 					["Spam Filters", "Spam Filters"],
 					["OffSet", "OffSet"],
@@ -103,8 +102,6 @@ class Main:
 			temp["ServerPort"] = self.config.get(self.server_settings[x], "ServerPort")
 			temp["RconPassword"] = self.config.get(self.server_settings[x], "RconPassword")
 			temp["BattlEye Directory"] = self.config.get(self.server_settings[x], "BattlEye Directory")
-			temp["Server Console Log"] = self.config.get(self.server_settings[x], "Server Console Log")
-			temp["Server RPT Log"] = self.config.get(self.server_settings[x], "Server RPT Log")
 			temp["Temp Directory"] = os.path.join(temp["BattlEye Directory"], "pyBEscanner", "Temp")
 
 			for y in range(len(options)):
