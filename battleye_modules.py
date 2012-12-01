@@ -567,16 +567,19 @@ class Spam:
 					#[[Timestamp][Code]] = self.players[entries_guid[x]][Rules][filter]
 					data = self.players[guid]["Rules"][rule] # Current logged rule data = [[Timestamp, Code], [T2,C2]]
 					x = 0
+					ignore_count = 0
 					while x < len(data):
-						code_time = data[x][0] # Timestamp
-						code_entry = data[x][1]
 						max_count = int(self.rules[rule][0])
 						max_time =  int(self.rules[rule][1])
 						action = self.rules[rule][2]
+						if ignore_count != 0:
+							ignore_count = ignore_count - 1
 						if max_count < len(data):
-							if (data[x+max_count][0] - data[x][0]) <= self.rules[rule][0]:
-								self.addHacker(guid, action, time.strftime("%d.%m.%Y %H:%M:%S", time.localtime(code_time)), code_entry)
-						if scan_time - code_time > max_time:
+							if (data[x + max_count][0] - data[x][0]) <= self.rules[rule][0]:
+								for y in range((x + ignore_count), (x + max_count + 1)):
+									self.addHacker(guid,action, time.strftime("%d.%m.%Y %H:%M:%S", time.localtime(data[y][0])), data[y][1])
+								ignore_count = max_count				
+						if scan_time - data[x][0] > max_time:
 							self.players[guid]["Rules"][rule].pop(0)   # Remove old entry
 						else:
 							x = x + 1
