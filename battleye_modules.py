@@ -20,7 +20,8 @@ class Scanner:
 		self.bans = Bans(os.path.join(self.server_settings["BattlEye Directory"], "bans.txt"))
 		self.rcon = rcon_modules.Rcon(self.server_settings["ServerIP"], self.server_settings["ServerPort"], self.server_settings["RconPassword"])
 
-		self.ban_list = []
+		self.ban_guid_list = []
+		self.ban_ip_list = []
 		self.ban_reason = []
 		self.kick_list = []
 		self.kick_reason = []
@@ -35,8 +36,10 @@ class Scanner:
 							"deletevehicle": os.path.join(self.server_settings["BattlEye Directory"], "deletevehicle.log"),
 							"mpeventhandler": os.path.join(self.server_settings["BattlEye Directory"], "mpeventhandler.log"),
 							"publicvariable": os.path.join(self.server_settings["BattlEye Directory"], "publicvariable.log"),
+							"remotecontrol": os.path.join(self.server_settings["BattlEye Directory"], "remotecontrol.log"),
 							"remoteexec": os.path.join(self.server_settings["BattlEye Directory"], "remoteexec.log"),
 							"scripts": os.path.join(self.server_settings["BattlEye Directory"], "scripts.log"),
+							"selectplayer": os.path.join(self.server_settings["BattlEye Directory"], "selectplayer.log"),
 							"setdamage": os.path.join(self.server_settings["BattlEye Directory"], "setdamage.log"),
 							"setpos": os.path.join(self.server_settings["BattlEye Directory"], "setpos.log"),
 							"setvariable": os.path.join(self.server_settings["BattlEye Directory"], "setvariable.log"),
@@ -50,8 +53,10 @@ class Scanner:
 						"deletevehicle": os.path.join(self.server_settings["Temp Directory"], "deletevehicle.log"),
 						"mpeventhandler": os.path.join(self.server_settings["Temp Directory"], "mpeventhandler.log"),
 						"publicvariable": os.path.join(self.server_settings["Temp Directory"], "publicvariable.log"),
+						"remotecontrol": os.path.join(self.server_settings["Temp Directory"], "remotecontrol.log"),
 						"remoteexec": os.path.join(self.server_settings["Temp Directory"], "remoteexec.log"),
 						"scripts": os.path.join(self.server_settings["Temp Directory"], "scripts.log"),
+						"selectplayer": os.path.join(self.server_settings["Temp Directory"], "selectplayer.log"),
 						"setdamage": os.path.join(self.server_settings["Temp Directory"], "setdamage.log"),
 						"setpos": os.path.join(self.server_settings["Temp Directory"], "setpos.log"),
 						"setvariable": os.path.join(self.server_settings["Temp Directory"], "setvariable.log"),
@@ -65,8 +70,10 @@ class Scanner:
 						"deletevehicle": os.path.join(self.backuplog_dir, "deletevehicle.log"),
 						"mpeventhandler": os.path.join(self.backuplog_dir, "mpeventhandler.log"),
 						"publicvariable": os.path.join(self.backuplog_dir, "publicvariable.log"),
+						"remotecontrol": os.path.join(self.backuplog_dir, "remotecontrol.log"),
 						"remoteexec": os.path.join(self.backuplog_dir, "remoteexec.log"),
 						"scripts": os.path.join(self.backuplog_dir, "scripts.log"),
+						"selectplayer": os.path.join(self.backuplog_dir, "selectplayer.log"),
 						"setdamage": os.path.join(self.backuplog_dir, "setdamage.log"),
 						"setpos": os.path.join(self.backuplog_dir, "setpos.log"),
 						"setvariable": os.path.join(self.backuplog_dir, "setvariable.log"),
@@ -80,8 +87,10 @@ class Scanner:
 							"deletevehicle": os.path.join(self.server_settings["Filters Location"], "deletevehicle.banlist"),
 							"mpeventhandler": os.path.join(self.server_settings["Filters Location"], "mpeventhandler.banlist"),
 							"publicvariable": os.path.join(self.server_settings["Filters Location"], "publicvariable.banlist"),
+							"remotecontrol": os.path.join(self.server_settings["Filters Location"], "remotecontrol.banlist"),
 							"remoteexec": os.path.join(self.server_settings["Filters Location"], "remoteexec.banlist"),
 							"scripts": os.path.join(self.server_settings["Filters Location"], "scripts.banlist"),
+							"selectplayer": os.path.join(self.server_settings["Filters Location"], "selectplayer.banlist"),
 							"setdamage": os.path.join(self.server_settings["Filters Location"], "setdamage.banlist"),
 							"setpos": os.path.join(self.server_settings["Filters Location"], "setpos.banlist"),
 							"setvariable": os.path.join(self.server_settings["Filters Location"], "setvariable.banlist"),
@@ -95,8 +104,10 @@ class Scanner:
 							"deletevehicle": os.path.join(self.server_settings["Filters Location"], "deletevehicle.kicklist"),
 							"mpeventhandler": os.path.join(self.server_settings["Filters Location"], "mpeventhandler.kicklist"),
 							"publicvariable": os.path.join(self.server_settings["Filters Location"], "publicvariable.kicklist"),
+							"remotecontrol": os.path.join(self.server_settings["Filters Location"], "remotecontrol.kicklist"),
 							"remoteexec": os.path.join(self.server_settings["Filters Location"], "remoteexec.kicklist"),
 							"scripts": os.path.join(self.server_settings["Filters Location"], "scripts.kicklist"),
+							"selectplayer": os.path.join(self.server_settings["Filters Location"], "selectplayer.kicklist"),
 							"setdamage": os.path.join(self.server_settings["Filters Location"], "setdamage.kicklist"),
 							"setpos": os.path.join(self.server_settings["Filters Location"], "setpos.kicklist"),
 							"setvariable": os.path.join(self.server_settings["Filters Location"], "setvariable.kicklist"),
@@ -110,8 +121,10 @@ class Scanner:
 							"deletevehicle": os.path.join(self.server_settings["Filters Location"], "deletevehicle.whitelist"),
 							"mpeventhandler": os.path.join(self.server_settings["Filters Location"], "mpeventhandler.whitelist"),
 							"publicvariable": os.path.join(self.server_settings["Filters Location"], "publicvariable.whitelist"),
+							"remotecontrol": os.path.join(self.server_settings["Filters Location"], "remotecontrol.whitelist"),
 							"remoteexec": os.path.join(self.server_settings["Filters Location"], "remoteexec.whitelist"),
 							"scripts": os.path.join(self.server_settings["Filters Location"], "scripts.whitelist"),
+							"selectplayer": os.path.join(self.server_settings["Filters Location"], "selectplayer.whitelist"),
 							"setdamage": os.path.join(self.server_settings["Filters Location"], "setdamage.whitelist"),
 							"setpos": os.path.join(self.server_settings["Filters Location"], "setpos.whitelist"),
 							"setvariable": os.path.join(self.server_settings["Filters Location"], "setvariable.whitelist"),
@@ -125,8 +138,10 @@ class Scanner:
 								"deletevehicle": os.path.join(self.server_settings["Filters Location"], "deletevehicle.spam-rules"),
 								"mpeventhandler": os.path.join(self.server_settings["Filters Location"], "mpeventhandler.spam-rules"),
 								"publicvariable": os.path.join(self.server_settings["Filters Location"], "publicvariable.spam-rules"),
+								"remotecontrol": os.path.join(self.server_settings["Filters Location"], "remotecontrol.spam-rules"),
 								"remoteexec": os.path.join(self.server_settings["Filters Location"], "remoteexec.spam-rules"),
 								"scripts": os.path.join(self.server_settings["Filters Location"], "scripts.spam-rules"),
+								"selectplayer": os.path.join(self.server_settings["Filters Location"], "selectplayer.spam-rules"),
 								"setdamage": os.path.join(self.server_settings["Filters Location"], "setdamage.spam-rules"),
 								"setpos": os.path.join(self.server_settings["Filters Location"], "setpos.spam-rules"),
 								"setvariable": os.path.join(self.server_settings["Filters Location"], "setvariable.spam-rules"),
@@ -216,20 +231,25 @@ class Scanner:
 	def update_bans(self, log_file, data, time="-1", update=False):
 
 		for x in range(len(data["guid"])):
-			if self.ban_list.count(data["guid"][x]) == 0:
-				self.ban_list.append(data["guid"][x])
+			if self.ban_guid_list.count(data["guid"][x]) == 0:
+				self.ban_guid_list.append(data["guid"][x])
+				self.ban_ip_list.append(data["ip"][x])
 				ban_message = self.kick_ban_msg(self.server_settings["Ban Message"], str(data["name"][x]), str(self.server_settings["ServerName"]), log_file, str(data["date"][x]))
 				self.ban_reason.append(ban_message)
 				self.logger.info("Banning Player " + str(data["name"][x]))
 				print ("Banning Player " + str(data["name"][x]))
 
+		
+			
 		if update is True:
-			if self.ban_list != []:
+			if self.ban_guid_list != []:
 				self.bans.openfile()
-				for x in range(len(self.ban_list)):
-					self.bans.addban(self.ban_list[x], time, self.ban_reason[x])
+				for x in range(len(self.ban_guid_list)):
+					self.bans.addban(self.ban_guid_list[x], time, self.ban_reason[x])
+					if self.server_settings["Ban IP"] == "on":
+						self.bans.addban(self.ban_ip_list[x], time, self.ban_reason[x])
 				self.bans.closefile()
-				self.ban_list = []
+				self.ban_guid_list = []
 				self.ban_reason = []
 
 	def update_kicks(self, x, data):
@@ -257,7 +277,9 @@ class Scanner:
 						"deletevehicle",
 						"mpeventhandler",
 						"publicvariable",
+						"remotecontrol",
 						"remoteexec",
+						"selectplayer",
 						"scripts",
 						"setdamage",
 						"setpos",
