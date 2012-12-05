@@ -3,7 +3,7 @@ Important info regarding changes
 
 Version 8
 	
-	Altered array format in temp files slighty...
+	Altered array format in (offset & spam) temp files slighty...
 	U will need to delete your temp folder(s) for each server
 		Default location is Battleye/pyBEscanner/Temp
 
