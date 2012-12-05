@@ -1,0 +1,18 @@
+Important info regarding changes
+
+
+Version 8
+	
+	Altered array format in temp files slighty...
+	U will need to delete your temp folder(s) for each server
+		Default location is Battleye/pyBEscanner/Temp
+
+Version 7
+	
+	Added config options to servers.ini
+	Look @ servers-example.ini for more info
+		Scan Remotecontrol = standard
+		Scan Selectplayer = standard
+		BAN IP = on
+
+
