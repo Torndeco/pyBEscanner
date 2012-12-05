@@ -601,9 +601,10 @@ class Spam:
 								for y in range((x + ignore_count), (x + max_count + 1)):
 									self.addHacker(guid,action, time.strftime("%d.%m.%Y %H:%M:%S", time.localtime(data[y][0])), data[y][1])
 								ignore_count = max_count
-						if (scan_time - data[x][0]) > max_time: #TODO: Double check this check is working correctly !!!
+						if (scan_time - data[x][0]) > max_time:
 							self.players[guid]["Rules"][rule].pop(0)   # Remove old entry
-						x = x + 1
+						else:
+							x = x + 1
 					if self.players[guid]["Rules"][rule] == []:
 						del self.players[guid]["Rules"][rule]  # Remove Rule if no-more logged entries present
 			if self.players[guid]["Rules"] == {}:
