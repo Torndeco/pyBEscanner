@@ -35,7 +35,7 @@ class Main:
 		self.config = ConfigParser.ConfigParser()
 		self.config.read(self.conf_file)
 		if self.config.has_option("Default", "Version"):
-			if self.config.get("Default", "Version") != "6":
+			if self.config.get("Default", "Version") != "7":
 				print "-------------------------------------------------"
 				print "ERROR: Bad conf/servers.ini version"
 				print "-------------------------------------------------"
@@ -64,15 +64,18 @@ class Main:
 					["Scan Deletevehicle", "deletevehicle"],
 					["Scan Mpeventhandler", "mpeventhandler"],
 					["Scan Publicvariable", "publicvariable"],
+					["Scan Remotecontrol", "remotecontrol"],
 					["Scan Remoteexec", "remoteexec"],
 					["Scan Scripts", "scripts"],
 					["Scan Setdamage", "setdamage"],
+					["Scan Selectplayer", "selectplayer"],
 					["Scan Setpos", "setpos"],
 					["Scan Setvariable", "setvariable"],
 					["Scan Teamswitch", "teamswitch"],
 					["Spam Filters", "Spam Filters"],
 					["OffSet", "OffSet"],
 					["Ban Message", "Ban Message"],
+					["Ban IP", "Ban IP"],
 					["Filters Location", "Filters Location"]]
 
 		## Scan Settings -- Default
