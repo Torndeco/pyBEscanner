@@ -265,7 +265,7 @@ class Scanner:
 		if data["date"] != []:
 			f_log = open((os.path.join(self.backuplog_dir, x + "-" + action + ".txt")), "a")
 			for x in range(len(data["date"])):
-				f_log.write(str(data["date"][x]) + ": " + str(data["name"][x]) + ": (" + str(data["ip"][x]) + ") " + str(data["guid"][x]) + " - " + str(data["code"][x]) + "\n")
+				f_log.write(str(data["date"][x]) + ": " + str(data["name"][x]) + ": (" + str(data["ip"][x]) + ":" + str(data["port"][x]) + ") " + str(data["guid"][x]) + " - " + str(data["code"][x]) + "\n")
 			f_log.close()
 
 	def scan(self):
@@ -328,6 +328,7 @@ class Parser:
 		entries_date = []
 		entries_guid = []
 		entries_ip = []
+		entries_port = []
 		entries_code = []
 		entries_name = []
 
@@ -335,6 +336,7 @@ class Parser:
 		ban_entries_date = []
 		ban_entries_guid = []
 		ban_entries_ip = []
+		ban_entries_port = []
 		ban_entries_code = []
 		ban_entries_name = []
 
@@ -342,6 +344,7 @@ class Parser:
 		kick_entries_date = []
 		kick_entries_guid = []
 		kick_entries_ip = []
+		kick_entries_port = []
 		kick_entries_code = []
 		kick_entries_name = []
 
@@ -361,8 +364,9 @@ class Parser:
 				entries_date.append(offset_data[0])
 				entries_guid.append(offset_data[1])
 				entries_ip.append(offset_data[2])
-				entries_code.append(offset_data[3])
-				entries_name.append(offset_data[4])
+				entries_port.append(offset_data[3])
+				entries_code.append(offset_data[4])
+				entries_name.append(offset_data[5])
 			f_offset_data_file.close()
 			self.logger.debug('Entries Data = ' + str(offset_data))
 		else:
@@ -387,11 +391,12 @@ class Parser:
 							self.logger.debug('Updated line = ' + str(entries_code[x]))
 					else:
 						name = re.split("\s.\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}:\d{1,4}[0-9].\s", temp[1], 1)
-						ip = re.search("\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}:\d{1,4}[0-9]", line_stripped).group(0)
+						ip_port = re.split(':', re.search("\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}:\d{1,4}[0-9]", line_stripped).group(0))
 						code = re.split("\s-\s", name[1], 1)
 						entries_date.append(date.group()[:-2])
 						entries_guid.append(code[0])
-						entries_ip.append(ip)
+						entries_ip.append(ip_port[0])
+						entries_port.append(ip_port[1])
 						entries_code.append(code[1])
 						entries_name.append(name[0])
 			f_backup.close()
@@ -408,6 +413,7 @@ class Parser:
 				offset_data.append(entries_date.pop())
 				offset_data.append(entries_guid.pop())
 				offset_data.append(entries_ip.pop())
+				offset_data.append(entries_port.pop())
 				offset_data.append(entries_code.pop())
 				offset_data.append(entries_name.pop())
 				self.logger.debug("Saving  " + str(offset_data))
@@ -418,13 +424,10 @@ class Parser:
 		f_offset_data_file.close()
 
 		if (len(entries_code) > 0) is True:
-
-			# Spam Detection
-			# THIS IS NOT FUNCTIONAL YET IN ANYWAY WAY DONT UNCOMMENT!!!!!!!!!!
 			if spam_filters is not None:
 				self.spam_detection = Spam(self, spam_data_file, spam_filters, logname)
 				self.spam_detection.load()
-				self.spam_detection.add_data(entries_date, entries_guid, entries_ip, entries_code, entries_name)
+				self.spam_detection.add_data(entries_date, entries_guid, entries_ip, entries_port, entries_code, entries_name)
 				self.spam_detection.scan(x)
 				self.spam_detection.sync()
 				self.spam_detection.save()
@@ -440,6 +443,7 @@ class Parser:
 								entries_date.pop(x)
 								entries_guid.pop(x)
 								entries_ip.pop(x)
+								entries_port.pop(x)
 								entries_code.pop(x)
 								entries_name.pop(x)
 							else:
@@ -463,6 +467,7 @@ class Parser:
 									ban_entries_date.append(entries_date.pop(x))
 									ban_entries_guid.append(entries_guid.pop(x))
 									ban_entries_ip.append(entries_ip.pop(x))
+									ban_entries_port.append(entries_port.pop(x))
 									ban_entries_code.append(entries_code.pop(x))
 									ban_entries_name.append(entries_name.pop(x))
 								else:
@@ -483,6 +488,7 @@ class Parser:
 									kick_entries_date.append(entries_date.pop(x))
 									kick_entries_guid.append(entries_guid.pop(x))
 									kick_entries_ip.append(entries_ip.pop(x))
+									kick_entries_port.append(entries_port.pop(x))
 									kick_entries_code.append(entries_code.pop(x))
 									kick_entries_name.append(entries_name.pop(x))
 								else:
@@ -495,18 +501,21 @@ class Parser:
 		self.banlist = {"date": ban_entries_date,
 						"guid": ban_entries_guid,
 						"ip": ban_entries_ip,
+						"port": ban_entries_port,
 						"code": ban_entries_code,
 						"name": ban_entries_name}
 
 		self.kicklist = {"date": kick_entries_date,
 						"guid": kick_entries_guid,
 						"ip": kick_entries_ip,
+						"port": kick_entries_port,
 						"code": kick_entries_code,
 						"name": kick_entries_name}
 
 		self.unknownlist = {"date": entries_date,
 							"guid": entries_guid,
 							"ip": entries_ip,
+							"port": entries_port,
 							"code": entries_code,
 							"name": entries_name}
 
@@ -523,8 +532,8 @@ class Bans:
 	def closefile(self):
 		self.f_bans.close()
 
-	def addban(self, guid, time, reason):
-		self.f_bans.write(guid + " " + time + " " + reason + "\n")
+	def addban(self, guid_ip, time, reason):
+		self.f_bans.write(guid_ip + " " + time + " " + reason + "\n")
 
 	def removeban(self, guid, time, reason):
 		pass
@@ -561,19 +570,18 @@ class Spam:
 		self.hackers = {}
 		self.decoder = Decoder()
 
-	def add_data(self, entries_date, entries_guid, entries_ip, entries_code, entries_name):
+	def add_data(self, entries_date, entries_guid, entries_ip, entries_port, entries_code, entries_name):
 		# Loop through entries
 		for x in range(len(entries_date)):
 			# Loop through self.filters & check if entries_code[x] is a match
 			for rule in self.rules.keys():
 				if re.search(rule, entries_code[x]) or re.search(rule, self.decoder.decode_string(entries_code[x])):   # TODO: Find regrex filter alternative than hardcoded this in everywhere....
 					if entries_guid[x] not in self.players: # Check if Player GUID exists in data
-						self.players[entries_guid[x]] = {"Name": entries_name[x], "IP":entries_ip[x], "Rules":{}}  # Add GUID + Player Name
+						self.players[entries_guid[x]] = {"Name": entries_name[x], "IP":entries_ip[x], "PORT":entries_port[x], "Rules":{}}  # Add GUID + Player Name
 					time_stamp = time.mktime((time.strptime(entries_date[x], "%d.%m.%Y %H:%M:%S")))
 					data = self.players[entries_guid[x]]["Rules"].get(rule, [])
 					data.append([time_stamp, entries_code[x]])
 					self.players[entries_guid[x]]["Rules"][rule] = data
-					#self.players[entries_guid[x]]["Rules"][rule].append([time_stamp, entries_code[x]])
 
 
 	def scan(self, scan_time):
@@ -675,13 +683,14 @@ class Spam:
 			for guid in self.hackers:
 				name = self.hackers[guid]["Name"]
 				ip = self.hackers[guid]["IP"]
+				port = self.hackers[guid]["port"]
 				for action in self.hackers[guid]["Action"]:
 					f_log.write("\n")
 					f_log.write("Player Name = " + name + "\n")
 					f_log.write("\tAction = " + action + "\n")
 					data = self.hackers[guid]["Action"][action]
 					for x in range(len(data)):
-						f_log.write("\t\t" + str(data[x][0]) + ": " + str(name) + " " + str(ip) + " " + str(guid) + " - " + str(data[x][1]) + "\n")
+						f_log.write("\t\t" + str(data[x][0]) + ": " + str(name) + " " + str(ip) + ":" + str(port) + " " + str(guid) + " - " + str(data[x][1]) + "\n")
 					if action == "BAN":
 						banlist["date"].append(data[x][0])
 						banlist["guid"].append(guid)
