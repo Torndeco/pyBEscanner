@@ -4,6 +4,8 @@
 #26 "until \{!\(IsNull \(findDisplay 46\)\)\};\(findDisplay 46\) displayAddEventHandler \["keyDown", "_this call fnc_keyDown"\]; diag_log fo"
 #34 "dayz_logDamage = \[name _unit, name _source, _damage\];
 #34 "dayz_logDamage = \[name _unit, name _source, _damage\];publicVariableServer "dayz_logDamage";\};if \(_unit == pl"
+#34 "\[dayz_characterID,0,_body,_playerID,dayz_playerName\];publicVariableServer "dayzDeath";if \(isServer\) then \{_id = dayzDeath spa"
+#34 "yzUpdateVehicle call server_updateObject;\};\} else \{publicVariableServer "dayzUpdateVehicle";\};\};\};\};_total"
 #34 "TentStorage"\], 10\];\{dayzUpdateVehicle = \[_x,"all"\];publicVariableServer "dayzUpdateVehicle";\} foreach _objects;private\["_d"
 #35 "else \{publicVariable "dayzUpdateVehicle";\};_unit removeAllEventHandlers "HandleDamage";_unit removeAllEventHandlers "Killed"
 #38 " Checking if player %1 is admin", _uid\];_isAdmin=\(serverCommandAvailable"#kick"\);if \(\(_isAdmin\) && \(\(_uid\) in 
