@@ -543,7 +543,7 @@ class Decoder:
 
 
 	def __init__(self):
-		self.pattern = ["[\"][\s\+,\"][\"]]", "[\"][\s+,\"]*[\+,]+[\s+,\"]*[\"]]"]
+		self.pattern = ["\"[\s\+,\"]\"", "[\"][\s+,\"]*[\+,]+[\s+,\"]*[\"]]"]
 
 	def decode_string(self, txt):
 		temp_txt = txt
