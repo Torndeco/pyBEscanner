@@ -1,2 +1,3 @@
-#38 "\[this\] spawn BIS_Effects_AirDestruction"
-#53 "\[this\] spawn BIS_Effects_AirDestruction"
+spawn BIS_Effects_AirDestruction"
+spawn BIS_Effects_AirDestructionStage2"
+spawn BIS_Effects_Burn"

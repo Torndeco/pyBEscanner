@@ -211,3 +211,4 @@ compile
 \"IR_Strobe_Marker\"
 dwarden
 myvehobj
+\[,,";usecEpi setVehicleInit e;processInitCommands;clearVehicleInit usecEpi;"\]
