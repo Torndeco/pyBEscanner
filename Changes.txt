@@ -1,5 +1,11 @@
 Important info regarding changes
 
+Version 9
+	Fixed ip in Spam Detection...
+	Altered array format in (offset & spam) temp files slighty...
+	U will need to delete your temp folder(s) for each server
+		Default location is Battleye/pyBEscanner/Temp
+	
 
 Version 8
 	

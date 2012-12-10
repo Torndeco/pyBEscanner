@@ -543,7 +543,7 @@ class Decoder:
 
 
 	def __init__(self):
-		self.pattern = ["[\"][\s\+,\"][\"]]", "[\"][\s+,\"]*[\+,]+[\s+,\"]*[\"]]"]
+		self.pattern = ["\"[\s\+,\"]\"", "[\"][\s+,\"]*[\+,]+[\s+,\"]*[\"]]"]
 
 	def decode_string(self, txt):
 		temp_txt = txt
@@ -577,11 +577,11 @@ class Spam:
 			for rule in self.rules.keys():
 				if re.search(rule, entries_code[x]) or re.search(rule, self.decoder.decode_string(entries_code[x])):   # TODO: Find regrex filter alternative than hardcoded this in everywhere....
 					if entries_guid[x] not in self.players: # Check if Player GUID exists in data
-						self.players[entries_guid[x]] = {"Name": entries_name[x], "IP":entries_ip[x], "PORT":entries_port[x], "Rules":{}}  # Add GUID + Player Name
+						self.players[entries_guid[x]] = {"name": entries_name[x], "ip":entries_ip[x], "port":entries_port[x], "rules":{}}  # Add GUID + Player Name
 					time_stamp = time.mktime((time.strptime(entries_date[x], "%d.%m.%Y %H:%M:%S")))
-					data = self.players[entries_guid[x]]["Rules"].get(rule, [])
+					data = self.players[entries_guid[x]]["rules"].get(rule, [])
 					data.append([time_stamp, entries_code[x]])
-					self.players[entries_guid[x]]["Rules"][rule] = data
+					self.players[entries_guid[x]]["rules"][rule] = data
 
 
 	def scan(self, scan_time):
@@ -589,13 +589,13 @@ class Spam:
 		player_guid_list = self.players.keys()
 		for guid in player_guid_list: # Loop through PLAYERS
 			self.logger.debug(str(self.players[guid]))
-			player_logged_rules = self.players[guid]["Rules"].keys()
+			player_logged_rules = self.players[guid]["rules"].keys()
 			for rule in player_logged_rules: # Loop Logged Rules Detection
 				if rule not in self.rules.keys(): # Check if old rule logged
-					del self.players[guid]["Rules"][rule] # Remove Old Rule
+					del self.players[guid]["rules"][rule] # Remove Old Rule
 				else:
 					#[[Timestamp][Code]] = self.players[entries_guid[x]][Rules][filter]
-					data = self.players[guid]["Rules"][rule] # Current logged rule data = [[Timestamp, Code], [T2,C2]]
+					data = self.players[guid]["rules"][rule] # Current logged rule data = [[Timestamp, Code], [T2,C2]]
 					x = 0
 					ignore_count = 0
 					while x < len(data):
@@ -607,15 +607,15 @@ class Spam:
 						if (x + max_count) < len(data):
 							if (data[x + max_count][0] - data[x][0]) <= self.rules[rule][0]:
 								for y in range((x + ignore_count), (x + max_count + 1)):
-									self.addHacker(guid,action, time.strftime("%d.%m.%Y %H:%M:%S", time.localtime(data[y][0])), data[y][1])
+									self.addHacker(guid, action, time.strftime("%d.%m.%Y %H:%M:%S", time.localtime(data[y][0])), data[y][1])
 								ignore_count = max_count
 						if (scan_time - data[x][0]) > max_time:
-							self.players[guid]["Rules"][rule].pop(0)   # Remove old entry
+							self.players[guid]["rules"][rule].pop(0)   # Remove old entry
 						else:
 							x = x + 1
-					if self.players[guid]["Rules"][rule] == []:
-						del self.players[guid]["Rules"][rule]  # Remove Rule if no-more logged entries present
-			if self.players[guid]["Rules"] == {}:
+					if self.players[guid]["rules"][rule] == []:
+						del self.players[guid]["rules"][rule]  # Remove Rule if no-more logged entries present
+			if self.players[guid]["rules"] == {}:
 				del self.players[guid] # Remove Player Info if no-more logged entries present
 
 	def load(self):
@@ -664,43 +664,46 @@ class Spam:
 	def addHacker(self, guid, action, code_time, code_entry):
 
 		if guid not in self.hackers.keys():
-			self.hackers[guid] = {"Name": self.players[guid]["Name"],
-							"IP": self.players[guid]["IP"],
-							"Action": {}}
-		if action not in self.hackers[guid]["Action"].keys():
-			self.hackers[guid]["Action"][action] = [[code_time, code_entry]]
+			self.hackers[guid] = {"name": self.players[guid]["name"],
+							"ip": self.players[guid]["ip"],
+							"port": self.players[guid]["port"],
+							"action": {}}
+		if action not in self.hackers[guid]["action"].keys():
+			self.hackers[guid]["action"][action] = [[code_time, code_entry]]
 		else:
-			temp = self.hackers[guid]["Action"][action]
+			temp = self.hackers[guid]["action"][action]
 			temp.append([code_time, code_entry])
-			self.hackers[guid]["Action"][action] = temp
+			self.hackers[guid]["action"][action] = temp
 
 	def sync(self):
 		if self.hackers != {}:
-			banlist = {"date": [], "guid": [], "ip": [], "code": [], "name": []}
-			kicklist = {"date": [], "guid": [], "ip": [], "code": [], "name": []}
+			banlist = {"date": [], "guid": [], "ip": [], "port": [], "code": [], "name": []}
+			kicklist = {"date": [], "guid": [], "ip": [], "port": [], "code": [], "name": []}
 
 	    		f_log = open((os.path.join(self.parent.parent.backuplog_dir, self.logname + "-spam.txt")), "a")
 			for guid in self.hackers:
-				name = self.hackers[guid]["Name"]
-				ip = self.hackers[guid]["IP"]
+				name = self.hackers[guid]["name"]
+				ip = self.hackers[guid]["ip"]
 				port = self.hackers[guid]["port"]
-				for action in self.hackers[guid]["Action"]:
+				for action in self.hackers[guid]["action"]:
 					f_log.write("\n")
 					f_log.write("Player Name = " + name + "\n")
 					f_log.write("\tAction = " + action + "\n")
-					data = self.hackers[guid]["Action"][action]
+					data = self.hackers[guid]["action"][action]
 					for x in range(len(data)):
 						f_log.write("\t\t" + str(data[x][0]) + ": " + str(name) + " " + str(ip) + ":" + str(port) + " " + str(guid) + " - " + str(data[x][1]) + "\n")
 					if action == "BAN":
 						banlist["date"].append(data[x][0])
 						banlist["guid"].append(guid)
 						banlist["ip"].append(ip)
+						banlist["port"].append(port)
 						banlist["code"].append(data[x][1])
 						banlist["name"].append(name)
 					elif action == "KICK":
 						kicklist["date"].append(data[x][0])
 						kicklist["guid"].append(guid)
 						kicklist["ip"].append(ip)
+						kicklist["port"].append(port)
 						kicklist["code"].append(data[x][1])
 						kicklist["name"].append(name)
 			f_log.close()
