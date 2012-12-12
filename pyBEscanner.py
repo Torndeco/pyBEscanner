@@ -1,6 +1,20 @@
-#!/usr/bin/python
 # Filename: pyBEScanner.py
+#    This file is part of pyBEscanner.
+#
+#    pyBEscanner is free software: you can redistribute it and/or modify
+#    it under the terms of the GNU General Public License as published by
+#    the Free Software Foundation, either version 3 of the License, or
+#    (at your option) any later version.
+#
+#    pyBEscanner is distributed in the hope that it will be useful,
+#    but WITHOUT ANY WARRANTY; without even the implied warranty of
+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#    GNU General Public License for more details.
+#
+#    You should have received a copy of the GNU General Public License
+#    along with pyBEscanner.  If not, see <http://www.gnu.org/licenses/>.
 
+#!/usr/bin/python
 
 import os
 import ConfigParser
@@ -44,9 +58,13 @@ class Main:
 				exit()
 		else:
 			print "-------------------------------------------------"
-			print "ERROR: Bad conf/servers.ini version"
+			print "ERROR: No servers.ini version found"
 			print "-------------------------------------------------"
-			print "Check conf/servers-examples.ini for changes"
+			print "This either means a mistake in your servers.ini file,"
+			print "Look @ servers-example.ini"
+			print 
+			print "Or if u haven't updated in awhile"
+			print "Recommend u delete pyBEscanner temp folders & read Changes.txt for update changes"
 			exit()
 
 	def loadconfig(self):
