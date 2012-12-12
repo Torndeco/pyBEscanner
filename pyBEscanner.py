@@ -55,6 +55,7 @@ class Main:
 				print "-------------------------------------------------"
 				print "Read Changes.txt for more info"
 				print "\t Old version = " + self.config.get("Default", "Version")
+				print "Expected version = 9"
 				exit()
 		else:
 			print "-------------------------------------------------"
