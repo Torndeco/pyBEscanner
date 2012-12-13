@@ -34,6 +34,7 @@ class Scanner:
 		self.server_settings = server_settings
 
 		self.bans = Bans(os.path.join(self.server_settings["BattlEye Directory"], "bans.txt"))
+		self.kicks = Kicks(os.path.join(self.server_settings["BattlEye Directory"], "kicks.txt"))
 		self.rcon = rcon_modules.Rcon(self.server_settings["ServerIP"], self.server_settings["ServerPort"], self.server_settings["RconPassword"])
 
 		self.ban_guid_list = []
@@ -215,7 +216,7 @@ class Scanner:
 				print x + " (standard+kick)"
 				self.update_bans(x, self.log_scanner.banlist, update=True)
 				self.update_kicks(x, self.log_scanner.kicklist)
-				self.update_kicks(x, self.log_scanner.unknownlist)
+				self.update_kicks(x, self.log_scanner.unknownlist, update=True)
 
 				# Logging
 				self.log(x, "bans", self.log_scanner.banlist)
@@ -226,7 +227,7 @@ class Scanner:
 				# Standard Scanning
 				print x + " (standard)"
 				self.update_bans(x, self.log_scanner.banlist, update=True)
-				self.update_kicks(x, self.log_scanner.kicklist)
+				self.update_kicks(x, self.log_scanner.kicklist, update=True)
 
 				# Logging
 				self.log(x, "bans", self.log_scanner.banlist)
@@ -244,19 +245,17 @@ class Scanner:
 		tmp = string.replace(tmp, "DATE_TIME", date_time)
 		return tmp
 
-	def update_bans(self, log_file, data, time="-1", update=False):
+	def update_bans(self, logname, data, time="-1", update=False):
 
 		for x in range(len(data["guid"])):
 			if self.ban_guid_list.count(data["guid"][x]) == 0:
 				self.ban_guid_list.append(data["guid"][x])
 				self.ban_ip_list.append(data["ip"][x])
-				ban_message = self.kick_ban_msg(self.server_settings["Ban Message"], str(data["name"][x]), str(self.server_settings["ServerName"]), log_file, str(data["date"][x]))
+				ban_message = self.kick_ban_msg(self.server_settings["Ban Message"], str(data["name"][x]), str(self.server_settings["ServerName"]), logname, str(data["date"][x]))
 				self.ban_reason.append(ban_message)
 				self.logger.info("Banning Player " + str(data["name"][x]))
 				print ("Banning Player " + str(data["name"][x]))
 
-		
-			
 		if update is True:
 			if self.ban_guid_list != []:
 				self.bans.openfile()
@@ -268,11 +267,23 @@ class Scanner:
 				self.ban_guid_list = []
 				self.ban_reason = []
 
-	def update_kicks(self, x, data):
+	def update_kicks(self, logname, data, update=False):
 		for x in range(len(data["name"])):
 			if self.kick_list.count(data["name"]) == 0:
 				self.kick_list.append(data["name"])
-				self.kick_reason.append("pyBEscanner: " + str(data["name"][x]) + " detected unknown @ " + str(data["date"][x]))
+				kick_message = self.kick_ban_msg(self.server_settings["Kick Message"], str(data["name"][x]), str(self.server_settings["ServerName"]), logname, str(data["date"][x]))
+				self.kick_reason.append(kick_message)
+				self.logger.info("Kicking Player " + str(data["name"][x]))
+				print ("Kicking Player " + str(data["name"][x]))
+
+		if update is True:
+			if self.kick_list != []:
+				self.kicks.openfile()
+				for x in range(len(self.kick_list)):
+					self.kicks.addkick(self.kick_list[x], self.kick_reason[x])
+				self.kicks.closefile()
+				self.kick_list = []
+				self.kick_reason = []
 
 		for x in range(len(self.kick_list)):
 			self.rcon.kickplayer(self.kick_list[x])
@@ -554,6 +565,23 @@ class Bans:
 	def removeban(self, guid, time, reason):
 		pass
 
+class Kicks:
+
+	def __init__(self, logfile):
+		self.kicks_file = logfile
+
+	def openfile(self):
+		self.f_kicks = open(self.kicks_file, "a")
+
+	def closefile(self):
+		self.f_kicks.close()
+
+	def addkick(self, playername, reason):
+		self.f_kicks.write(playername + "\n")
+		#self.f_bans.write(guid_ip + " " + time + " " + reason + "\n")
+
+	def removekick(self, guid, time, reason):
+		pass
 
 class Decoder:
 
@@ -591,7 +619,7 @@ class Spam:
 		for x in range(len(entries_date)):
 			# Loop through self.filters & check if entries_code[x] is a match
 			for rule in self.rules.keys():
-				if re.search(rule, entries_code[x]) or re.search(rule, self.decoder.decode_string(entries_code[x])):   # TODO: Find regrex filter alternative than hardcoded this in everywhere....
+				if re.search(rule, entries_code[x]) or re.search(rule, self.decoder.decode_string(entries_code[x])):
 					if entries_guid[x] not in self.players: # Check if Player GUID exists in data
 						self.players[entries_guid[x]] = {"name": entries_name[x], "ip":entries_ip[x], "port":entries_port[x], "rules":{}}  # Add GUID + Player Name
 					time_stamp = time.mktime((time.strptime(entries_date[x], "%d.%m.%Y %H:%M:%S")))
@@ -725,4 +753,4 @@ class Spam:
 			f_log.close()
 			self.hackers = {}
 			self.parent.parent.update_bans(self.logname, banlist, update=True)
-			self.parent.parent.update_kicks(self.logname, kicklist)
+			self.parent.parent.update_kicks(self.logname, kicklist, update=True)

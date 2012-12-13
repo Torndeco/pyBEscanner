@@ -30,4 +30,4 @@ Now lets say u wanted 2 different rules but with the same regrex rule...
 Just alter the regrex slighty so it still catches what u want
 
 10 15 BAN .
-4 1 BAN ..
+4 1 KICK ..

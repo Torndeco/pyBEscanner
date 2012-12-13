@@ -55,7 +55,6 @@ class Main:
 				print "-------------------------------------------------"
 				print "Read Changes.txt for more info"
 				print "\t Old version = " + self.config.get("Default", "Version")
-				print "Expected version = 9"
 				exit()
 		else:
 			print "-------------------------------------------------"
@@ -63,7 +62,7 @@ class Main:
 			print "-------------------------------------------------"
 			print "This either means a mistake in your servers.ini file,"
 			print "Look @ servers-example.ini"
-			print 
+			print
 			print "Or if u haven't updated in awhile"
 			print "Recommend u delete pyBEscanner temp folders & read Changes.txt for update changes"
 			exit()
@@ -168,6 +167,19 @@ class Main:
 				server_scan = battleye_modules.Scanner(self.server_settings[x])
 				server_scan.scan()
 				x = x + 1
+
+			x = 0
+			logging.info("---------------------------------------------------------")
+			while x < len(self.server_settings):
+				logging.info("Checking for kicks.txt -- " + str(self.server_settings[x]["ServerName"]))
+				kicks_file = os.path.join(self.server_settings[x]["BattlEye Directory"], "kicks.txt")
+				if os.path.isfile(kicks_file) is True:
+					logging.info("Reloading Bans")
+					rcon = rcon_modules.Rcon(self.server_settings[x]["ServerIP"], self.server_settings[x]["ServerPort"], self.server_settings[x]["RconPassword"])
+					rcon.kickplayers(kicks_file)
+					os.remove(kicks_file)
+				x = x + 1
+			logging.info("---------------------------------------------------------")
 
 			x = 0
 			logging.info("---------------------------------------------------------")

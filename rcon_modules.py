@@ -1,4 +1,4 @@
-# battleye_modules.py
+# rcon_modules.py
 #    This file is part of pyBEscanner.
 #
 #    pyBEscanner is free software: you can redistribute it and/or modify
@@ -25,25 +25,13 @@ class Rcon:
 		# Initialize Variables
 		self.ip = ip
 		self.port = port
-
 		self.password = password
 
-	def connect(self):
-		pass
 
-	def kickplayer(self, playername):
-		#temp = os.path.join("rcon", ("rcon_kickplayers.exe"))
-		#subprocess.call([temp, playername])
-		pass
+	def kickplayers(self, kickfile):
+		temp = os.path.join("rcon", ("rcon_kick.exe"))
+		subprocess.call([temp, "--ip=" + self.ip, "--port=" + self.port, "--password=" + self.password, "--file=" + kickfile])
 
 	def reloadbans(self):
 		temp = os.path.join(os.getcwd(), "rcon", ("rcon_reloadbans.exe"))
-		print str(temp)
 		subprocess.call([temp, self.ip, str(self.port), self.password])
-
-
-	def reloadfilters(self):
-		pass
-
-	def disconnect(self):
-		pass
