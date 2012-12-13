@@ -49,12 +49,12 @@ class Main:
 		self.config = ConfigParser.ConfigParser()
 		self.config.read(self.conf_file)
 		if self.config.has_option("Default", "Version"):
-			if self.config.get("Default", "Version") != "9":
+			if self.config.get("Default", "Version") != "10":
 				print "-------------------------------------------------"
 				print "ERROR: Bad conf/servers.ini version"
 				print "-------------------------------------------------"
 				print "Read Changes.txt for more info"
-				print "\t Old version = " + self.config.get("Default", "Version")
+				print "Old version = " + self.config.get("Default", "Version")
 				exit()
 		else:
 			print "-------------------------------------------------"

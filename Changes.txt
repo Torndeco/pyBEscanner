@@ -1,20 +1,25 @@
 Important info regarding changes
 
+Version 10
+	Added Kick Support
+	U just need to add the "Kick Message = DATE_TIME: PLAYER_NAME on SERVER_NAME" option in servers.ini
+	Note:- Kick Message Setting = just a placeholder atm, and doesn't work yet
+
 Version 9
 	Fixed ip in Spam Detection...
 	Altered array format in (offset & spam) temp files slighty...
 	U will need to delete your temp folder(s) for each server
 		Default location is Battleye/pyBEscanner/Temp
-	
+
 
 Version 8
-	
+
 	Altered array format in (offset & spam) temp files slighty...
 	U will need to delete your temp folder(s) for each server
 		Default location is Battleye/pyBEscanner/Temp
 
 Version 7
-	
+
 	Added config options to servers.ini
 	Look @ servers-example.ini for more info
 		Scan Remotecontrol = standard

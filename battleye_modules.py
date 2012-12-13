@@ -280,7 +280,8 @@ class Scanner:
 			if self.kick_list != []:
 				self.kicks.openfile()
 				for x in range(len(self.kick_list)):
-					self.kicks.addkick(self.kick_list[x], self.kick_reason[x])
+					#self.kicks.addkick(self.kick_list[x], self.kick_reason[x])
+					self.kicks.addkick(self.kick_list[x], None)
 				self.kicks.closefile()
 				self.kick_list = []
 				self.kick_reason = []
