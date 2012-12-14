@@ -1,5 +1,9 @@
 Important info regarding changes
 
+Version 11
+	Removed Spam Option from servers.ini
+	Added Supported for selecting multiple filters
+
 Version 10
 	Added Kick Support
 	U just need to add the "Kick Message = DATE_TIME: PLAYER_NAME on SERVER_NAME" option in servers.ini

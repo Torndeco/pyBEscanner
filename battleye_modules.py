@@ -28,8 +28,8 @@ import rcon_modules
 class Scanner:
 	def __init__(self, server_settings):
 
-		self.logger = logging.getLogger("Battleye Scanner ")
-		self.logger.debug("Filters --> " + str(server_settings["Filters Location"]))
+		self.logger = logging.getLogger("Battleye Scanner")
+		self.logger.debug("Filters --> " + str(server_settings["Filters"]))
 
 		self.server_settings = server_settings
 
@@ -45,39 +45,6 @@ class Scanner:
 
 		self.backuplog_dir = os.path.join(self.server_settings["BattlEye Directory"], "Logs", datetime.datetime.now().strftime("BattlEye Logs - %Y-%m-%d"))
 
-		self.battleye_logs = {"addbackpackcargo": os.path.join(self.server_settings["BattlEye Directory"], "addbackpackcargo.log"),
-							"addmagazinecargo": os.path.join(self.server_settings["BattlEye Directory"], "addmagazinecargo.log"),
-							"addweaponcargo": os.path.join(self.server_settings["BattlEye Directory"], "addweaponcargo.log"),
-							"attachto": os.path.join(self.server_settings["BattlEye Directory"], "attachto.log"),
-							"createvehicle": os.path.join(self.server_settings["BattlEye Directory"], "createvehicle.log"),
-							"deletevehicle": os.path.join(self.server_settings["BattlEye Directory"], "deletevehicle.log"),
-							"mpeventhandler": os.path.join(self.server_settings["BattlEye Directory"], "mpeventhandler.log"),
-							"publicvariable": os.path.join(self.server_settings["BattlEye Directory"], "publicvariable.log"),
-							"remotecontrol": os.path.join(self.server_settings["BattlEye Directory"], "remotecontrol.log"),
-							"remoteexec": os.path.join(self.server_settings["BattlEye Directory"], "remoteexec.log"),
-							"scripts": os.path.join(self.server_settings["BattlEye Directory"], "scripts.log"),
-							"selectplayer": os.path.join(self.server_settings["BattlEye Directory"], "selectplayer.log"),
-							"setdamage": os.path.join(self.server_settings["BattlEye Directory"], "setdamage.log"),
-							"setpos": os.path.join(self.server_settings["BattlEye Directory"], "setpos.log"),
-							"setvariable": os.path.join(self.server_settings["BattlEye Directory"], "setvariable.log"),
-							"teamswitch": os.path.join(self.server_settings["BattlEye Directory"], "teamswitch.log")}
-
-		self.temp_logs = {"addbackpackcargo": os.path.join(self.server_settings["Temp Directory"], "addbackpackcargo.log"),
-						"addmagazinecargo": os.path.join(self.server_settings["Temp Directory"], "addmagazinecargo.log"),
-						"addweaponcargo": os.path.join(self.server_settings["Temp Directory"], "addweaponcargo.log"),
-						"attachto": os.path.join(self.server_settings["Temp Directory"], "attachto.log"),
-						"createvehicle": os.path.join(self.server_settings["Temp Directory"], "createvehicle.log"),
-						"deletevehicle": os.path.join(self.server_settings["Temp Directory"], "deletevehicle.log"),
-						"mpeventhandler": os.path.join(self.server_settings["Temp Directory"], "mpeventhandler.log"),
-						"publicvariable": os.path.join(self.server_settings["Temp Directory"], "publicvariable.log"),
-						"remotecontrol": os.path.join(self.server_settings["Temp Directory"], "remotecontrol.log"),
-						"remoteexec": os.path.join(self.server_settings["Temp Directory"], "remoteexec.log"),
-						"scripts": os.path.join(self.server_settings["Temp Directory"], "scripts.log"),
-						"selectplayer": os.path.join(self.server_settings["Temp Directory"], "selectplayer.log"),
-						"setdamage": os.path.join(self.server_settings["Temp Directory"], "setdamage.log"),
-						"setpos": os.path.join(self.server_settings["Temp Directory"], "setpos.log"),
-						"setvariable": os.path.join(self.server_settings["Temp Directory"], "setvariable.log"),
-						"teamswitch": os.path.join(self.server_settings["Temp Directory"], "teamswitch.log")}
 
 		self.backup_logs = {"addbackpackcargo": os.path.join(self.backuplog_dir, "addbackpackcargo.log"),
 						"addmagazinecargo": os.path.join(self.backuplog_dir, "addmagazinecargo.log"),
@@ -96,73 +63,6 @@ class Scanner:
 						"setvariable": os.path.join(self.backuplog_dir, "setvariable.log"),
 						"teamswitch": os.path.join(self.backuplog_dir, "teamswitch.log")}
 
-		self.banlist_filters = {"addbackpackcargo": os.path.join(self.server_settings["Filters Location"], "addbackpackcargo.banlist"),
-							"addmagazinecargo": os.path.join(self.server_settings["Filters Location"], "addmagazinecargo.banlist"),
-							"addweaponcargo": os.path.join(self.server_settings["Filters Location"], "addweaponcargo.banlist"),
-							"attachto": os.path.join(self.server_settings["Filters Location"], "attachto.banlist"),
-							"createvehicle": os.path.join(self.server_settings["Filters Location"], "createvehicle.banlist"),
-							"deletevehicle": os.path.join(self.server_settings["Filters Location"], "deletevehicle.banlist"),
-							"mpeventhandler": os.path.join(self.server_settings["Filters Location"], "mpeventhandler.banlist"),
-							"publicvariable": os.path.join(self.server_settings["Filters Location"], "publicvariable.banlist"),
-							"remotecontrol": os.path.join(self.server_settings["Filters Location"], "remotecontrol.banlist"),
-							"remoteexec": os.path.join(self.server_settings["Filters Location"], "remoteexec.banlist"),
-							"scripts": os.path.join(self.server_settings["Filters Location"], "scripts.banlist"),
-							"selectplayer": os.path.join(self.server_settings["Filters Location"], "selectplayer.banlist"),
-							"setdamage": os.path.join(self.server_settings["Filters Location"], "setdamage.banlist"),
-							"setpos": os.path.join(self.server_settings["Filters Location"], "setpos.banlist"),
-							"setvariable": os.path.join(self.server_settings["Filters Location"], "setvariable.banlist"),
-							"teamswitch": os.path.join(self.server_settings["Filters Location"], "teamswitch.banlist")}
-
-		self.kicklist_filters = {"addbackpackcargo": os.path.join(self.server_settings["Filters Location"], "addbackpackcargo.kicklist"),
-							"addmagazinecargo": os.path.join(self.server_settings["Filters Location"], "addmagazinecargo.kicklist"),
-							"addweaponcargo": os.path.join(self.server_settings["Filters Location"], "addweaponcargo.kicklist"),
-							"attachto": os.path.join(self.server_settings["Filters Location"], "attachto.kicklist"),
-							"createvehicle": os.path.join(self.server_settings["Filters Location"], "createvehicle.kicklist"),
-							"deletevehicle": os.path.join(self.server_settings["Filters Location"], "deletevehicle.kicklist"),
-							"mpeventhandler": os.path.join(self.server_settings["Filters Location"], "mpeventhandler.kicklist"),
-							"publicvariable": os.path.join(self.server_settings["Filters Location"], "publicvariable.kicklist"),
-							"remotecontrol": os.path.join(self.server_settings["Filters Location"], "remotecontrol.kicklist"),
-							"remoteexec": os.path.join(self.server_settings["Filters Location"], "remoteexec.kicklist"),
-							"scripts": os.path.join(self.server_settings["Filters Location"], "scripts.kicklist"),
-							"selectplayer": os.path.join(self.server_settings["Filters Location"], "selectplayer.kicklist"),
-							"setdamage": os.path.join(self.server_settings["Filters Location"], "setdamage.kicklist"),
-							"setpos": os.path.join(self.server_settings["Filters Location"], "setpos.kicklist"),
-							"setvariable": os.path.join(self.server_settings["Filters Location"], "setvariable.kicklist"),
-							"teamswitch": os.path.join(self.server_settings["Filters Location"], "teamswitch.kicklist")}
-
-		self.whitelist_filters = {"addbackpackcargo": os.path.join(self.server_settings["Filters Location"], "addbackpackcargo.whitelist"),
-							"addmagazinecargo": os.path.join(self.server_settings["Filters Location"], "addmagazinecargo.whitelist"),
-							"addweaponcargo": os.path.join(self.server_settings["Filters Location"], "addweaponcargo.whitelist"),
-							"attachto": os.path.join(self.server_settings["Filters Location"], "attachto.whitelist"),
-							"createvehicle": os.path.join(self.server_settings["Filters Location"], "createvehicle.whitelist"),
-							"deletevehicle": os.path.join(self.server_settings["Filters Location"], "deletevehicle.whitelist"),
-							"mpeventhandler": os.path.join(self.server_settings["Filters Location"], "mpeventhandler.whitelist"),
-							"publicvariable": os.path.join(self.server_settings["Filters Location"], "publicvariable.whitelist"),
-							"remotecontrol": os.path.join(self.server_settings["Filters Location"], "remotecontrol.whitelist"),
-							"remoteexec": os.path.join(self.server_settings["Filters Location"], "remoteexec.whitelist"),
-							"scripts": os.path.join(self.server_settings["Filters Location"], "scripts.whitelist"),
-							"selectplayer": os.path.join(self.server_settings["Filters Location"], "selectplayer.whitelist"),
-							"setdamage": os.path.join(self.server_settings["Filters Location"], "setdamage.whitelist"),
-							"setpos": os.path.join(self.server_settings["Filters Location"], "setpos.whitelist"),
-							"setvariable": os.path.join(self.server_settings["Filters Location"], "setvariable.whitelist"),
-							"teamswitch": os.path.join(self.server_settings["Filters Location"], "teamswitch.whitelist")}
-
-		self.spamlist_filters = {"addbackpackcargo": os.path.join(self.server_settings["Filters Location"], "addbackpackcargo.spam-rules"),
-								"addmagazinecargo": os.path.join(self.server_settings["Filters Location"], "addmagazinecargo.spam-rules"),
-								"addweaponcargo": os.path.join(self.server_settings["Filters Location"], "addweaponcargo.spam-rules"),
-								"attachto": os.path.join(self.server_settings["Filters Location"], "attachto.spam-rules"),
-								"createvehicle": os.path.join(self.server_settings["Filters Location"], "createvehicle.spam-rules"),
-								"deletevehicle": os.path.join(self.server_settings["Filters Location"], "deletevehicle.spam-rules"),
-								"mpeventhandler": os.path.join(self.server_settings["Filters Location"], "mpeventhandler.spam-rules"),
-								"publicvariable": os.path.join(self.server_settings["Filters Location"], "publicvariable.spam-rules"),
-								"remotecontrol": os.path.join(self.server_settings["Filters Location"], "remotecontrol.spam-rules"),
-								"remoteexec": os.path.join(self.server_settings["Filters Location"], "remoteexec.spam-rules"),
-								"scripts": os.path.join(self.server_settings["Filters Location"], "scripts.spam-rules"),
-								"selectplayer": os.path.join(self.server_settings["Filters Location"], "selectplayer.spam-rules"),
-								"setdamage": os.path.join(self.server_settings["Filters Location"], "setdamage.spam-rules"),
-								"setpos": os.path.join(self.server_settings["Filters Location"], "setpos.spam-rules"),
-								"setvariable": os.path.join(self.server_settings["Filters Location"], "setvariable.spam-rules"),
-								"teamswitch": os.path.join(self.server_settings["Filters Location"], "teamswitch.spam-rules")}
 
 		# Create Backup Folder if it doesnt exist
 		if not os.path.exists(self.backuplog_dir):
@@ -171,8 +71,9 @@ class Scanner:
 		if not os.path.exists(os.path.join(self.server_settings["BattlEye Directory"], "pyBEscanner")):
 			os.mkdir(os.path.join(self.server_settings["BattlEye Directory"], "pyBEscanner"))
 
-		if not os.path.exists(self.server_settings["Filters Location"]):
-			os.mkdir(self.server_settings["Filters Location"])
+		for filter_location in self.server_settings["Filters"]:
+			if not os.path.exists(filter_location):
+				os.mkdir(filter_location)
 
 		if not os.path.exists(self.server_settings["Temp Directory"]):
 			os.mkdir(self.server_settings["Temp Directory"])
@@ -180,22 +81,13 @@ class Scanner:
 
 	def scan_battleye_logs(self, x):
 
-		if self.server_settings["Spam Filters"] == "on":
-			self.log_scanner.scan_log(self.temp_logs[x],
-								self.backup_logs[x],
-								self.whitelist_filters[x],
-								self.banlist_filters[x],
-								self.kicklist_filters[x],
-								self.spamlist_filters[x],
-								x)
-		else:
-			self.log_scanner.scan_log(self.temp_logs[x],
-								self.backup_logs[x],
-								self.whitelist_filters[x],
-								self.banlist_filters[x],
-								self.kicklist_filters[x],
-								None,
-								x)
+		self.log_scanner.scan_log(self.server_settings["Battleye Temp Logs"][x],
+						self.backup_logs[x],
+						self.server_settings["Whitelist Filters"][x],
+						self.server_settings["Banlist Filters"][x],
+						self.server_settings["Kicklist Filters"][x],
+						self.server_settings["Spamlist Filters"][x],
+						x)
 		if self.server_settings[x] == "off":
 			print x + " (off)"
 		else:
@@ -297,34 +189,18 @@ class Scanner:
 			f_log.close()
 
 	def scan(self):
-		battleye_logs = ["addbackpackcargo",
-						"addmagazinecargo",
-						"addweaponcargo",
-						"attachto",
-						"createvehicle",
-						"deletevehicle",
-						"mpeventhandler",
-						"publicvariable",
-						"remotecontrol",
-						"remoteexec",
-						"selectplayer",
-						"scripts",
-						"setdamage",
-						"setpos",
-						"setvariable",
-						"teamswitch"]
 
 		self.log_scanner = Parser(self, time.time(), float(self.server_settings["OffSet"]))
 
-		for log in battleye_logs:
-			if os.path.isfile(self.battleye_logs[log]) is True:
-				if os.path.isfile(self.temp_logs[log]) is True:
-					os.remove(self.temp_logs[log])
-					self.logger.info("Removing Old Temp File - " + self.temp_logs[log])
+		for log in self.server_settings["Battleye Logs"]:
+			if os.path.isfile(self.server_settings["Battleye Logs Location"][log]) is True:
+				if os.path.isfile(self.server_settings["Battleye Temp Logs"][log]) is True:
+					os.remove(self.server_settings["Battleye Temp Logs"][log])
+					self.logger.info("Removing Old Temp File - " + self.server_settings["Battleye Temp Logs"][log])
 				error_loop = 0
 				while True:
 					try:
-						shutil.move(self.battleye_logs[log], self.temp_logs[log])
+						shutil.move(self.server_settings["Battleye Logs Location"][log], self.server_settings["Battleye Temp Logs"][log])
 						break
 					except WindowsError:
 						if error_loop >= 5:
@@ -335,7 +211,7 @@ class Scanner:
 							error_loop = error_loop + 1
 							time.sleep(1)
 
-		for log in battleye_logs:
+		for log in self.server_settings["Battleye Logs"]:
 			self.scan_battleye_logs(log)
 
 
@@ -452,78 +328,79 @@ class Parser:
 		f_offset_data_file.close()
 
 		if (len(entries_code) > 0) is True:
-			if spam_filters is not None:
-				self.spam_detection = Spam(self, spam_data_file, spam_filters, logname)
-				self.spam_detection.load()
-				self.spam_detection.add_data(entries_date, entries_guid, entries_ip, entries_port, entries_code, entries_name)
-				self.spam_detection.scan(x)
-				self.spam_detection.sync()
-				self.spam_detection.save()
+			self.spam_detection = Spam(self, spam_data_file, spam_filters, logname)
+			self.spam_detection.load()
+			self.spam_detection.add_data(entries_date, entries_guid, entries_ip, entries_port, entries_code, entries_name)
+			self.spam_detection.scan(x)
+			self.spam_detection.sync()
+			self.spam_detection.save()
 
-			if os.path.isfile(whitelist_filters) is True:
-				# Remove whitelisted entries
-				with open(whitelist_filters) as f:
-					for line in f:
-						temp = line.strip()
-						x = 0
-						while x != len(entries_code):
-							if re.search(temp, entries_code[x]) is not None:
-								entries_date.pop(x)
-								entries_guid.pop(x)
-								entries_ip.pop(x)
-								entries_port.pop(x)
-								entries_code.pop(x)
-								entries_name.pop(x)
-							else:
-								x = x + 1
-			else:
-				# If file = missing, create an empty file
-				self.logger.info("Create missing filter " + str(whitelist_filters))
-				print "Create missing filter " + str(whitelist_filters)
-				open(whitelist_filters, 'w').close()
-
-
-			if banlist_filters is not None:
-				if os.path.isfile(banlist_filters) is True:
-					# Search for BlackListed Entries
-					with open(banlist_filters) as f:
+			for wh_filter in whitelist_filters:
+				if os.path.isfile(wh_filter) is True:
+					# Remove whitelisted entries
+					with open(wh_filter) as f:
 						for line in f:
 							temp = line.strip()
 							x = 0
 							while x != len(entries_code):
-								if re.search(temp, entries_code[x]) or re.search(temp, self.decoder.decode_string(entries_code[x])):
-									ban_entries_date.append(entries_date.pop(x))
-									ban_entries_guid.append(entries_guid.pop(x))
-									ban_entries_ip.append(entries_ip.pop(x))
-									ban_entries_port.append(entries_port.pop(x))
-									ban_entries_code.append(entries_code.pop(x))
-									ban_entries_name.append(entries_name.pop(x))
+								if re.search(temp, entries_code[x]) is not None:
+									entries_date.pop(x)
+									entries_guid.pop(x)
+									entries_ip.pop(x)
+									entries_port.pop(x)
+									entries_code.pop(x)
+									entries_name.pop(x)
 								else:
 									x = x + 1
 				else:
-					# If file = missing, create an empty file
-					open(banlist_filters, 'w').close()
+					self.logger.info("Create missing filter " + str(wh_filter))
+					open(wh_filter, 'w').close()
 
-			if kicklist_filters is not None:
-				if os.path.isfile(kicklist_filters) is True:
-					# Search for KickList Entries
-					with open(kicklist_filters) as f:
-						for line in f:
-							temp = line.strip()
-							x = 0
-							while x != len(entries_code):
-								if re.search(temp, entries_code[x]) or re.search(temp, self.decoder.decode_string(entries_code[x])):
-									kick_entries_date.append(entries_date.pop(x))
-									kick_entries_guid.append(entries_guid.pop(x))
-									kick_entries_ip.append(entries_ip.pop(x))
-									kick_entries_port.append(entries_port.pop(x))
-									kick_entries_code.append(entries_code.pop(x))
-									kick_entries_name.append(entries_name.pop(x))
-								else:
-									x = x + 1
-				else:
-					# If file = missing, create an empty file
-					open(kicklist_filters, 'w').close()
+
+			for bl_filter in banlist_filters:
+				if bl_filter is not None:
+					if os.path.isfile(bl_filter) is True:
+						# Search for BlackListed Entries
+						with open(bl_filter) as f:
+							for line in f:
+								temp = line.strip()
+								x = 0
+								while x != len(entries_code):
+									if re.search(temp, entries_code[x]) or re.search(temp, self.decoder.decode_string(entries_code[x])):
+										ban_entries_date.append(entries_date.pop(x))
+										ban_entries_guid.append(entries_guid.pop(x))
+										ban_entries_ip.append(entries_ip.pop(x))
+										ban_entries_port.append(entries_port.pop(x))
+										ban_entries_code.append(entries_code.pop(x))
+										ban_entries_name.append(entries_name.pop(x))
+									else:
+										x = x + 1
+					else:
+						self.logger.info("Create missing filter " + str(bl_filter))
+						open(bl_filter, 'w').close()
+
+			for kl_filter in kicklist_filters:
+				if kl_filter is not None:
+					if os.path.isfile(kl_filter) is True:
+						# Search for KickList Entries
+						with open(kl_filter) as f:
+							for line in f:
+								temp = line.strip()
+								x = 0
+								while x != len(entries_code):
+									if re.search(temp, entries_code[x]) or re.search(temp, self.decoder.decode_string(entries_code[x])):
+										kick_entries_date.append(entries_date.pop(x))
+										kick_entries_guid.append(entries_guid.pop(x))
+										kick_entries_ip.append(entries_ip.pop(x))
+										kick_entries_port.append(entries_port.pop(x))
+										kick_entries_code.append(entries_code.pop(x))
+										kick_entries_name.append(entries_name.pop(x))
+									else:
+										x = x + 1
+					else:
+						# If file = missing, create an empty file
+						self.logger.info("Create missing filter " + str(kl_filter))
+						open(kl_filter, 'w').close()
 
 
 		self.banlist = {"date": ban_entries_date,
@@ -601,12 +478,12 @@ class Decoder:
 class Spam:
 
 
-	def __init__(self, parent, spam_data_file, spam_rules_file, logname):
+	def __init__(self, parent, spam_data_file, spam_rules_files, logname):
 		self.parent = parent
 		self.logger = logging.getLogger("Spam ")
 
 		self.spam_data_file = spam_data_file
-		self.spam_rules_file = spam_rules_file
+		self.spam_rules_files = spam_rules_files
 		self.logname = logname
 
 		self.players = {}
@@ -686,16 +563,17 @@ class Spam:
 
 			# self.rules = {}
 				# Regrex Rule: [[count, time elapsed, action], [2x]]
-		self.logger.debug("Checking for " + self.spam_rules_file)
-		if os.path.isfile(self.spam_rules_file) is True:
-			with open(self.spam_rules_file) as f:
-				for line in f:
-					# data = [0-max_count, 1-time elapsed, 2-action, 3-regrex rule]
-					data = re.split(" ", line.strip(), 4)
-					self.rules[data[3]] = [float(data[0]), data[1], data[2]]
-		else:
-			open(self.spam_rules_file, 'w').close()
-			self.rules = {}
+		for spam_rules_file in self.spam_rules_files:
+			self.logger.debug("Checking for " + spam_rules_file)
+			if os.path.isfile(spam_rules_file) is True:
+				with open(spam_rules_file) as f:
+					for line in f:
+						# data = [0-max_count, 1-time elapsed, 2-action, 3-regrex rule]
+						data = re.split(" ", line.strip(), 4)
+						self.rules[data[3]] = [float(data[0]), data[1], data[2]]
+			else:
+				open(spam_rules_file, 'w').close()
+				self.rules = {}
 
 	def save(self):
 		# Update players data

@@ -21,6 +21,7 @@ import ConfigParser
 import time
 import copy
 import logging
+import re
 
 import battleye_modules
 import rcon_modules
@@ -49,7 +50,7 @@ class Main:
 		self.config = ConfigParser.ConfigParser()
 		self.config.read(self.conf_file)
 		if self.config.has_option("Default", "Version"):
-			if self.config.get("Default", "Version") != "10":
+			if self.config.get("Default", "Version") != "11":
 				print "-------------------------------------------------"
 				print "ERROR: Bad conf/servers.ini version"
 				print "-------------------------------------------------"
@@ -91,11 +92,10 @@ class Main:
 					["Scan Setpos", "setpos"],
 					["Scan Setvariable", "setvariable"],
 					["Scan Teamswitch", "teamswitch"],
-					["Spam Filters", "Spam Filters"],
 					["OffSet", "OffSet"],
 					["Ban Message", "Ban Message"],
 					["Ban IP", "Ban IP"],
-					["Filters Location", "Filters Location"]]
+					["Filters", "Filters"]]
 
 		## Scan Settings -- Default
 		self.interval = int(self.config.get("Default", "interval", "60"))
@@ -130,12 +130,60 @@ class Main:
 				if self.config.has_option(self.server_settings[x], options[y][0]):
 					temp[options[y][1]] = self.config.get("Default", options[y][0])
 
-			if temp["Filters Location"] == "Custom":
-				temp["Filters Location"] = os.path.join(temp["BattlEye Directory"], "pyBEscanner", "filters")
-			else:
-				temp["Filters Location"] = os.path.join(self.main_dir, "filters", temp["Filters Location"])
+			temp["Filters"] = re.sub(",\s*", ",", temp["Filters"])
+			temp_filters = temp["Filters"].split(",")
+			temp["Filters"] = []
+			for filters in temp_filters:
+				if temp["Filters"] == "Custom":
+					temp["Filters"].append(os.path.join(temp["BattlEye Directory"], "pyBEscanner", "filters"))
+				else:
+					temp["Filters"].append(os.path.join(self.main_dir, "filters", filters))
 
 			self.server_settings[x] = temp
+
+			# Generated Settings
+			self.server_settings[x]["Battleye Logs"] = ["addbackpackcargo",
+											"addmagazinecargo",
+											"addweaponcargo",
+											"attachto",
+											"createvehicle",
+											"deletevehicle",
+											"mpeventhandler",
+											"publicvariable",
+											"remotecontrol",
+											"remoteexec",
+											"selectplayer",
+											"scripts",
+											"setdamage",
+											"setpos",
+											"setvariable",
+											"teamswitch"]
+
+			self.server_settings[x]["Battleye Logs Location"] = {}
+			self.server_settings[x]["Battleye Temp Logs"] = {}
+			self.server_settings[x]["Battleye Backup Logs"] = {}  # TODO
+
+			self.server_settings[x]["Banlist Filters"] = {}
+			self.server_settings[x]["Kicklist Filters"] = {}
+			self.server_settings[x]["Whitelist Filters"] = {}
+			self.server_settings[x]["Spamlist Filters"] = {}
+
+
+			for be_log in self.server_settings[x]["Battleye Logs"]:
+				self.server_settings[x]["Battleye Logs Location"][be_log] = os.path.join(self.server_settings[x]["BattlEye Directory"], (be_log + ".log"))
+				self.server_settings[x]["Battleye Temp Logs"][be_log] = os.path.join(self.server_settings[x]["Temp Directory"], (be_log + ".log"))
+
+				self.server_settings[x]["Banlist Filters"][be_log] = []
+				self.server_settings[x]["Kicklist Filters"][be_log] = []
+				self.server_settings[x]["Whitelist Filters"][be_log] = []
+				self.server_settings[x]["Spamlist Filters"][be_log] = []
+
+				for filters in self.server_settings[x]["Filters"]:
+					self.server_settings[x]["Banlist Filters"][be_log].append(os.path.join(filters, be_log + ".banlist"))
+					self.server_settings[x]["Kicklist Filters"][be_log].append(os.path.join(filters, be_log + ".kicklist"))
+					self.server_settings[x]["Whitelist Filters"][be_log].append(os.path.join(filters, be_log + ".whitelist"))
+					self.server_settings[x]["Spamlist Filters"][be_log].append(os.path.join(filters, be_log + ".spamlist"))
+
 			x = x + 1
 
 	def start(self):
@@ -166,7 +214,9 @@ class Main:
 				self.server_settings[x]["Bans.txt Timestamp"] = os.path.getmtime(bans_file)
 				server_scan = battleye_modules.Scanner(self.server_settings[x])
 				server_scan.scan()
+				print str(self.server_settings[x]["Filters"])
 				x = x + 1
+
 
 			x = 0
 			logging.info("---------------------------------------------------------")

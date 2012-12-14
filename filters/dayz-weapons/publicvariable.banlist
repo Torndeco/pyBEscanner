@@ -144,9 +144,6 @@
 \"30Rnd_556x45_G36\"
 \"100Rnd_556x45_BetaCMag\"
 \"ItemRadio\"
-#0 "hiveupdateresu" = 1
-missionNamespace
-compile
 \"Skin_Soldier1_DZ\"
 \"30Rnd_556x45_G36SD\"
 \"5Rnd_86x70_L115A1\"
@@ -209,6 +206,3 @@ compile
 \"2000Rnd_23mm_AZP85\"
 \"20Rnd_B_AA12_HE\"
 \"IR_Strobe_Marker\"
-dwarden
-myvehobj
-\[,,";usecEpi setVehicleInit e;processInitCommands;clearVehicleInit usecEpi;"\]

@@ -1,0 +1,3 @@
+#2 "until \{!\(IsNull \(findDisplay 46\)\)\};\(findDisplay 46\) displayAddEventHandler \["keyDown", "_this call fnc_keyDown"\]; diag_log fo"
+#26 "until \{!\(IsNull \(findDisplay 46\)\)\};\(findDisplay 46\) displayAddEventHandler \["keyDown", "_this call fnc_keyDown"\]; diag_log fo"
+#38 " Checking if player %1 is admin", _uid\];_isAdmin=\(serverCommandAvailable"#kick"\);if \(\(_isAdmin\) && \(\(_uid\) in

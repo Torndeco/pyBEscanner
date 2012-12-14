@@ -72,7 +72,8 @@ Known Issues
 Notes:-
 	* U can alter the settings & pyBEscanner filters & settings, while the
 		program is running. Just avoid making any typo mistakes
-
+	* When using multiple filters, if u load up multiple spam filter with same
+		regrex rule, the last one loaded is used.
 
 ---------------------------
 ---------------------------

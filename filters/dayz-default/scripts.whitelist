@@ -1,9 +1,6 @@
-#2 "until \{!\(IsNull \(findDisplay 46\)\)\};\(findDisplay 46\) displayAddEventHandler \["keyDown", "_this call fnc_keyDown"\]; diag_log fo"
 #9 "me = name player;_model call player_switchModel;player allowDamage false;_lastAte = _survival select 1;_lastDrank = _surviv"
 #23 "ong! disconnect and try again!", "BLACK OUT",1\];player enableSimulation false;\};\};dayz_losChance = \{private\["_agent","_max"
-#26 "until \{!\(IsNull \(findDisplay 46\)\)\};\(findDisplay 46\) displayAddEventHandler \["keyDown", "_this call fnc_keyDown"\]; diag_log fo"
 #34 "dayz_logDamage = \[name _unit, name _source, _damage\];
-#34 "dayz_logDamage = \[name _unit, name _source, _damage\];publicVariableServer "dayz_logDamage";\};if \(_unit == pl"
 #34 "\[dayz_characterID,0,_body,_playerID,dayz_playerName\];publicVariableServer "dayzDeath";if \(isServer\) then \{_id = dayzDeath spa"
 #34 "yzUpdateVehicle call server_updateObject;\};\} else \{publicVariableServer "dayzUpdateVehicle";\};\};\};\};_total"
 #34 "ayz_characterID,_object,\[_dir,_location\],_classname\];publicVariableServer "dayzPublishObj";if \(isServer\) then \{dayzPublishObj"
@@ -11,11 +8,9 @@
 #34 "kCargo _obj;dayzDeleteObj = \[_objectID,_objectUID\];publicVariableServer "dayzDeleteObj";if \(isServer\) then \{dayzDeleteObj c"
 #34 "TentStorage"\], 10\];\{dayzUpdateVehicle = \[_x,"all"\];publicVariableServer "dayzUpdateVehicle";\} foreach _objects;private\["_d"
 #35 "else \{publicVariable "dayzUpdateVehicle";\};_unit removeAllEventHandlers "HandleDamage";_unit removeAllEventHandlers "Killed"
-#38 " Checking if player %1 is admin", _uid\];_isAdmin=\(serverCommandAvailable"#kick"\);if \(\(_isAdmin\) && \(\(_uid\) in 
 #67 "openDSInterface;"
 #127 " \[player,_config\] call BIS_fnc_invAdd;
 #127 " \[player,_config\] call BIS_fnc_invAdd;if \(_isOk\) then \{deleteVehicle _holder;\} else \{_holder setVariable\["clai"
 #127 "ldUnit removeMagazine _x;\} forEach  magazines _oldUnit;deleteVehicle _oldUnit;if\(_currentWpn != ""\) then \{_newUnit select"
 #128 "private \['_dummy'\]; _dummy = \[_this,'onload'\] call compile preprocessfile '\\ca\\ui\\scripts\\server_interface.sqf';"
-#223 "rivate \["_dummy"\]; _dummy = \[_this,"players"\] execVM "\\ca\\ui\\scripts\\dedicatedServerInterface.sqf";"
-#227 "rivate \["_dummy"\]; _dummy = \[_this,"players"\] execVM "\\ca\\ui\\scripts\\dedicatedServerInterface.sqf";"
+#(?:223|227) "rivate \["_dummy"\]; _dummy = \[_this,"players"\] execVM "\\ca\\ui\\scripts\\dedicatedServerInterface.sqf";"
