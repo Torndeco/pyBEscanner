@@ -8,3 +8,9 @@
 #205 "vehicle player setpos .*;"
 Destruct
 SafeZone
+\["   Zombie Shield","zombieshield.sqf","1","0","0"\]
+scr\scr\keybinds.sqf
+scr\player\teleport.sqf
+scr\player\heal.sqf
+scr\loadfile.sqf
+scr\target\aimkill.sqf
