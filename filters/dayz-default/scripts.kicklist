@@ -1,2 +1,3 @@
 zombieshield.sqf
 getPlayerUID _x != ""\)\) then\{\(vehicle _x\) hideObject true;
+#line 1
