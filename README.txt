@@ -81,7 +81,7 @@ Notes:-
 Thx for the following people for helping out with this project
 
 Nanomo for creating the c# app for kicking players
-K4n30 for updating the filters & finding my mistakes
+k4n30 for updating the filters & finding my mistakes
 ziellos2k for creating the BattleNET C# library
 
 and everyone else that i forgot....
