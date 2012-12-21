@@ -161,12 +161,11 @@ class Scanner:
 
 	def update_kicks(self, logname, data, update=False):
 		for x in range(len(data["name"])):
-			if self.kick_list.count(data["name"]) == 0:
-				self.kick_list.append(data["name"])
+			if self.kick_list.count(data["name"][x]) == 0:
+				self.kick_list.append(data["name"][x])
 				kick_message = self.kick_ban_msg(self.server_settings["Kick Message"], str(data["name"][x]), str(self.server_settings["ServerName"]), logname, str(data["date"][x]))
 				self.kick_reason.append(kick_message)
 				self.logger.info("Kicking Player " + str(data["name"][x]))
-				print ("Kicking Player " + str(data["name"][x]))
 
 		if update is True:
 			if self.kick_list != []:

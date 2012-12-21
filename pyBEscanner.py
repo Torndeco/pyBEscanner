@@ -94,6 +94,7 @@ class Main:
 					["Scan Teamswitch", "teamswitch"],
 					["OffSet", "OffSet"],
 					["Ban Message", "Ban Message"],
+					["Kick Message", "Kick Message"],
 					["Ban IP", "Ban IP"],
 					["Filters", "Filters"]]
 
