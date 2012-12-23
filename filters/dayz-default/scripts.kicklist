@@ -1,2 +1,7 @@
-getPlayerUID _x != ""\)\) then\{\(vehicle _x\) hideObject true;
+getPlayerUID _x != ""
 #line 1
+attachtome.sqf
+addweapon.sqf
+Invisible
+Teleport
+ESP
