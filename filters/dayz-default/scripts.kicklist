@@ -1,7 +1,11 @@
 getPlayerUID _x != ""
 #line 1
-attachtome.sqf
-addweapon.sqf
+attachtome
+addweapon
 Invisible
+invisible
 Teleport
+teleport
 ESP
+monkyboat
+monkypos
