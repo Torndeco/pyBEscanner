@@ -1,14 +1,2 @@
 getPlayerUID _x != ""
 #line 1
-attachtome
-addweapon
-Invisible
-invisible
-Teleport
-teleport
-ESP
-monkyboat
-monkypos
-createVehicleLocal
-drivespecificvehicleattachto
-Spectate
