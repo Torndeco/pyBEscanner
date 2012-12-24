@@ -14,3 +14,16 @@ scr\player\teleport.sqf
 scr\player\heal.sqf
 scr\loadfile.sqf
 scr\target\aimkill.sqf
+attachtome
+addweapon
+Invisible
+invisible
+Teleport
+teleport
+ESP
+monkyboat
+monkypos
+createVehicleLocal
+drivespecificvehicleattachto
+Spectate
+semilegitboxattachto
