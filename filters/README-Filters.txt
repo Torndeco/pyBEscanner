@@ -1,3 +1,23 @@
+---------------------
+---------------------
+
+This is just a basic primer for Filters...
+
+Note very important to make a note off..
+pyBEscanner will not create the filters for a log file until it detects a battleye log for it
+
+
+The Filters are really just exposing the user to python regrex module...
+Have a look @
+http://docs.python.org/2/library/re.html
+
+Also very handy webapp for testing out your regrex expressions @
+http://www.pythonregex.com/
+
+
+-------------------
+-------------------
+
 Subject to change, 
 I believe the standard layout of filters should be something like the following....
 
@@ -24,23 +44,10 @@ dayz-default, dayz-weapons-default
 
 
 Note:-
-Want to try and keep dayz weapons as whole seperate pacakge of filters.
+Want to try and keep dayz weapons as whole seperate package of filters.
 Mainly due to inability to whitelist a previously blacklisted publicvarible value.
 Otherwise the weapons-default will risk get watered down to much & not been useful on its own...
 
----------------------
----------------------
-
-This is just a basic primer for Filters...
-Note:- It is still v.rough will add it to later on..
-
-
-The Filters are really just exposing the user to python regrex module...
-Have a look @
-http://docs.python.org/2/library/re.html
-
-Also very handy webapp for testing out your regrex expressions @
-http://www.pythonregex.com/
 
 
 --------------------------------------------------------------------------------------------------------
