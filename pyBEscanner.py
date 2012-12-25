@@ -129,7 +129,7 @@ class Main:
 
 			for y in range(len(options)):
 				if self.config.has_option(self.server_settings[x], options[y][0]):
-					temp[options[y][1]] = self.config.get("Default", options[y][0])
+					temp[options[y][1]] = self.config.get(self.server_settings[x], options[y][0])
 
 			temp["Filters"] = re.sub(",\s*", ",", temp["Filters"])
 			temp_filters = temp["Filters"].split(",")
