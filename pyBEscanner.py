@@ -135,8 +135,8 @@ class Main:
 			temp_filters = temp["Filters"].split(",")
 			temp["Filters"] = []
 			for filters in temp_filters:
-				if temp["Filters"] == "Custom":
-					temp["Filters"].append(os.path.join(temp["BattlEye Directory"], "pyBEscanner", "filters"))
+				if filters == "Custom":
+					temp["Filters"].append(os.path.join(temp["BattlEye Directory"], "pyBEscanner", "filters", "Custom"))
 				else:
 					temp["Filters"].append(os.path.join(self.main_dir, "filters", filters))
 
