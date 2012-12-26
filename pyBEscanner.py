@@ -225,7 +225,7 @@ class Main:
 				logging.info("Checking for kicks.txt -- " + str(self.server_settings[x]["ServerName"]))
 				kicks_file = os.path.join(self.server_settings[x]["BattlEye Directory"], "kicks.txt")
 				if os.path.isfile(kicks_file) is True:
-					logging.info("Reloading Bans")
+					logging.info("Reloading Kicks")
 					rcon = rcon_modules.Rcon(self.server_settings[x]["ServerIP"], self.server_settings[x]["ServerPort"], self.server_settings[x]["RconPassword"])
 					rcon.kickplayers(kicks_file)
 					os.remove(kicks_file)
