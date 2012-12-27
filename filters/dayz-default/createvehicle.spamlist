@@ -1,2 +1,2 @@
-(?#Need to change this so it bans for everything except a tent, and put a different rule in for tents)4 1 BAN .
+4 1 BAN (?# Need to change this so it bans for everything except a tent, and put a different rule in for tents).
 5 8 BAN ..
