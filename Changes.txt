@@ -1,5 +1,14 @@
 Important info regarding changes
 
+Version 12
+	Just a version incremant, so u will read this...
+	The dayz-default\Createvehicle.banlist is now a catch all rule...
+	It will ban for everything that isn't whitelisted...
+	
+	Its alot easier for us to just white-list the good items, and just have 1 rule to ban for everything else...
+	If u are running a mod / map with items that need to be whitelist plz push an update / or make an issue on github. 
+	Thx
+
 Version 11
 	Removed Spam Option from servers.ini
 	Added Supported for selecting multiple filters
