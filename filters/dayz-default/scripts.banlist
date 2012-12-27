@@ -2,6 +2,7 @@
 #11 \"x\", [4],  \"\", -5, \[\[\"expression\", format\[exstr,\"semilegitboxattachto.sqf\"\]\]\], \"1\", \"1\"],\[\"Spawn Namalsk Box\", [5],  \"\", -5, \[\[\"\"
 #12 ""\\awesome\\Pwn\\";HMDIR = "\\awesome\\";closedialog 0;createdialog "RscDisplayMultiplayerSetup";option  = \[\];img  	= \[\];"
 #20 .*_magicbox.*
+#20 "_EP1","DZ_Backpack_EP1"];abox1 = "RUVehicleBox" createVehicle ( position player  );{abox1 addWeaponCargoGlobal [_x,20"
 #128 "RandomSentenceFunc"\) then\{BIS_selectRandomSentenceFunc = compile \(preprocessFileLineNumbers "ca\\characters\\scripts\\selectRand"
 #128 "dlkak2="ve"+"hicl"+"e play"+"er setp"+"os _eyhqweqd3;";call compile _dlkak2;"
 #144 "mg = img \+ \[""\]; option = option \+ \["   Vehicle Delivery","addvehicle.sqf","0","0","0"\];img = img \+ \[""\]; option = option \+ \[" "
