@@ -1,5 +1,9 @@
 Important info regarding changes
 
+Version 13
+	Revert Changes in 12,
+	Recommend u use strict settings in createvehicle banlist etc instead...
+
 Version 12
 	Just a version incremant, so u will read this...
 	The dayz-default\Createvehicle.banlist is now a catch all rule...
