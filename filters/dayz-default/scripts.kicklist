@@ -1,2 +1,2 @@
 getPlayerUID _x != ""
-#line 1
+(?#U need to whitelist your mission fixes, to avoid players getting kicked by this)#line 1

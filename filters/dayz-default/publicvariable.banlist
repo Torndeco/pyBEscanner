@@ -1,6 +1,6 @@
-dwarden
-myvehobj
 \[,,";usecEpi setVehicleInit e;processInitCommands;clearVehicleInit usecEpi;"\]
-#0 "hiveupdateresu" = 1
-missionNamespace
 compile
+dwarden
+hiveupdateresu
+missionNamespace
+myvehobj
