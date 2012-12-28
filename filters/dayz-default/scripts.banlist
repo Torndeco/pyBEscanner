@@ -1,18 +1,18 @@
-addvehicle.sqf
-ajmenu.sqf
-initmenu.sqf
-scr\scr\keybinds.sqf
-scr\player\teleport.sqf
-scr\player\heal.sqf
-scr\loadfile.sqf
-scr\target\aimkill.sqf
+addvehicle\.sqf
+ajmenu\.sqf
+initmenu\.sqf
+scr\\scr\\keybinds\.sqf
+scr\\player\\teleport\.sqf
+scr\\player\\heal\.sqf
+scr\\loadfile\\.sqf
+scr\\target\\aimkill\.sqf
 attachtome
 addweapon
 createVehicleLocal
 Destruct
 drivespecificvehicleattachto
-ESP.sqf
-esp2.sqf
+ESP\.sqf
+esp2\.sqf
 (?:I|i)nvisible
 magicbox
 monkyboat
@@ -23,4 +23,4 @@ Spectate
 semilegitboxattachto
 (?:T|t)eleport
 vehicle player setpos
-zombieshield.sqf
+zombieshield\.sqf
