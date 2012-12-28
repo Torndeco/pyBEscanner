@@ -13,6 +13,7 @@ Destruct
 drivespecificvehicleattachto
 ESP.sqf
 esp2.sqf
+Help.sqf
 (?:I|i)nvisible
 magicbox
 monkyboat
