@@ -162,7 +162,7 @@ class Scanner:
 				self.bans.openfile()
 				for x in range(len(self.ban_guid_list)):
 					self.bans.addban(self.ban_guid_list[x], time, self.ban_reason[x])
-					if self.server_settings["Ban IP"] == "on":
+					if (self.server_settings["Ban IP"] == "on") or (self.ban_guid_list[x] = "-"):
 						self.bans.addban(self.ban_ip_list[x], time, self.ban_reason[x])
 				self.bans.closefile()
 				self.ban_guid_list = []
