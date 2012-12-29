@@ -18,6 +18,7 @@ esp2\.sqf
 magicbox
 monkyboat
 monkypos
+player setPos _pos; true;
 RUVehicleBox
 SafeZone
 Spectate
