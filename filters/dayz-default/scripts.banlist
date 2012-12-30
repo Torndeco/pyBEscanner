@@ -1,11 +1,3 @@
-addvehicle.sqf
-ajmenu.sqf
-initmenu.sqf
-scr\scr\keybinds.sqf
-scr\player\teleport.sqf
-scr\player\heal.sqf
-scr\loadfile.sqf
-scr\target\aimkill.sqf
 #2 "then \{player addWeapon "ItemMap"\};\(findDisplay 46\) displayAddEventHandler \["KeyDown", "altstate = _this select 4"\];\(\(findDisp"
 addvehicle\.sqf
 ajmenu\.sqf
