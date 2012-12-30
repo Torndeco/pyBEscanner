@@ -81,16 +81,25 @@ class Scanner:
 
 	def scan_battleye_logs(self, x):
 
-		self.log_scanner.scan_log(self.server_settings["Battleye Temp Logs"][x],
+
+		if self.server_settings[x] == "off":
+			print x + " (off)"
+			if os.path.isfile(self.server_settings["Battleye Temp Logs"][x]) is True:
+				f_backup = open(self.backup_logs[x], "a")
+				with open(self.server_settings["Battleye Temp Logs"][x]) as f_log:
+					for line in f_log:
+						## Append Lines to Backup Files
+						f_backup.write(line)	
+				f_backup.close()
+				os.remove(self.backup_logs[x])
+		else:
+			self.log_scanner.scan_log(self.server_settings["Battleye Temp Logs"][x],
 						self.backup_logs[x],
 						self.server_settings["Whitelist Filters"][x],
 						self.server_settings["Banlist Filters"][x],
 						self.server_settings["Kicklist Filters"][x],
 						self.server_settings["Spamlist Filters"][x],
 						x)
-		if self.server_settings[x] == "off":
-			print x + " (off)"
-		else:
 			if self.server_settings[x] == "strict":
 				# Strict Scanning
 				print x + " (strict)"
@@ -153,7 +162,7 @@ class Scanner:
 				self.bans.openfile()
 				for x in range(len(self.ban_guid_list)):
 					self.bans.addban(self.ban_guid_list[x], time, self.ban_reason[x])
-					if self.server_settings["Ban IP"] == "on":
+					if (self.server_settings["Ban IP"] == "on") or (self.ban_guid_list[x] == "-"):
 						self.bans.addban(self.ban_ip_list[x], time, self.ban_reason[x])
 				self.bans.closefile()
 				self.ban_guid_list = []
@@ -303,7 +312,6 @@ class Parser:
 						entries_code.append(code[1])
 						entries_name.append(name[0])
 			f_backup.close()
-
 			os.remove(logfile)
 
 		# Check for battleye offset condition

@@ -74,6 +74,17 @@ Notes:-
 		program is running. Just avoid making any typo mistakes
 	* When using multiple filters, if u load up multiple spam filter with same
 		regrex rule, the last one loaded is used.
+	* If u would like pyBEscanner not to ban people for spaming tents
+		U need to alter createvehicle.spamlist to look like the following
+
+			4 1 BAN #0  (?!["WeaponHolder_ItemTent"])
+			5 8 BAN #0  (?!["WeaponHolder_ItemTent"])
+
+		Then u can a seperate rule with a higher value for tents if u like
+		For example, 10 tents in 10 seconds = player ban
+			
+			10 10 BAN Tent
+
 
 ---------------------------
 ---------------------------
