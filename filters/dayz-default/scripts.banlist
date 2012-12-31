@@ -10,6 +10,7 @@ scr\\target\\aimkill\.sqf
 attachtome
 addweapon
 createVehicleLocal
+createMarkerLocal
 Destruct
 drivespecificvehicleattachto
 ESP\.sqf
