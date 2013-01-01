@@ -15,6 +15,7 @@ Destruct
 drivespecificvehicleattachto
 ESP\.sqf
 esp2\.sqf
+espfnc
 Help\.sqf
 (?:I|i)nvisible
 magicbox

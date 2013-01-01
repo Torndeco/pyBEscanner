@@ -145,20 +145,20 @@
 \"30Rnd_556x45_G36\"
 \"100Rnd_556x45_BetaCMag\"
 \"ItemRadio\"
-#0 "BAF_ied_v1" 0:0
-#0 "FlareRed_M203" 0:0
-#0 "FlareYellow_M203" 0:0
-#1 "ItemGenerator" 0:0
-#9 "8Rnd_B_Saiga12_74Slug" 0:0
-#9 "8Rnd_B_Saiga12_Pellets" 0:0
-#9 "20Rnd_B_AA12_HE" 0:0
-#9 "30Rnd_556x45_G36SD" 0:0
-#9 "64Rnd_9x19_Bizon" 0:0
-#9 "50Rnd_127x108_KORD" 0:0
-#9 "20Rnd_762x51_B_SCAR" 0:0
-#9 "20Rnd_762x51_SB_SCAR" 0:0
-#9 "100Rnd_762x54_PK" 0:0
-#9 "200Rnd_556x45_L110A1" 0:0
+\"BAF_ied_v1\"
+\"FlareRed_M203\"
+\"FlareYellow_M203\"
+\"ItemGenerator\"
+\"8Rnd_B_Saiga12_74Slug\"
+\"8Rnd_B_Saiga12_Pellets\"
+\"20Rnd_B_AA12_HE\"
+\"30Rnd_556x45_G36SD\"
+\"64Rnd_9x19_Bizon\"
+\"50Rnd_127x108_KORD\"
+\"20Rnd_762x51_B_SCAR\"
+\"20Rnd_762x51_SB_SCAR\"
+\"100Rnd_762x54_PK\"
+\"200Rnd_556x45_L110A1\"
 \"Laserbatteries\"
 \"Skin_Soldier1_DZ\"
 \"5Rnd_86x70_L115A1\"
