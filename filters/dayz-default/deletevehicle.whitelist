@@ -1,4 +1,12 @@
 #dynamicsound
+Hedgehog_DZ
+Hen
+MedBox0
+Shot
+WeaponHolder
+WeaponHolder_ItemHatchet
+WeaponHolder_MeleeCrowbar
+Wire_cat1
 z_doctor
 z_hunter
 z_policeman
@@ -15,9 +23,3 @@ z_worker1
 z_worker2
 z_worker3
 zZombie_Base
-WeaponHolder
-WeaponHolder_ItemHatchet
-WeaponHolder_MeleeCrowbar
-Wire_cat1
-MedBox0
-Hedgehog_DZ
