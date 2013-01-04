@@ -1,8 +1,9 @@
-\[,,";usecEpi setVehicleInit e;processInitCommands;clearVehicleInit usecEpi;"\]
+\[,,";
 compile
 dwarden
 hiveupdateresu
 missionNamespace
 myvehobj
+remotecmd
 "norrnRLact" = \<NULL-object\>
 "BIS_MPF_logic" = \<NULL-object\>
