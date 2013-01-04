@@ -1,3 +1,5 @@
 getPlayerUID _x != ""
 (?#U need to whitelist your mission fixes, to avoid players getting kicked by this)#line 1
 removeAllWeapons
+removeallweapons
+espfnc
