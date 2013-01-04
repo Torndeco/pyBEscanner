@@ -534,8 +534,8 @@ class Spam:
 						if ignore_count != 0:
 							ignore_count = ignore_count - 1
 						if (x + max_count) < len(data):
-							if (data[x + max_count][0] - data[x][0]) <= self.rules[rule][0]:
-								for y in range((x + ignore_count), (x + max_count + 1)):
+							if (data[x + max_count - 1][0] - data[x][0]) <= max_time:
+								for y in range((x + ignore_count), (x + max_count)):
 									self.addHacker(guid, action, time.strftime("%d.%m.%Y %H:%M:%S", time.localtime(data[y][0])), data[y][1])
 								ignore_count = max_count
 						if (scan_time - data[x][0]) > max_time:
