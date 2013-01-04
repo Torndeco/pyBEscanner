@@ -1,7 +1,4 @@
-\[,,";usecEpi setVehicleInit e;processInitCommands;clearVehicleInit usecEpi;"\]
-\[,,";_data=\[usecEpi,usecEpi,usecEpi,teamType dayzLogin2\];rmovein"\]
-\[,,"
-\[\<NULL-object\>,,,
+\[,,";
 compile
 dwarden
 hiveupdateresu
