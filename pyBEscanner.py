@@ -131,17 +131,6 @@ class Main:
 		for x in range(len(options)):
 			default[options[x][1]] = config.get("Default", options[x][0])
 
-		## Debug Settings
-		if config.has_option("Default", "Debug File"):
-			self.debug_file = config.get("Default", "Debug File")
-		else:
-			self.debug_file = os.path.join(self.main_dir, "debug.log")
-
-		if config.has_option("Default", "Debug Level"):
-			self.debug_level = config.get("Default", "Debug Level")
-		else:
-			self.debug_level = "WARNING"
-
 		for section in config_sections:
 			server = copy.copy(default)
 
