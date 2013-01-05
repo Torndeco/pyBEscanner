@@ -282,7 +282,6 @@ class Main:
 					if server["Bans"].getStatus() == True:
 						print
 						print ("Reloading Bans: " + server["ServerName"])
-						logging.info("Reloading Bans")
 						server["Bans"].writeBans()
 						rcon = rcon_cscript.Rcon(server["ServerIP"], server["ServerPort"], server["RconPassword"])
 						rcon.reloadbans()
