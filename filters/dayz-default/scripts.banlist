@@ -10,6 +10,7 @@ scr\\target\\aimkill\.sqf
 attachtome
 addweapon
 bis_fnc_crows
+bowonky
 camsetpos
 camcommit
 createVehicleLocal
