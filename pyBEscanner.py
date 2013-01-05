@@ -16,36 +16,54 @@
 
 #!/usr/bin/python
 
+import argparse
 import os
 import ConfigParser
 import time
 import copy
-import logging
 import re
+import sys
 
-import battleye_modules
-import rcon_modules
-from sys import exit
+from modules import logs_battleye, rcon_cscript
+
 
 
 class Main:
-	def __init__(self):
+	def __init__(self, args):
 		print
 		self.main_dir = os.getcwd()
-		self.conf_dir = os.path.join(self.main_dir, 'conf')
+		conf_dir = os.path.join(self.main_dir, 'conf')
+		logs_dir = os.path.join(self.main_dir, "logs")
+		temp_dir = os.path.join(self.main_dir, "temp")
 
+		self.lockfile = os.path.join(temp_dir, "pyBEscanner.lockfile")
 		self.conf_file = os.path.join(self.main_dir, 'conf', 'servers.ini')
+		
 		if not os.path.isfile(os.path.join(self.main_dir, 'pyBEscanner.py')):
 			print "Wrong working Directory"
-			exit()
+			sys.exit()
 		else:
-			if not os.path.exists(self.conf_dir):
+			if not os.path.exists(conf_dir):
 				print "Missing Conf Directory @ " + self.conf_dir
-				exit()
+				sys.exit()
 			else:
 				if not os.path.isfile(self.conf_file):
 					print "Missing Server Configs @ " + self.conf_file
-					exit()
+					sys.exit()
+
+		if not os.path.exists(temp_dir):
+			os.mkdir(temp_dir)
+			
+		if not os.path.exists(logs_dir):
+			os.mkdir(logs_dir)
+
+		if (os.path.isfile(self.lockfile) == True) and (args.force_start == False):
+			print("LockFile Detected")
+			print("This means another pyBEscanner is either running or the previous instance of pyBEscanner crashed")
+			print("To start pyBEscanner, Use -f switch to ignore the lockfile")
+			sys.exit()
+		else:
+			open(self.lockfile, 'w').close()
 
 		self.config = ConfigParser.ConfigParser()
 		self.config.read(self.conf_file)
@@ -189,66 +207,62 @@ class Main:
 
 	def start(self):
 		old_config_timestamp = None
+		scan_count = 60
 		while True:
-			new_config_timestamp = os.path.getmtime(self.conf_file)
-			if old_config_timestamp != new_config_timestamp:
-				print "---------------------------------------------------------"
-				print "       Loading Config File"
-				print "---------------------------------------------------------"
-				self.loadconfig()
-				logging.basicConfig(filename=self.debug_file, level=self.debug_level)
-				old_config_timestamp = new_config_timestamp
-			x = 0
-			while x < len(self.server_settings):
-				print
-				print
-				print "---------------------------------------------------------"
-				print "       Scanning " + str(self.server_settings[x]["ServerName"])
-				print "---------------------------------------------------------"
-				logging.info("")
-				logging.info("---------------------------------------------------------")
-				logging.info("       Scanning " + str(self.server_settings[x]["ServerName"]))
-				logging.info("---------------------------------------------------------")
-				bans_file = os.path.join(self.server_settings[x]["BattlEye Directory"], "bans.txt")
-				if os.path.isfile(bans_file) is False:
-					open(bans_file, 'w').close()
-				self.server_settings[x]["Bans.txt Timestamp"] = os.path.getmtime(bans_file)
-				server_scan = battleye_modules.Scanner(self.server_settings[x])
-				server_scan.scan()
-				print str(self.server_settings[x]["Filters"])
-				x = x + 1
+			try:
+				new_config_timestamp = os.path.getmtime(self.conf_file)
+				if old_config_timestamp != new_config_timestamp:
+					print "---------------------------------------------------------"
+					print "       Loading Config File"
+					print "---------------------------------------------------------"
+					self.loadconfig()
+					old_config_timestamp = new_config_timestamp
+					scan_count = 60
+					
+				if scan_count == 60:
+					print
+					sys.stdout.write('Scanning .')
+					sys.stdout.flush()
+					scan_count = 0
+				else:
+					sys.stdout.write('.')
+					sys.stdout.flush()
+					scan_count = scan_count + 1
 
+				for server in self.server_settings:
+					bans_file = os.path.join(server["BattlEye Directory"], "bans.txt")
+					if os.path.isfile(bans_file) is False:
+						open(bans_file, 'w').close()
+					server["Bans.txt Timestamp"] = os.path.getmtime(bans_file)
+					server_scan = logs_battleye.Scanner(server)
+					server_scan.scan()
 
-			x = 0
-			logging.info("---------------------------------------------------------")
-			while x < len(self.server_settings):
-				logging.info("Checking for kicks.txt -- " + str(self.server_settings[x]["ServerName"]))
-				kicks_file = os.path.join(self.server_settings[x]["BattlEye Directory"], "kicks.txt")
-				if os.path.isfile(kicks_file) is True:
-					logging.info("Reloading Kicks")
-					rcon = rcon_modules.Rcon(self.server_settings[x]["ServerIP"], self.server_settings[x]["ServerPort"], self.server_settings[x]["RconPassword"])
-					rcon.kickplayers(kicks_file)
-					os.remove(kicks_file)
-				x = x + 1
-			logging.info("---------------------------------------------------------")
+				for server in self.server_settings:
+					kicks_file = os.path.join(server["BattlEye Directory"], "kicks.txt")
+					if os.path.isfile(kicks_file) is True:
+						rcon = rcon_cscript.Rcon(server["ServerIP"], server["ServerPort"], server["RconPassword"])
+						rcon.kickplayers(kicks_file)
+						os.remove(kicks_file)
+						scan_count = 60
 
-			x = 0
-			logging.info("---------------------------------------------------------")
-			while x < len(self.server_settings):
-				logging.info("Checking for bans.txt changes -- " + str(self.server_settings[x]["ServerName"]))
-				bans_file = os.path.join(self.server_settings[x]["BattlEye Directory"], "bans.txt")
-				if os.path.isfile(bans_file) is False:
-					open(bans_file, 'w').close()
-				if self.server_settings[x]["Bans.txt Timestamp"] != os.path.getmtime(bans_file):
-					logging.info("Reloading Bans")
-					rcon = rcon_modules.Rcon(self.server_settings[x]["ServerIP"], self.server_settings[x]["ServerPort"], self.server_settings[x]["RconPassword"])
-					rcon.reloadbans()
+				for server in self.server_settings:
+					bans_file = os.path.join(server["BattlEye Directory"], "bans.txt")
+					if os.path.isfile(bans_file) is False:
+						open(bans_file, 'w').close()
+					if server["Bans.txt Timestamp"] != os.path.getmtime(bans_file):
+						rcon = rcon_cscript.Rcon(self.server_settings[x]["ServerIP"], server["ServerPort"], server["RconPassword"])
+						rcon.reloadbans()
+						scan_count = 60
 
-				x = x + 1
-			logging.info("---------------------------------------------------------")
+				time.sleep(self.interval)
+			except KeyboardInterrupt:
+				print()
+				print("Removing LockFile....")
+				os.remove(self.lockfile)
+				sys.exit()
 
-			time.sleep(self.interval)
-
-
-pyBE = Main()
-pyBE.start()
+parser = argparse.ArgumentParser(description='pyBEscanner Options...')
+parser.add_argument('--force-start', '-f', action='store_true')
+args = parser.parse_args()
+main = Main(args)
+main.start()

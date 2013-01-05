@@ -1,4 +1,4 @@
-# rpt_modules.py
+# rcon_cscript.py
 #    This file is part of pyBEscanner.
 #
 #    pyBEscanner is free software: you can redistribute it and/or modify
@@ -15,13 +15,23 @@
 #    along with pyBEscanner.  If not, see <http://www.gnu.org/licenses/>.
 
 
-# Read in the file once and build a list of line offsets
-line_offset = []
-offset = 0
-for line in file:
-    line_offset.append(offset)
-    offset += len(line)
-file.seek(0)
+## Workaround & Placeholder until get around to writing python code to connect to servers via rcon...
+import subprocess
+import os
 
-# Now, to skip to line n (with the first line being line 0), just do
-file.seek(line_offset[n])
+class Rcon:
+	def __init__(self, ip, port, password):
+
+		# Initialize Variables
+		self.ip = ip
+		self.port = port
+		self.password = password
+
+
+	def kickplayers(self, kickfile):
+		temp = os.path.join("rcon", ("rcon_kick.exe"))
+		subprocess.call([temp, "--ip=" + self.ip, "--port=" + self.port, "--password=" + self.password, "--file=" + kickfile])
+
+	def reloadbans(self):
+		temp = os.path.join(os.getcwd(), "rcon", ("rcon_reloadbans.exe"))
+		subprocess.call([temp, self.ip, str(self.port), self.password])
