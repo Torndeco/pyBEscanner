@@ -24,7 +24,7 @@ import copy
 import re
 import sys
 
-from modules import bans, logs_battleye, rcon_cscript
+from modules import bans, logs_battleye, logs_server, rcon_cscript
 
 
 
@@ -68,7 +68,7 @@ class Main:
 		config = ConfigParser.ConfigParser()
 		config.read(self.conf_file)
 		if config.has_option("Default", "Version"):
-			if config.get("Default", "Version") != "15":
+			if config.get("Default", "Version") != "16":
 				print "-------------------------------------------------"
 				print "ERROR: Bad conf/servers.ini version"
 				print "-------------------------------------------------"
@@ -100,6 +100,7 @@ class Main:
 			default["Bans Directory"] = config.get("Default", "Bans Directory")
 			default["Bans"] = None
 			# Doesnt initializes bans, until encounters a server with symlink setting turned on
+		default["Scan Server Logs"] = config.get("Default", "Scan Server Logs", "off")
 
 		options = [["Scan Addbackpackcargo", "addbackpackcargo"],
 					["Scan Addmagazinecargo", "addmagazinecargo"],
@@ -127,6 +128,8 @@ class Main:
 
 		## Scan Settings -- Default
 		self.interval = int(config.get("Default", "interval", "60"))
+		
+		
 
 		for x in range(len(options)):
 			default[options[x][1]] = config.get("Default", options[x][0])
@@ -250,13 +253,14 @@ class Main:
 						if os.path.isfile(server["LockFile-Ask"]):
 							print()
 							print("LockFile Detected, Finished Scanning Logs for Server " + server["ServerName"])
-							#logs_server.ConsoleScanner(server).scan_log(0)
-							#logs_server.RPTScanner(server).scan_log(0)
+							if server["Scan Server Logs"] == "on":
+								logs_server.ConsoleScanner(server).scan_log(0)
+								logs_server.RPTScanner(server).scan_log(0)
 							open(server["LockFile"], 'w').close()
 						else:
-							pass
-							#logs_server.ConsoleScanner(server).scan_log()
-							#logs_server.RPTScanner(server).scan_log()
+							if server["Scan Server Logs"] == "on":
+								logs_server.ConsoleScanner(server).scan_log(0)
+								logs_server.RPTScanner(server).scan_log(0)
 
 				for server in self.server_settings:
 					kicks_file = os.path.join(server["BattlEye Directory"], "kicks.txt")
