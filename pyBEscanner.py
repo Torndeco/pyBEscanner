@@ -168,7 +168,7 @@ class Main:
 					default["Bans"] = bans.Bans(default["Bans Directory"])
 				server["Bans"] = default["Bans"]
 			else:
-				default["Bans"] = bans.Bans(server["BattlEye Directory"])
+				server["Bans"] = bans.Bans(server["BattlEye Directory"])
 
 			# Generated Settings
 			server["Battleye Logs"] = ["addbackpackcargo",
