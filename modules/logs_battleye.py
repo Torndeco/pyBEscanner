@@ -32,17 +32,16 @@ class Scanner:
 
 		self.server_settings = server_settings
 
-		self.bans = Bans(os.path.join(self.server_settings["BattlEye Directory"], "bans.txt"))
-		self.kicks = Kicks(os.path.join(self.server_settings["BattlEye Directory"], "kicks.txt"))
+		self.kicks = Kicks(os.path.join(self.server_settings["Temp Directory"], "kicks.txt"))
 		self.rcon = rcon_cscript.Rcon(self.server_settings["ServerIP"], self.server_settings["ServerPort"], self.server_settings["RconPassword"])
 
-		self.ban_guid_list = []
-		self.ban_ip_list = []
-		self.ban_reason = []
+		self.bans_guid_list = []
+		self.bans_ip_list = []
+		self.bans_info_list = []
 		self.kick_list = []
 		self.kick_reason = []
 
-		self.backuplog_dir = os.path.join(self.server_settings["BattlEye Directory"], "Logs", datetime.datetime.now().strftime("BattlEye Logs - %Y-%m-%d"))
+		self.backuplog_dir = os.path.join(self.server_settings["Logs Directory"], datetime.datetime.now().strftime("%Y-%m-%d"), "BattlEye Logs")
 
 
 		self.backup_logs = {"addbackpackcargo": os.path.join(self.backuplog_dir, "addbackpackcargo.log"),
@@ -67,15 +66,12 @@ class Scanner:
 		if not os.path.exists(self.backuplog_dir):
 			os.makedirs(self.backuplog_dir)
 
-		if not os.path.exists(os.path.join(self.server_settings["BattlEye Directory"], "pyBEscanner")):
-			os.mkdir(os.path.join(self.server_settings["BattlEye Directory"], "pyBEscanner"))
-
 		for filter_location in self.server_settings["Filters"]:
 			if not os.path.exists(filter_location):
 				os.mkdir(filter_location)
 
 		if not os.path.exists(self.server_settings["Temp Directory"]):
-			os.mkdir(self.server_settings["Temp Directory"])
+			os.makedirs(self.server_settings["Temp Directory"])
 
 
 	def scan_battleye_logs(self, x):
@@ -144,23 +140,30 @@ class Scanner:
 	def update_bans(self, logname, data, time="-1", update=False):
 
 		for x in range(len(data["guid"])):
-			if self.ban_guid_list.count(data["guid"][x]) == 0:
-				self.ban_guid_list.append(data["guid"][x])
-				self.ban_ip_list.append(data["ip"][x])
-				ban_message = self.kick_ban_msg(self.server_settings["Ban Message"], str(data["name"][x]), str(self.server_settings["ServerName"]), logname, str(data["date"][x]))
-				self.ban_reason.append(ban_message)
-				print ("Banning Player " + str(data["name"][x]))
+			guid = data["guid"][x]
+			ip = data["ip"][x]
+			player_name = data["name"][x]
+			date = data["date"][x]
 
-		if update is True:
-			if self.ban_guid_list != []:
-				self.bans.openfile()
-				for x in range(len(self.ban_guid_list)):
-					self.bans.addban(self.ban_guid_list[x], time, self.ban_reason[x])
-					if (self.server_settings["Ban IP"] == "on") or (self.ban_guid_list[x] == "-"):
-						self.bans.addban(self.ban_ip_list[x], time, self.ban_reason[x])
-				self.bans.closefile()
-				self.ban_guid_list = []
-				self.ban_reason = []
+			if guid == "-":
+				self.bans_guid_list.append(None)
+			else:
+				self.bans_guid_list.append(guid)
+			self.bans_info_list.append({"name": player_name, "guid": guid, "ip": ip, "ServerName": self.server_settings["ServerName"], "date":date})
+			self.bans_ip_list.append(ip)
+
+				#def addBan(self, unique_id, info, logname, ban_template, report_template): #{ID,Reason}
+		if update:
+			for x in range(len(self.bans_guid_list)):
+				if (self.server_settings["Ban IP"] == "on") or (self.bans_guid_list[x] == None):
+					self.bans.addBan(self.bans_ip_list[x], self.bans_info_list[x], logname, self.server_settings["Ban Message"], self.server_settings["Report Message"])
+				if self.bans_guid_list[x] != None:
+					self.bans.addBan(self.bans_guid_list[x], self.bans_info_list[x], logname, self.server_settings["Ban Message"], self.server_settings["Report Message"])
+			if self.bans_guid_list != []:
+				self.bans.updateStatus(True)
+				self.bans_guid_list = []
+				self.bans_ip_list = []
+				self.bans_info_list = []
 
 	def update_kicks(self, logname, data, update=False):
 		for x in range(len(data["name"])):
@@ -171,11 +174,10 @@ class Scanner:
 
 		if update is True:
 			if self.kick_list != []:
-				self.kicks.openfile()
-				for x in range(len(self.kick_list)):
+				for player in self.kick_list:
 					#self.kicks.addkick(self.kick_list[x], self.kick_reason[x])
-					self.kicks.addkick(self.kick_list[x], None)
-				self.kicks.closefile()
+					self.kicks.addkick(player, None)
+				self.kicks.synckicks()
 				self.kick_list = []
 				self.kick_reason = []
 
@@ -250,18 +252,18 @@ class Parser:
 
 		# Check for Offset pickle file / Initialize OffSet Data
 		offset_data_file = logfile + ".offset"
-		spam_data_file = logfile + ".spam"
 
 		if os.path.isfile(offset_data_file) is True:
 			with open(offset_data_file, 'rb') as f_offset_data_file:
 				offset_data = pickle.load(f_offset_data_file)
-			if offset_data != []:
-				entries_date.append(offset_data[0])
-				entries_guid.append(offset_data[1])
-				entries_ip.append(offset_data[2])
-				entries_port.append(offset_data[3])
-				entries_code.append(offset_data[4])
-				entries_name.append(offset_data[5])
+			if offset_data["Version"] == pickleVersion:
+				if offset_data["Data"] != []:
+					entries_date.append(offset_data["Data"][0])
+					entries_guid.append(offset_data["Data"][1])
+					entries_ip.append(offset_data["Data"][2])
+					entries_port.append(offset_data["Data"][3])
+					entries_code.append(offset_data["Data"][4])
+					entries_name.append(offset_data["Data"][5])
 		# Scan BattlEye Logs
 		if os.path.isfile(logfile) is True:
 			with open(backupfile, "a") as f_backup, open(logfile) as f_log:
@@ -286,27 +288,29 @@ class Parser:
 						entries_port.append(ip_port[1])
 						entries_code.append(code[1])
 						entries_name.append(name[0])
+
 			os.remove(logfile)
 
 		# Check for battleye offset condition
-		offset_data = []
+		offset_data = {"Version": pickleVersion, "Data": []}
 		if len(entries_date) > 0:
 			x = time.mktime(time.localtime(self.scan_time))
 			x2 = time.mktime((time.strptime(entries_date[-1], "%d.%m.%Y %H:%M:%S")))
 
 			if ((x - x2) < self.offset) is True:
-				offset_data.append(entries_date.pop())
-				offset_data.append(entries_guid.pop())
-				offset_data.append(entries_ip.pop())
-				offset_data.append(entries_port.pop())
-				offset_data.append(entries_code.pop())
-				offset_data.append(entries_name.pop())
+				offset_data["Data"].append(entries_date.pop())
+				offset_data["Data"].append(entries_guid.pop())
+				offset_data["Data"].append(entries_ip.pop())
+				offset_data["Data"].append(entries_port.pop())
+				offset_data["Data"].append(entries_code.pop())
+				offset_data["Data"].append(entries_name.pop())
 
 		# Update offset_data_file
 		with open(offset_data_file, 'wb') as f_offset_data_file:
 			pickle.dump(offset_data, f_offset_data_file)
 
 		if (len(entries_code) > 0) is True:
+			spam_data_file = logfile + ".spam"
 			self.spam_detection = Spam(self, spam_data_file, spam_filters, logname)
 			self.spam_detection.load()
 			self.spam_detection.add_data(entries_date, entries_guid, entries_ip, entries_port, entries_code, entries_name)
@@ -401,41 +405,26 @@ class Parser:
 							"name": entries_name}
 
 
-class Bans:
-
-
-	def __init__(self, bans_file):
-		self.bans_file = bans_file
-
-	def openfile(self):
-		self.f_bans = open(self.bans_file, "a")
-
-	def closefile(self):
-		self.f_bans.close()
-
-	def addban(self, guid_ip, time, reason):
-		self.f_bans.write(guid_ip + " " + time + " " + reason + "\n")
-
-	def removeban(self, guid, time, reason):
-		pass
-
 class Kicks:
 
 	def __init__(self, logfile):
+		self.kicks = {}
 		self.kicks_file = logfile
 
-	def openfile(self):
-		self.f_kicks = open(self.kicks_file, "a")
-
-	def closefile(self):
-		self.f_kicks.close()
-
 	def addkick(self, playername, reason):
-		self.f_kicks.write(playername + "\n")
-		#self.f_bans.write(guid_ip + " " + time + " " + reason + "\n")
+		self.kicks[playername] = reason
 
-	def removekick(self, guid, time, reason):
-		pass
+	def removekick(self, playername):
+		if playername in self.kicks:
+			del self.kicks[playername]
+
+	def synckicks(self):
+		if self.kicks != {}:
+			with open(self.kicks_file, "a", encoding='utf8') as f_kicks:
+				for playername in list(self.kicks.keys()):
+					f_kicks.write(playername + "\n")
+
+
 
 class Decoder:
 
@@ -525,8 +514,11 @@ class Spam:
 						# regrex-filter3: [Timestamp][Code]
 		if os.path.isfile(self.spam_data_file) is True:
 			with open(self.spam_data_file, 'rb') as f_spam_data_file:
-				f_spam_data_file = open(self.spam_data_file, 'rb')
-			self.players = pickle.load(f_spam_data_file)
+				spam_data = pickle.load(f_spam_data_file)
+			if spam_data["Version"] == pickleVersion:
+				self.players = spam_data["Data"]
+			else:
+				self.players = {}
 		else:
 			self.players = {}
 
@@ -546,8 +538,9 @@ class Spam:
 
 	def save(self):
 		# Update players data
+		spam_data = {"Version": pickleVersion, "Data": self.players}
 		with open(self.spam_data_file, 'wb') as f_spam_data_file:
-			pickle.dump(self.players, f_spam_data_file)
+			pickle.dump(spam_data, f_spam_data_file)
 
 	def addHacker(self, guid, action, code_time, code_entry):
 
@@ -594,6 +587,8 @@ class Spam:
 							kicklist["port"].append(port)
 							kicklist["code"].append(data[x][1])
 							kicklist["name"].append(name)
+
+							
 				self.hackers = {}
 				self.parent.parent.update_bans(self.logname, banlist, update=True)
 				self.parent.parent.update_kicks(self.logname, kicklist, update=True)
