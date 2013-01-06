@@ -251,7 +251,7 @@ class Main:
 						server["Bans.txt Timestamp"] = os.path.getmtime(bans_file)
 						logs_battleye.Scanner(server).scan()
 						if os.path.isfile(server["LockFile-Ask"]):
-							print()
+							print
 							print("LockFile Detected, Finished Scanning Logs for Server " + server["ServerName"])
 							if server["Scan Server Logs"] == "on":
 								logs_server.ConsoleScanner(server).scan_log(0)
@@ -284,7 +284,7 @@ class Main:
 
 				time.sleep(self.interval)
 			except KeyboardInterrupt:
-				print()
+				print
 				print("Removing LockFile....")
 				os.remove(self.lockfile)
 				sys.exit()

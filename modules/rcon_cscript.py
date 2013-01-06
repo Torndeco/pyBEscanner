@@ -29,7 +29,7 @@ class Rcon:
 
 
 	def kickplayers(self, kickfile):
-		temp = os.path.join("rcon", ("rcon_kick.exe"))
+		temp = os.path.join(os.getcwd(), "rcon", ("rcon_kick.exe"))
 		subprocess.call([temp, "--ip=" + self.ip, "--port=" + self.port, "--password=" + self.password, "--file=" + kickfile])
 
 	def reloadbans(self):
