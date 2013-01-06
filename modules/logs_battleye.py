@@ -32,6 +32,7 @@ class Scanner:
 
 		self.server_settings = server_settings
 
+		self.bans = self.server_settings["Bans"]
 		self.kicks = Kicks(os.path.join(self.server_settings["Temp Directory"], "kicks.txt"))
 		self.rcon = rcon_cscript.Rcon(self.server_settings["ServerIP"], self.server_settings["ServerPort"], self.server_settings["RconPassword"])
 
