@@ -1,4 +1,4 @@
-# rcon_modules.py
+# rcon_cscript.py
 #    This file is part of pyBEscanner.
 #
 #    pyBEscanner is free software: you can redistribute it and/or modify
@@ -29,9 +29,11 @@ class Rcon:
 
 
 	def kickplayers(self, kickfile):
-		temp = os.path.join("rcon", ("rcon_kick.exe"))
+		temp = os.path.join("tools", "rcon", ("rcon_kick.exe"))
+		print temp
 		subprocess.call([temp, "--ip=" + self.ip, "--port=" + self.port, "--password=" + self.password, "--file=" + kickfile])
 
 	def reloadbans(self):
-		temp = os.path.join(os.getcwd(), "rcon", ("rcon_reloadbans.exe"))
+		temp = os.path.join("tools", "rcon", ("rcon_reloadbans.exe"))
+		print temp
 		subprocess.call([temp, self.ip, str(self.port), self.password])

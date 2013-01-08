@@ -16,47 +16,65 @@
 
 #!/usr/bin/python
 
+import argparse
 import os
 import ConfigParser
 import time
 import copy
-import logging
 import re
+import sys
 
-import battleye_modules
-import rcon_modules
-from sys import exit
+from modules import bans, logs_battleye, logs_server, rcon_cscript
+
 
 
 class Main:
-	def __init__(self):
+	def __init__(self, args):
 		print
 		self.main_dir = os.getcwd()
-		self.conf_dir = os.path.join(self.main_dir, 'conf')
+		conf_dir = os.path.join(self.main_dir, 'conf')
+		logs_dir = os.path.join(self.main_dir, "logs")
+		temp_dir = os.path.join(self.main_dir, "temp")
 
+		self.lockfile = os.path.join(temp_dir, "pyBEscanner.lockfile")
 		self.conf_file = os.path.join(self.main_dir, 'conf', 'servers.ini')
+		
 		if not os.path.isfile(os.path.join(self.main_dir, 'pyBEscanner.py')):
 			print "Wrong working Directory"
-			exit()
+			sys.exit()
 		else:
-			if not os.path.exists(self.conf_dir):
+			if not os.path.exists(conf_dir):
 				print "Missing Conf Directory @ " + self.conf_dir
-				exit()
+				sys.exit()
 			else:
 				if not os.path.isfile(self.conf_file):
 					print "Missing Server Configs @ " + self.conf_file
-					exit()
+					sys.exit()
 
-		self.config = ConfigParser.ConfigParser()
-		self.config.read(self.conf_file)
-		if self.config.has_option("Default", "Version"):
-			if self.config.get("Default", "Version") != "13":
+		if not os.path.exists(temp_dir):
+			os.mkdir(temp_dir)
+			
+		if not os.path.exists(logs_dir):
+			os.mkdir(logs_dir)
+
+		if (os.path.isfile(self.lockfile) == True) and (args.force_start == False):
+			print("LockFile Detected")
+			print("This means another pyBEscanner is either running or the previous instance of pyBEscanner crashed")
+			print("To start pyBEscanner, Use -f switch to ignore the lockfile")
+			sys.exit()
+		else:
+			open(self.lockfile, 'w').close()
+
+		config = ConfigParser.ConfigParser()
+		config.read(self.conf_file)
+		if config.has_option("Default", "Version"):
+			if config.get("Default", "Version") != "16":
 				print "-------------------------------------------------"
 				print "ERROR: Bad conf/servers.ini version"
 				print "-------------------------------------------------"
 				print "Read Changes.txt for more info"
-				print "Old version = " + self.config.get("Default", "Version")
-				exit()
+				print "Old version = " + config.get("Default", "Version")
+				sys.exit()
 		else:
 			print "-------------------------------------------------"
 			print "ERROR: No servers.ini version found"
@@ -66,15 +84,23 @@ class Main:
 			print
 			print "Or if u haven't updated in awhile"
 			print "Recommend u delete pyBEscanner temp folders & read Changes.txt for update changes"
-			exit()
+			sys.exit()
 
 	def loadconfig(self):
 
-		self.config.read(self.conf_file)
-		self.server_settings = self.config.sections()
-		self.server_settings.remove("Default")
+		config = ConfigParser.ConfigParser()
+		config.read(self.conf_file)
+		config_sections= config.sections()
+		config_sections.remove("Default")
 
-		default = {}
+		default = {"pyBEscanner Directory": self.main_dir}
+		self.server_settings = []
+		# Ban.txt  File Location
+		if config.has_option("Default", "Bans Directory"):
+			default["Bans Directory"] = config.get("Default", "Bans Directory")
+			default["Bans"] = None
+			# Doesnt initializes bans, until encounters a server with symlink setting turned on
+		default["Scan Server Logs"] = config.get("Default", "Scan Server Logs", "off")
 
 		options = [["Scan Addbackpackcargo", "addbackpackcargo"],
 					["Scan Addmagazinecargo", "addmagazinecargo"],
@@ -95,55 +121,57 @@ class Main:
 					["OffSet", "OffSet"],
 					["Ban Message", "Ban Message"],
 					["Kick Message", "Kick Message"],
+					["Report Message", "Report Message"],
 					["Ban IP", "Ban IP"],
-					["Filters", "Filters"]]
+					["Filters", "Filters"],
+					["Bans Symlinked", "Bans Symlinked"]]
 
 		## Scan Settings -- Default
-		self.interval = int(self.config.get("Default", "interval", "60"))
+		self.interval = int(config.get("Default", "interval", "60"))
+		
+		
 
 		for x in range(len(options)):
-			default[options[x][1]] = self.config.get("Default", options[x][0])
+			default[options[x][1]] = config.get("Default", options[x][0])
 
-		## Debug Settings
-		if self.config.has_option("Default", "Debug File"):
-			self.debug_file = self.config.get("Default", "Debug File")
-		else:
-			self.debug_file = os.path.join(self.main_dir, "debug.log")
-
-		if self.config.has_option("Default", "Debug Level"):
-			self.debug_level = self.config.get("Default", "Debug Level")
-		else:
-			self.debug_level = "WARNING"
-
-		x = 0
-		while x < (len(self.server_settings)):
-			temp = copy.copy(default)
+		for section in config_sections:
+			server = copy.copy(default)
 
 			## Server Info
-			temp["ServerName"] = self.config.get(self.server_settings[x], "ServerName")
-			temp["ServerIP"] = self.config.get(self.server_settings[x], "ServerIP")
-			temp["ServerPort"] = self.config.get(self.server_settings[x], "ServerPort")
-			temp["RconPassword"] = self.config.get(self.server_settings[x], "RconPassword")
-			temp["BattlEye Directory"] = self.config.get(self.server_settings[x], "BattlEye Directory")
-			temp["Temp Directory"] = os.path.join(temp["BattlEye Directory"], "pyBEscanner", "Temp")
+			server["ServerName"] = config.get(section, "ServerName")
+			server["ServerIP"] = config.get(section, "ServerIP")
+			server["ServerPort"] = config.get(section, "ServerPort")
+			server["RconPassword"] = config.get(section, "RconPassword")
+			server["BattlEye Directory"] = config.get(section, "BattlEye Directory")
+			server["Server Console Log"] = config.get(section, "Server Console Log")
+			server["Server RPT Log"] = config.get(section, "Server RPT Log")
+			server["Temp Directory"] = os.path.join(self.main_dir, "temp", section)
+			server["Logs Directory"] = os.path.join(self.main_dir, "logs", section)
+			server["LockFile"] = os.path.join(server["Temp Directory"], "scan-stopped.lockfile")
+			server["LockFile-Ask"] = os.path.join(server["Temp Directory"], "scan-stop-ask.lockfile")
 
 			for y in range(len(options)):
-				if self.config.has_option(self.server_settings[x], options[y][0]):
-					temp[options[y][1]] = self.config.get(self.server_settings[x], options[y][0])
+				if config.has_option(section, options[y][0]):
+					server[options[y][1]] = config.get(section, options[y][0])
 
-			temp["Filters"] = re.sub(",\s*", ",", temp["Filters"])
-			temp_filters = temp["Filters"].split(",")
-			temp["Filters"] = []
+			server["Filters"] = re.sub(",\s*", ",", server["Filters"])
+			temp_filters = server["Filters"].split(",")
+			server["Filters"] = []
 			for filters in temp_filters:
 				if filters == "Custom":
-					temp["Filters"].append(os.path.join(temp["BattlEye Directory"], "pyBEscanner", "filters", "Custom"))
+					server["Filters"].append(os.path.join(server["BattlEye Directory"], "pyBEscanner", "filters"))
 				else:
-					temp["Filters"].append(os.path.join(self.main_dir, "filters", filters))
+					server["Filters"].append(os.path.join(self.main_dir, "filters", filters))
 
-			self.server_settings[x] = temp
+			if server["Bans Symlinked"] == "on":
+				if default["Bans"] == None:
+					default["Bans"] = bans.Bans(default["Bans Directory"])
+				server["Bans"] = default["Bans"]
+			else:
+				server["Bans"] = bans.Bans(server["BattlEye Directory"])
 
 			# Generated Settings
-			self.server_settings[x]["Battleye Logs"] = ["addbackpackcargo",
+			server["Battleye Logs"] = ["addbackpackcargo",
 											"addmagazinecargo",
 											"addweaponcargo",
 											"attachto",
@@ -160,95 +188,109 @@ class Main:
 											"setvariable",
 											"teamswitch"]
 
-			self.server_settings[x]["Battleye Logs Location"] = {}
-			self.server_settings[x]["Battleye Temp Logs"] = {}
-			self.server_settings[x]["Battleye Backup Logs"] = {}  # TODO
+			server["Battleye Logs Location"] = {}
+			server["Battleye Temp Logs"] = {}
+			server["Battleye Backup Logs"] = {}  # TODO
 
-			self.server_settings[x]["Banlist Filters"] = {}
-			self.server_settings[x]["Kicklist Filters"] = {}
-			self.server_settings[x]["Whitelist Filters"] = {}
-			self.server_settings[x]["Spamlist Filters"] = {}
+			server["Banlist Filters"] = {}
+			server["Kicklist Filters"] = {}
+			server["Whitelist Filters"] = {}
+			server["Spamlist Filters"] = {}
 
 
-			for be_log in self.server_settings[x]["Battleye Logs"]:
-				self.server_settings[x]["Battleye Logs Location"][be_log] = os.path.join(self.server_settings[x]["BattlEye Directory"], (be_log + ".log"))
-				self.server_settings[x]["Battleye Temp Logs"][be_log] = os.path.join(self.server_settings[x]["Temp Directory"], (be_log + ".log"))
+			for be_log in server["Battleye Logs"]:
+				server["Battleye Logs Location"][be_log] = os.path.join(server["BattlEye Directory"], (be_log + ".log"))
+				server["Battleye Temp Logs"][be_log] = os.path.join(server["Temp Directory"], (be_log + ".log"))
 
-				self.server_settings[x]["Banlist Filters"][be_log] = []
-				self.server_settings[x]["Kicklist Filters"][be_log] = []
-				self.server_settings[x]["Whitelist Filters"][be_log] = []
-				self.server_settings[x]["Spamlist Filters"][be_log] = []
+				server["Banlist Filters"][be_log] = []
+				server["Kicklist Filters"][be_log] = []
+				server["Whitelist Filters"][be_log] = []
+				server["Spamlist Filters"][be_log] = []
 
-				for filters in self.server_settings[x]["Filters"]:
-					self.server_settings[x]["Banlist Filters"][be_log].append(os.path.join(filters, be_log + ".banlist"))
-					self.server_settings[x]["Kicklist Filters"][be_log].append(os.path.join(filters, be_log + ".kicklist"))
-					self.server_settings[x]["Whitelist Filters"][be_log].append(os.path.join(filters, be_log + ".whitelist"))
-					self.server_settings[x]["Spamlist Filters"][be_log].append(os.path.join(filters, be_log + ".spamlist"))
+				for filters in server["Filters"]:
+					server["Banlist Filters"][be_log].append(os.path.join(filters, be_log + ".banlist"))
+					server["Kicklist Filters"][be_log].append(os.path.join(filters, be_log + ".kicklist"))
+					server["Whitelist Filters"][be_log].append(os.path.join(filters, be_log + ".whitelist"))
+					server["Spamlist Filters"][be_log].append(os.path.join(filters, be_log + ".spamlist"))
+			self.server_settings.append(server)
 
-			x = x + 1
 
 	def start(self):
 		old_config_timestamp = None
+		scan_count = 60
 		while True:
-			new_config_timestamp = os.path.getmtime(self.conf_file)
-			if old_config_timestamp != new_config_timestamp:
-				print "---------------------------------------------------------"
-				print "       Loading Config File"
-				print "---------------------------------------------------------"
-				self.loadconfig()
-				logging.basicConfig(filename=self.debug_file, level=self.debug_level)
-				old_config_timestamp = new_config_timestamp
-			x = 0
-			while x < len(self.server_settings):
+			try:
+				new_config_timestamp = os.path.getmtime(self.conf_file)
+				if old_config_timestamp != new_config_timestamp:
+					print "---------------------------------------------------------"
+					print "       Loading Config File"
+					print "---------------------------------------------------------"
+					self.loadconfig()
+					old_config_timestamp = new_config_timestamp
+					scan_count = 60
+					
+				if scan_count == 60:
+					print
+					sys.stdout.write('Scanning .')
+					sys.stdout.flush()
+					scan_count = 0
+				else:
+					sys.stdout.write('.')
+					sys.stdout.flush()
+					scan_count = scan_count + 1
+
+				for server in self.server_settings:
+					if os.path.isfile(server["LockFile"]):
+						print
+						print("LockFile Detected - Skipping " + server["ServerName"])
+						scan_count = 60
+					else:
+						bans_file = os.path.join(server["BattlEye Directory"], "bans.txt")
+						if os.path.isfile(bans_file) is False:
+							open(bans_file, 'w').close()
+						server["Bans.txt Timestamp"] = os.path.getmtime(bans_file)
+						logs_battleye.Scanner(server).scan()
+						if os.path.isfile(server["LockFile-Ask"]):
+							print
+							print("LockFile Detected, Finished Scanning Logs for Server " + server["ServerName"])
+							if server["Scan Server Logs"] == "on":
+								logs_server.ConsoleScanner(server).scan_log(0)
+								logs_server.RPTScanner(server).scan_log(0)
+							open(server["LockFile"], 'w').close()
+						else:
+							if server["Scan Server Logs"] == "on":
+								logs_server.ConsoleScanner(server).scan_log(0)
+								logs_server.RPTScanner(server).scan_log(0)
+
+				for server in self.server_settings:
+					kicks_file = os.path.join(server["BattlEye Directory"], "kicks.txt")
+					if os.path.isfile(kicks_file) is True:
+						rcon = rcon_cscript.Rcon(server["ServerIP"], server["ServerPort"], server["RconPassword"])
+						rcon.kickplayers(kicks_file)
+						os.remove(kicks_file)
+						scan_count = 60
+
+				for server in list(self.server_settings):
+					server["Bans"].checkBans()
+					if server["Bans"].getStatus() == True:
+						print
+						print ("Reloading Bans: " + server["ServerName"])
+						server["Bans"].writeBans()
+						rcon = rcon_cscript.Rcon(server["ServerIP"], server["ServerPort"], server["RconPassword"])
+						rcon.reloadbans()
+						scan_count = 60
+				for server in list(self.server_settings):
+					server["Bans"].updateStatus(False)
+
+				time.sleep(self.interval)
+			except KeyboardInterrupt:
 				print
-				print
-				print "---------------------------------------------------------"
-				print "       Scanning " + str(self.server_settings[x]["ServerName"])
-				print "---------------------------------------------------------"
-				logging.info("")
-				logging.info("---------------------------------------------------------")
-				logging.info("       Scanning " + str(self.server_settings[x]["ServerName"]))
-				logging.info("---------------------------------------------------------")
-				bans_file = os.path.join(self.server_settings[x]["BattlEye Directory"], "bans.txt")
-				if os.path.isfile(bans_file) is False:
-					open(bans_file, 'w').close()
-				self.server_settings[x]["Bans.txt Timestamp"] = os.path.getmtime(bans_file)
-				server_scan = battleye_modules.Scanner(self.server_settings[x])
-				server_scan.scan()
-				print str(self.server_settings[x]["Filters"])
-				x = x + 1
+				print("Removing LockFile....")
+				os.remove(self.lockfile)
+				sys.exit()
 
-
-			x = 0
-			logging.info("---------------------------------------------------------")
-			while x < len(self.server_settings):
-				logging.info("Checking for kicks.txt -- " + str(self.server_settings[x]["ServerName"]))
-				kicks_file = os.path.join(self.server_settings[x]["BattlEye Directory"], "kicks.txt")
-				if os.path.isfile(kicks_file) is True:
-					logging.info("Reloading Kicks")
-					rcon = rcon_modules.Rcon(self.server_settings[x]["ServerIP"], self.server_settings[x]["ServerPort"], self.server_settings[x]["RconPassword"])
-					rcon.kickplayers(kicks_file)
-					os.remove(kicks_file)
-				x = x + 1
-			logging.info("---------------------------------------------------------")
-
-			x = 0
-			logging.info("---------------------------------------------------------")
-			while x < len(self.server_settings):
-				logging.info("Checking for bans.txt changes -- " + str(self.server_settings[x]["ServerName"]))
-				bans_file = os.path.join(self.server_settings[x]["BattlEye Directory"], "bans.txt")
-				if os.path.isfile(bans_file) is False:
-					open(bans_file, 'w').close()
-				if self.server_settings[x]["Bans.txt Timestamp"] != os.path.getmtime(bans_file):
-					logging.info("Reloading Bans")
-					rcon = rcon_modules.Rcon(self.server_settings[x]["ServerIP"], self.server_settings[x]["ServerPort"], self.server_settings[x]["RconPassword"])
-					rcon.reloadbans()
-
-				x = x + 1
-			logging.info("---------------------------------------------------------")
-
-			time.sleep(self.interval)
-
-
-pyBE = Main()
-pyBE.start()
+parser = argparse.ArgumentParser(description='pyBEscanner Options...')
+parser.add_argument('--force-start', '-f', action='store_true')
+args = parser.parse_args()
+main = Main(args)
+main.start()

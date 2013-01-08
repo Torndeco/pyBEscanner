@@ -1,5 +1,19 @@
 Important info regarding changes
 
+Version 15
+	Logging files are now located @ pyBEscanner/logs/
+	All Temp Files are now located @ pyBEscanner/temp/
+	New servers.ini settings
+		Report Message -> New log file that is just an extra ban file with just bans from pyBEscanner.
+							Allows admin to have a standard ban message, while still have a seperate file that will contain
+								bans info with players name / guid / ip / date+time / server / log-file
+		Bans Symlinked -> If u have your ban files symlinked (recommended), u should select this option.
+							Otherwise everytime a ban is added to the file, each server (except the one that added the ban file),
+							will rescan the bans.txt for changes. 
+							Plus instead of just have 1 list of bans loaded, app will have a list of bans loaded per server.
+		Bans Directory -> If u have Bans Symlinked Turned on, u will need to point it to a directory containing the bans.txt.
+							Also will be the directory, were bans-pyBEscanner.txt will be created.
+
 Version 13
 	Revert Changes in 12,
 	Recommend u use strict settings in createvehicle banlist etc instead...

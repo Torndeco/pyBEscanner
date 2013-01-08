@@ -1,4 +1,4 @@
-# battleye_modules.py
+# logs_battleye.py
 #    This file is part of pyBEscanner.
 #
 #    pyBEscanner is free software: you can redistribute it and/or modify
@@ -14,36 +14,35 @@
 #    You should have received a copy of the GNU General Public License
 #    along with pyBEscanner.  If not, see <http://www.gnu.org/licenses/>.
 
-import datetime
-import re
-import os
-import shutil
-import time
-import string
-import logging
 import cPickle as pickle
+import datetime
+import os
+import re
+import shutil
+import string
+import sys
+import time
 
-import rcon_modules
+from modules import rcon_cscript
+
+pickleVersion = 1
 
 class Scanner:
 	def __init__(self, server_settings):
 
-		self.logger = logging.getLogger("Battleye Scanner")
-		self.logger.debug("Filters --> " + str(server_settings["Filters"]))
-
 		self.server_settings = server_settings
 
-		self.bans = Bans(os.path.join(self.server_settings["BattlEye Directory"], "bans.txt"))
-		self.kicks = Kicks(os.path.join(self.server_settings["BattlEye Directory"], "kicks.txt"))
-		self.rcon = rcon_modules.Rcon(self.server_settings["ServerIP"], self.server_settings["ServerPort"], self.server_settings["RconPassword"])
+		self.bans = self.server_settings["Bans"]
+		self.kicks = Kicks(os.path.join(self.server_settings["Temp Directory"], "kicks.txt"))
+		self.rcon = rcon_cscript.Rcon(self.server_settings["ServerIP"], self.server_settings["ServerPort"], self.server_settings["RconPassword"])
 
-		self.ban_guid_list = []
-		self.ban_ip_list = []
-		self.ban_reason = []
+		self.bans_guid_list = []
+		self.bans_ip_list = []
+		self.bans_info_list = []
 		self.kick_list = []
 		self.kick_reason = []
 
-		self.backuplog_dir = os.path.join(self.server_settings["BattlEye Directory"], "Logs", datetime.datetime.now().strftime("BattlEye Logs - %Y-%m-%d"))
+		self.backuplog_dir = os.path.join(self.server_settings["Logs Directory"], datetime.datetime.now().strftime("%Y-%m-%d"), "BattlEye Logs")
 
 
 		self.backup_logs = {"addbackpackcargo": os.path.join(self.backuplog_dir, "addbackpackcargo.log"),
@@ -68,29 +67,23 @@ class Scanner:
 		if not os.path.exists(self.backuplog_dir):
 			os.makedirs(self.backuplog_dir)
 
-		if not os.path.exists(os.path.join(self.server_settings["BattlEye Directory"], "pyBEscanner")):
-			os.mkdir(os.path.join(self.server_settings["BattlEye Directory"], "pyBEscanner"))
-
 		for filter_location in self.server_settings["Filters"]:
 			if not os.path.exists(filter_location):
 				os.mkdir(filter_location)
 
 		if not os.path.exists(self.server_settings["Temp Directory"]):
-			os.mkdir(self.server_settings["Temp Directory"])
+			os.makedirs(self.server_settings["Temp Directory"])
 
 
 	def scan_battleye_logs(self, x):
 
 
 		if self.server_settings[x] == "off":
-			print x + " (off)"
 			if os.path.isfile(self.server_settings["Battleye Temp Logs"][x]) is True:
-				f_backup = open(self.backup_logs[x], "a")
-				with open(self.server_settings["Battleye Temp Logs"][x]) as f_log:
+				with open(self.backup_logs[x], "a") as f_backup, open(self.server_settings["Battleye Temp Logs"][x]) as f_log:
 					for line in f_log:
 						## Append Lines to Backup Files
-						f_backup.write(line)	
-				f_backup.close()
+						f_backup.write(line)
 				os.remove(self.backup_logs[x])
 		else:
 			self.log_scanner.scan_log(self.server_settings["Battleye Temp Logs"][x],
@@ -102,7 +95,6 @@ class Scanner:
 						x)
 			if self.server_settings[x] == "strict":
 				# Strict Scanning
-				print x + " (strict)"
 				self.update_bans(x, self.log_scanner.banlist)
 				self.update_bans(x, self.log_scanner.kicklist)
 				self.update_bans(x, self.log_scanner.unknownlist, update=True)
@@ -114,7 +106,6 @@ class Scanner:
 
 			elif self.server_settings[x] == "standard+kick":
 				# Standard Scanning + Kicking
-				print x + " (standard+kick)"
 				self.update_bans(x, self.log_scanner.banlist, update=True)
 				self.update_kicks(x, self.log_scanner.kicklist)
 				self.update_kicks(x, self.log_scanner.unknownlist, update=True)
@@ -126,7 +117,6 @@ class Scanner:
 
 			elif self.server_settings[x] == "standard":
 				# Standard Scanning
-				print x + " (standard)"
 				self.update_bans(x, self.log_scanner.banlist, update=True)
 				self.update_kicks(x, self.log_scanner.kicklist, update=True)
 
@@ -136,8 +126,10 @@ class Scanner:
 				self.log(x, "unknown", self.log_scanner.unknownlist)
 
 			else:
-				self.logger.warning(x + " (unknown option)")
+				print
+				print self.server_settings[x]["ServerName"]
 				print x + " (unknown option)"
+				sys.exit()
 
 	def kick_ban_msg(self, template, player_name, server_name, log_file, date_time):
 		tmp = string.replace(template, "PLAYER_NAME", player_name)
@@ -149,24 +141,30 @@ class Scanner:
 	def update_bans(self, logname, data, time="-1", update=False):
 
 		for x in range(len(data["guid"])):
-			if self.ban_guid_list.count(data["guid"][x]) == 0:
-				self.ban_guid_list.append(data["guid"][x])
-				self.ban_ip_list.append(data["ip"][x])
-				ban_message = self.kick_ban_msg(self.server_settings["Ban Message"], str(data["name"][x]), str(self.server_settings["ServerName"]), logname, str(data["date"][x]))
-				self.ban_reason.append(ban_message)
-				self.logger.info("Banning Player " + str(data["name"][x]))
-				print ("Banning Player " + str(data["name"][x]))
+			guid = data["guid"][x]
+			ip = data["ip"][x]
+			player_name = data["name"][x]
+			date = data["date"][x]
 
-		if update is True:
-			if self.ban_guid_list != []:
-				self.bans.openfile()
-				for x in range(len(self.ban_guid_list)):
-					self.bans.addban(self.ban_guid_list[x], time, self.ban_reason[x])
-					if (self.server_settings["Ban IP"] == "on") or (self.ban_guid_list[x] == "-"):
-						self.bans.addban(self.ban_ip_list[x], time, self.ban_reason[x])
-				self.bans.closefile()
-				self.ban_guid_list = []
-				self.ban_reason = []
+			if guid == "-":
+				self.bans_guid_list.append(None)
+			else:
+				self.bans_guid_list.append(guid)
+			self.bans_info_list.append({"name": player_name, "guid": guid, "ip": ip, "ServerName": self.server_settings["ServerName"], "date":date})
+			self.bans_ip_list.append(ip)
+
+				#def addBan(self, unique_id, info, logname, ban_template, report_template): #{ID,Reason}
+		if update:
+			for x in range(len(self.bans_guid_list)):
+				if (self.server_settings["Ban IP"] == "on") or (self.bans_guid_list[x] == None):
+					self.bans.addBan(self.bans_ip_list[x], self.bans_info_list[x], logname, self.server_settings["Ban Message"], self.server_settings["Report Message"])
+				if self.bans_guid_list[x] != None:
+					self.bans.addBan(self.bans_guid_list[x], self.bans_info_list[x], logname, self.server_settings["Ban Message"], self.server_settings["Report Message"])
+			if self.bans_guid_list != []:
+				self.bans.updateStatus(True)
+				self.bans_guid_list = []
+				self.bans_ip_list = []
+				self.bans_info_list = []
 
 	def update_kicks(self, logname, data, update=False):
 		for x in range(len(data["name"])):
@@ -174,15 +172,13 @@ class Scanner:
 				self.kick_list.append(data["name"][x])
 				kick_message = self.kick_ban_msg(self.server_settings["Kick Message"], str(data["name"][x]), str(self.server_settings["ServerName"]), logname, str(data["date"][x]))
 				self.kick_reason.append(kick_message)
-				self.logger.info("Kicking Player " + str(data["name"][x]))
 
 		if update is True:
 			if self.kick_list != []:
-				self.kicks.openfile()
-				for x in range(len(self.kick_list)):
+				for player in self.kick_list:
 					#self.kicks.addkick(self.kick_list[x], self.kick_reason[x])
-					self.kicks.addkick(self.kick_list[x], None)
-				self.kicks.closefile()
+					self.kicks.addkick(player, None)
+				self.kicks.synckicks()
 				self.kick_list = []
 				self.kick_reason = []
 
@@ -191,10 +187,9 @@ class Scanner:
 
 	def log(self, x, action, data):
 		if data["date"] != []:
-			f_log = open((os.path.join(self.backuplog_dir, x + "-" + action + ".txt")), "a")
-			for x in range(len(data["date"])):
-				f_log.write(str(data["date"][x]) + ": " + str(data["name"][x]) + ": (" + str(data["ip"][x]) + ":" + str(data["port"][x]) + ") " + str(data["guid"][x]) + " - " + str(data["code"][x]) + "\n")
-			f_log.close()
+			with open((os.path.join(self.backuplog_dir, x + "-" + action + ".txt")), "a") as f_log:
+				for x in range(len(data["date"])):
+					f_log.write(str(data["date"][x]) + ": " + str(data["name"][x]) + ": (" + str(data["ip"][x]) + ":" + str(data["port"][x]) + ") " + str(data["guid"][x]) + " - " + str(data["code"][x]) + "\n")
 
 	def scan(self):
 
@@ -204,7 +199,6 @@ class Scanner:
 			if os.path.isfile(self.server_settings["Battleye Logs Location"][log]) is True:
 				if os.path.isfile(self.server_settings["Battleye Temp Logs"][log]) is True:
 					os.remove(self.server_settings["Battleye Temp Logs"][log])
-					self.logger.info("Removing Old Temp File - " + self.server_settings["Battleye Temp Logs"][log])
 				error_loop = 0
 				while True:
 					try:
@@ -213,7 +207,6 @@ class Scanner:
 					except WindowsError:
 						if error_loop >= 5:
 							print "Error file " + log + " in usage by a process, skipping..."
-							self.logger.critical("Error file " + log + " in usage by a process, skipping...")
 							break
 						else:
 							error_loop = error_loop + 1
@@ -227,9 +220,7 @@ class Scanner:
 class Parser:
 	def __init__(self, parent, scan_time, offset):
 		self.parent = parent
-		self.logger = logging.getLogger("Parser ")
 
-		self.logger.debug("Scan Time = " + str(scan_time))
 		self.scan_time = scan_time
 		self.offset = offset
 		self.decoder = Decoder()
@@ -262,32 +253,21 @@ class Parser:
 
 		# Check for Offset pickle file / Initialize OffSet Data
 		offset_data_file = logfile + ".offset"
-		spam_data_file = logfile + ".spam"
 
-		self.logger.debug('')
-		self.logger.debug('Parsing ' + str(logfile))
-		self.logger.debug('Checking of Offset Data File')
 		if os.path.isfile(offset_data_file) is True:
-			self.logger.debug('Offset Data File Found')
-			f_offset_data_file = open(offset_data_file, 'rb')
-			offset_data = pickle.load(f_offset_data_file)
-			self.logger.debug('Loading Offset Data = ' + str(offset_data))
-			if offset_data != []:
-				entries_date.append(offset_data[0])
-				entries_guid.append(offset_data[1])
-				entries_ip.append(offset_data[2])
-				entries_port.append(offset_data[3])
-				entries_code.append(offset_data[4])
-				entries_name.append(offset_data[5])
-			f_offset_data_file.close()
-			self.logger.debug('Entries Data = ' + str(offset_data))
-		else:
-			self.logger.debug('No Offset Data File Found')
-
+			with open(offset_data_file, 'rb') as f_offset_data_file:
+				offset_data = pickle.load(f_offset_data_file)
+			if offset_data["Version"] == pickleVersion:
+				if offset_data["Data"] != []:
+					entries_date.append(offset_data["Data"][0])
+					entries_guid.append(offset_data["Data"][1])
+					entries_ip.append(offset_data["Data"][2])
+					entries_port.append(offset_data["Data"][3])
+					entries_code.append(offset_data["Data"][4])
+					entries_name.append(offset_data["Data"][5])
 		# Scan BattlEye Logs
 		if os.path.isfile(logfile) is True:
-			f_backup = open(backupfile, "a")
-			with open(logfile) as f_log:
+			with open(backupfile, "a") as f_backup, open(logfile) as f_log:
 				for line in f_log:
 					## Append Lines to Backup Files
 					f_backup.write(line)
@@ -298,9 +278,7 @@ class Parser:
 					if date is None:
 						x = len(entries_date) - 1
 						if x >= 0:
-							self.logger.debug('Detected Multiple lines = ' + str(entries_code[x]))
 							entries_code[x] = entries_code[x] + line.strip()
-							self.logger.debug('Updated line = ' + str(entries_code[x]))
 					else:
 						name = re.split("\s.\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}:\d{1,4}[0-9].\s", temp[1], 1)
 						ip_port = re.split(':', re.search("\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}:\d{1,4}[0-9]", line_stripped).group(0))
@@ -311,30 +289,29 @@ class Parser:
 						entries_port.append(ip_port[1])
 						entries_code.append(code[1])
 						entries_name.append(name[0])
-			f_backup.close()
+
 			os.remove(logfile)
 
 		# Check for battleye offset condition
-		offset_data = []
+		offset_data = {"Version": pickleVersion, "Data": []}
 		if len(entries_date) > 0:
 			x = time.mktime(time.localtime(self.scan_time))
 			x2 = time.mktime((time.strptime(entries_date[-1], "%d.%m.%Y %H:%M:%S")))
 
 			if ((x - x2) < self.offset) is True:
-				offset_data.append(entries_date.pop())
-				offset_data.append(entries_guid.pop())
-				offset_data.append(entries_ip.pop())
-				offset_data.append(entries_port.pop())
-				offset_data.append(entries_code.pop())
-				offset_data.append(entries_name.pop())
-				self.logger.debug("Saving  " + str(offset_data))
+				offset_data["Data"].append(entries_date.pop())
+				offset_data["Data"].append(entries_guid.pop())
+				offset_data["Data"].append(entries_ip.pop())
+				offset_data["Data"].append(entries_port.pop())
+				offset_data["Data"].append(entries_code.pop())
+				offset_data["Data"].append(entries_name.pop())
 
 		# Update offset_data_file
-		f_offset_data_file = open(offset_data_file, 'wb')
-		pickle.dump(offset_data, f_offset_data_file)
-		f_offset_data_file.close()
+		with open(offset_data_file, 'wb') as f_offset_data_file:
+			pickle.dump(offset_data, f_offset_data_file)
 
 		if (len(entries_code) > 0) is True:
+			spam_data_file = logfile + ".spam"
 			self.spam_detection = Spam(self, spam_data_file, spam_filters, logname)
 			self.spam_detection.load()
 			self.spam_detection.add_data(entries_date, entries_guid, entries_ip, entries_port, entries_code, entries_name)
@@ -360,7 +337,6 @@ class Parser:
 								else:
 									x = x + 1
 				else:
-					self.logger.info("Create missing filter " + str(wh_filter))
 					open(wh_filter, 'w').close()
 
 
@@ -383,7 +359,6 @@ class Parser:
 									else:
 										x = x + 1
 					else:
-						self.logger.info("Create missing filter " + str(bl_filter))
 						open(bl_filter, 'w').close()
 
 			for kl_filter in kicklist_filters:
@@ -406,7 +381,6 @@ class Parser:
 										x = x + 1
 					else:
 						# If file = missing, create an empty file
-						self.logger.info("Create missing filter " + str(kl_filter))
 						open(kl_filter, 'w').close()
 
 
@@ -432,41 +406,26 @@ class Parser:
 							"name": entries_name}
 
 
-class Bans:
-
-
-	def __init__(self, bans_file):
-		self.bans_file = bans_file
-
-	def openfile(self):
-		self.f_bans = open(self.bans_file, "a")
-
-	def closefile(self):
-		self.f_bans.close()
-
-	def addban(self, guid_ip, time, reason):
-		self.f_bans.write(guid_ip + " " + time + " " + reason + "\n")
-
-	def removeban(self, guid, time, reason):
-		pass
-
 class Kicks:
 
 	def __init__(self, logfile):
+		self.kicks = {}
 		self.kicks_file = logfile
 
-	def openfile(self):
-		self.f_kicks = open(self.kicks_file, "a")
-
-	def closefile(self):
-		self.f_kicks.close()
-
 	def addkick(self, playername, reason):
-		self.f_kicks.write(playername + "\n")
-		#self.f_bans.write(guid_ip + " " + time + " " + reason + "\n")
+		self.kicks[playername] = reason
 
-	def removekick(self, guid, time, reason):
-		pass
+	def removekick(self, playername):
+		if playername in self.kicks:
+			del self.kicks[playername]
+
+	def synckicks(self):
+		if self.kicks != {}:
+			with open(self.kicks_file, "a", encoding='utf8') as f_kicks:
+				for playername in list(self.kicks.keys()):
+					f_kicks.write(playername + "\n")
+
+
 
 class Decoder:
 
@@ -487,7 +446,6 @@ class Spam:
 
 	def __init__(self, parent, spam_data_file, spam_rules_files, logname):
 		self.parent = parent
-		self.logger = logging.getLogger("Spam ")
 
 		self.spam_data_file = spam_data_file
 		self.spam_rules_files = spam_rules_files
@@ -517,7 +475,6 @@ class Spam:
 		# Loop through Players (unique id = GUID)
 		player_guid_list = self.players.keys()
 		for guid in player_guid_list: # Loop through PLAYERS
-			self.logger.debug(str(self.players[guid]))
 			player_logged_rules = self.players[guid]["rules"].keys()
 			for rule in player_logged_rules: # Loop Logged Rules Detection
 				if rule not in self.rules.keys(): # Check if old rule logged
@@ -556,14 +513,13 @@ class Spam:
 						# regrex-filter1: [Timestamp][Code]
 						# regrex-filter2: [Timestamp][Code]
 						# regrex-filter3: [Timestamp][Code]
-		self.logger.debug(" ")
-		self.logger.debug("Checking for " + self.spam_data_file)
 		if os.path.isfile(self.spam_data_file) is True:
-			self.logger.debug("Spam File Detected")
-			f_spam_data_file = open(self.spam_data_file, 'rb')
-			self.players = pickle.load(f_spam_data_file)
-			self.logger.debug("Loaded Spam Data")
-			f_spam_data_file.close()
+			with open(self.spam_data_file, 'rb') as f_spam_data_file:
+				spam_data = pickle.load(f_spam_data_file)
+			if spam_data["Version"] == pickleVersion:
+				self.players = spam_data["Data"]
+			else:
+				self.players = {}
 		else:
 			self.players = {}
 
@@ -571,7 +527,6 @@ class Spam:
 			# self.rules = {}
 				# Regrex Rule: [[count, time elapsed, action], [2x]]
 		for spam_rules_file in self.spam_rules_files:
-			self.logger.debug("Checking for " + spam_rules_file)
 			if os.path.isfile(spam_rules_file) is True:
 				with open(spam_rules_file) as f:
 					for line in f:
@@ -584,12 +539,9 @@ class Spam:
 
 	def save(self):
 		# Update players data
-		self.logger.debug("Saving Spam Info")
-		self.logger.debug(self.spam_data_file)
-		self.logger.debug(str(self.players))
-		f_spam_data_file = open(self.spam_data_file, 'wb')
-		pickle.dump(self.players, f_spam_data_file)
-		f_spam_data_file.close()
+		spam_data = {"Version": pickleVersion, "Data": self.players}
+		with open(self.spam_data_file, 'wb') as f_spam_data_file:
+			pickle.dump(spam_data, f_spam_data_file)
 
 	def addHacker(self, guid, action, code_time, code_entry):
 
@@ -610,33 +562,34 @@ class Spam:
 			banlist = {"date": [], "guid": [], "ip": [], "port": [], "code": [], "name": []}
 			kicklist = {"date": [], "guid": [], "ip": [], "port": [], "code": [], "name": []}
 
-	    		f_log = open((os.path.join(self.parent.parent.backuplog_dir, self.logname + "-spam.txt")), "a")
-			for guid in self.hackers:
-				name = self.hackers[guid]["name"]
-				ip = self.hackers[guid]["ip"]
-				port = self.hackers[guid]["port"]
-				for action in self.hackers[guid]["action"]:
-					f_log.write("\n")
-					f_log.write("Player Name = " + name + "\n")
-					f_log.write("\tAction = " + action + "\n")
-					data = self.hackers[guid]["action"][action]
-					for x in range(len(data)):
-						f_log.write("\t\t" + str(data[x][0]) + ": " + str(name) + " " + str(ip) + ":" + str(port) + " " + str(guid) + " - " + str(data[x][1]) + "\n")
-					if action == "BAN":
-						banlist["date"].append(data[x][0])
-						banlist["guid"].append(guid)
-						banlist["ip"].append(ip)
-						banlist["port"].append(port)
-						banlist["code"].append(data[x][1])
-						banlist["name"].append(name)
-					elif action == "KICK":
-						kicklist["date"].append(data[x][0])
-						kicklist["guid"].append(guid)
-						kicklist["ip"].append(ip)
-						kicklist["port"].append(port)
-						kicklist["code"].append(data[x][1])
-						kicklist["name"].append(name)
-			f_log.close()
-			self.hackers = {}
-			self.parent.parent.update_bans(self.logname, banlist, update=True)
-			self.parent.parent.update_kicks(self.logname, kicklist, update=True)
+			with open((os.path.join(self.parent.parent.backuplog_dir, self.logname + "-spam.txt")), "a") as f_log:
+				for guid in self.hackers:
+					name = self.hackers[guid]["name"]
+					ip = self.hackers[guid]["ip"]
+					port = self.hackers[guid]["port"]
+					for action in self.hackers[guid]["action"]:
+						f_log.write("\n")
+						f_log.write("Player Name = " + name + "\n")
+						f_log.write("\tAction = " + action + "\n")
+						data = self.hackers[guid]["action"][action]
+						for x in range(len(data)):
+							f_log.write("\t\t" + str(data[x][0]) + ": " + str(name) + " " + str(ip) + ":" + str(port) + " " + str(guid) + " - " + str(data[x][1]) + "\n")
+						if action == "BAN":
+							banlist["date"].append(data[x][0])
+							banlist["guid"].append(guid)
+							banlist["ip"].append(ip)
+							banlist["port"].append(port)
+							banlist["code"].append(data[x][1])
+							banlist["name"].append(name)
+						elif action == "KICK":
+							kicklist["date"].append(data[x][0])
+							kicklist["guid"].append(guid)
+							kicklist["ip"].append(ip)
+							kicklist["port"].append(port)
+							kicklist["code"].append(data[x][1])
+							kicklist["name"].append(name)
+
+							
+				self.hackers = {}
+				self.parent.parent.update_bans(self.logname, banlist, update=True)
+				self.parent.parent.update_kicks(self.logname, kicklist, update=True)
