@@ -13,7 +13,7 @@ bis_fnc_crows
 bowonky
 camsetpos
 camcommit
-createVehicleLocal
+createVehicleLocal _monkypos
 createMarkerLocal \[\(""""pmark""""
 _crow
 Destruct
