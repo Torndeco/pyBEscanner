@@ -531,7 +531,7 @@ class Spam:
 				with open(spam_rules_file) as f:
 					for line in f:
 						# data = [0-max_count, 1-time elapsed, 2-action, 3-regrex rule]
-						data = re.split(" ", line.strip(), 4)
+						data = re.split(" ", line.strip(), 3)
 						self.rules[data[3]] = [float(data[0]), data[1], data[2]]
 			else:
 				open(spam_rules_file, 'w').close()
