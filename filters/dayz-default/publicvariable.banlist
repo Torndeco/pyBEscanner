@@ -2,8 +2,10 @@
 compile
 dwarden
 hiveupdateresu
+markertype
 missionNamespace
 myvehobj
 remotecmd
+teamtype
 "norrnRLact" = \<NULL-object\>
 "BIS_MPF_logic" = \<NULL-object\>
