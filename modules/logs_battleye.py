@@ -421,7 +421,7 @@ class Kicks:
 
 	def synckicks(self):
 		if self.kicks != {}:
-			with open(self.kicks_file, "a", encoding='utf8') as f_kicks:
+			with open(self.kicks_file, "a") as f_kicks:
 				for playername in list(self.kicks.keys()):
 					f_kicks.write(playername + "\n")
 
