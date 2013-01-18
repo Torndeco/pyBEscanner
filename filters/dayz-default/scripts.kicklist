@@ -3,3 +3,4 @@ getPlayerUID _x != ""
 removeAllWeapons
 removeallweapons
 espfnc
+heal.sqf
