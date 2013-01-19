@@ -219,7 +219,7 @@ class Main:
 	def start(self):
 		old_config_timestamp = None
 		scan_count = 60
-		os_name = platform.system()
+		os_name = platform.system
 		while True:
 			try:
 				new_config_timestamp = os.path.getmtime(self.conf_file)
