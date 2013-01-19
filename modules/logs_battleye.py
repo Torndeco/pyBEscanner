@@ -532,7 +532,11 @@ class Spam:
 					for line in f:
 						# data = [0-max_count, 1-time elapsed, 2-action, 3-regrex rule]
 						data = re.split(" ", line.strip(), 3)
-						self.rules[data[3]] = [float(data[0]), data[1], data[2]]
+						if data[2] == "DELETE":
+							if  data[3] in self.rules:
+								del self.rules[data[3]]
+						else:
+							self.rules[data[3]] = [float(data[0]), data[1], data[2]]
 			else:
 				open(spam_rules_file, 'w').close()
 				self.rules = {}
