@@ -23,6 +23,7 @@ import time
 import copy
 import re
 import sys
+import platform
 
 from modules import bans, logs_battleye, logs_server, rcon_cscript
 
@@ -218,6 +219,7 @@ class Main:
 	def start(self):
 		old_config_timestamp = None
 		scan_count = 60
+		os_name = platform.system()
 		while True:
 			try:
 				new_config_timestamp = os.path.getmtime(self.conf_file)
@@ -265,7 +267,7 @@ class Main:
 				for server in self.server_settings:
 					kicks_file = os.path.join(server["BattlEye Directory"], "kicks.txt")
 					if os.path.isfile(kicks_file) is True:
-						rcon = rcon_cscript.Rcon(server["ServerIP"], server["ServerPort"], server["RconPassword"])
+						rcon = rcon_cscript.Rcon(os_name, server["ServerIP"], server["ServerPort"], server["RconPassword"])
 						rcon.kickplayers(kicks_file)
 						os.remove(kicks_file)
 						scan_count = 60
@@ -276,7 +278,7 @@ class Main:
 						print
 						print ("Reloading Bans: " + server["ServerName"])
 						server["Bans"].writeBans()
-						rcon = rcon_cscript.Rcon(server["ServerIP"], server["ServerPort"], server["RconPassword"])
+						rcon = rcon_cscript.Rcon(os_name, server["ServerIP"], server["ServerPort"], server["RconPassword"])
 						rcon.reloadbans()
 						scan_count = 60
 				for server in list(self.server_settings):
