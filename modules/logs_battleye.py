@@ -23,7 +23,7 @@ import string
 import sys
 import time
 
-from modules import rcon_cscript
+#from modules import rcon_cscript
 
 pickleVersion = 1
 
@@ -34,7 +34,8 @@ class Scanner:
 
 		self.bans = self.server_settings["Bans"]
 		self.kicks = Kicks(os.path.join(self.server_settings["Temp Directory"], "kicks.txt"))
-		self.rcon = rcon_cscript.Rcon(self.server_settings["ServerIP"], self.server_settings["ServerPort"], self.server_settings["RconPassword"])
+		#TODO: Check looks like old code for kicking players
+		#self.rcon = rcon_cscript.Rcon(self.server_settings["ServerIP"], self.server_settings["ServerPort"], self.server_settings["RconPassword"])
 
 		self.bans_guid_list = []
 		self.bans_ip_list = []
@@ -182,8 +183,9 @@ class Scanner:
 				self.kick_list = []
 				self.kick_reason = []
 
-		for x in range(len(self.kick_list)):
-			self.rcon.kickplayer(self.kick_list[x])
+		#TODO: Check looks like old code for kicking players
+		#for x in range(len(self.kick_list)):
+		#	self.rcon.kickplayer(self.kick_list[x])
 
 	def log(self, x, action, data):
 		if data["date"] != []:
