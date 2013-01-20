@@ -218,7 +218,7 @@ class Main:
 	def start(self):
 		old_config_timestamp = None
 		scan_count = 60
-		os_name = platform.system
+		os_name = platform.system()
 		print "---------------------------------------------------------"
 		print "System Platform = " + os_name
 		print "---------------------------------------------------------"
