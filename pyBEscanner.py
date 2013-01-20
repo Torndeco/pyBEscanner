@@ -218,10 +218,10 @@ class Main:
 	def start(self):
 		old_config_timestamp = None
 		scan_count = 60
-		print "---------------------------------------------------------"
-		print "System Platform = " + str(platform.system)
-		print "---------------------------------------------------------"
 		os_name = platform.system
+		print "---------------------------------------------------------"
+		print "System Platform = " + os_name
+		print "---------------------------------------------------------"
 		while True:
 			try:
 				new_config_timestamp = os.path.getmtime(self.conf_file)
