@@ -17,16 +17,15 @@
 #!/usr/bin/python
 
 import argparse
-import os
 import ConfigParser
-import time
 import copy
+import os
+import platform
 import re
 import sys
-import platform
+import time
 
 from modules import bans, logs_battleye, logs_server, rcon_cscript
-
 
 
 class Main:
@@ -191,7 +190,7 @@ class Main:
 
 			server["Battleye Logs Location"] = {}
 			server["Battleye Temp Logs"] = {}
-			server["Battleye Backup Logs"] = {}  # TODO
+			server["Battleye Backup Logs"] = {}
 
 			server["Banlist Filters"] = {}
 			server["Kicklist Filters"] = {}
@@ -219,6 +218,9 @@ class Main:
 	def start(self):
 		old_config_timestamp = None
 		scan_count = 60
+		print "---------------------------------------------------------"
+		print "System Platform = " + str(platform.system)
+		print "---------------------------------------------------------"
 		os_name = platform.system
 		while True:
 			try:
@@ -267,6 +269,7 @@ class Main:
 				for server in self.server_settings:
 					kicks_file = os.path.join(server["BattlEye Directory"], "kicks.txt")
 					if os.path.isfile(kicks_file) is True:
+						print
 						rcon = rcon_cscript.Rcon(os_name, server["ServerIP"], server["ServerPort"], server["RconPassword"])
 						rcon.kickplayers(kicks_file)
 						os.remove(kicks_file)
