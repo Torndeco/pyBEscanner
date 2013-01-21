@@ -97,6 +97,7 @@ class RPTScanner:
 				self.entries = []
 				save_datafile(self.offset_data, self.offset_data_file)
 
+				
 class ConsoleScanner:
 	def __init__(self, server_settings):
 		self.logfile = server_settings["Server Console Log"]
@@ -108,7 +109,7 @@ class ConsoleScanner:
 
 	def scan_log(self, lastline=1):
 		if os.path.isfile(self.logfile) is False:
-			print()
+			print
 			print("Warning -- Could Not Find " + self.logfile)
 		else:
 			self.offset_data = load_datafile(self.logfile, self.offset_data_file)

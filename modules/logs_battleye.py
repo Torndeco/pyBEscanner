@@ -23,7 +23,7 @@ import string
 import sys
 import time
 
-from modules import rcon_cscript
+#from modules import rcon_cscript
 
 pickleVersion = 1
 
@@ -34,7 +34,6 @@ class Scanner:
 
 		self.bans = self.server_settings["Bans"]
 		self.kicks = Kicks(os.path.join(self.server_settings["Temp Directory"], "kicks.txt"))
-		self.rcon = rcon_cscript.Rcon(self.server_settings["ServerIP"], self.server_settings["ServerPort"], self.server_settings["RconPassword"])
 
 		self.bans_guid_list = []
 		self.bans_ip_list = []
@@ -181,9 +180,6 @@ class Scanner:
 				self.kicks.synckicks()
 				self.kick_list = []
 				self.kick_reason = []
-
-		for x in range(len(self.kick_list)):
-			self.rcon.kickplayer(self.kick_list[x])
 
 	def log(self, x, action, data):
 		if data["date"] != []:
@@ -425,8 +421,7 @@ class Kicks:
 				for playername in list(self.kicks.keys()):
 					f_kicks.write(playername + "\n")
 
-
-
+					
 class Decoder:
 
 
@@ -532,7 +527,11 @@ class Spam:
 					for line in f:
 						# data = [0-max_count, 1-time elapsed, 2-action, 3-regrex rule]
 						data = re.split(" ", line.strip(), 3)
-						self.rules[data[3]] = [float(data[0]), data[1], data[2]]
+						if data[2] == "DELETE":
+							if  data[3] in self.rules:
+								del self.rules[data[3]]
+						else:
+							self.rules[data[3]] = [float(data[0]), data[1], data[2]]
 			else:
 				open(spam_rules_file, 'w').close()
 				self.rules = {}
@@ -589,7 +588,6 @@ class Spam:
 							kicklist["code"].append(data[x][1])
 							kicklist["name"].append(name)
 
-							
 				self.hackers = {}
 				self.parent.parent.update_bans(self.logname, banlist, update=True)
 				self.parent.parent.update_kicks(self.logname, kicklist, update=True)

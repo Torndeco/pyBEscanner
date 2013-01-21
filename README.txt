@@ -62,7 +62,7 @@ Installation
 
 Requirements
 	Python 2.7
-
+	Mono + Wine (Only for Linux / Unix / BSD etc)
 
 Known Issues
 	* No python rcon networking code

@@ -20,20 +20,25 @@ import subprocess
 import os
 
 class Rcon:
-	def __init__(self, ip, port, password):
+	def __init__(self, os_name, ip, port, password):
 
 		# Initialize Variables
 		self.ip = ip
 		self.port = port
 		self.password = password
+		self.os_name = os_name
 
 
 	def kickplayers(self, kickfile):
 		temp = os.path.join("tools", "rcon", ("rcon_kick.exe"))
-		print temp
-		subprocess.call([temp, "--ip=" + self.ip, "--port=" + self.port, "--password=" + self.password, "--file=" + kickfile])
+		if self.os_name == "Windows":
+			subprocess.call([temp, "--ip=" + self.ip, "--port=" + self.port, "--password=" + self.password, "--file=" + kickfile])
+		else:
+			subprocess.call(["mono", temp, "--ip=" + self.ip, "--port=" + self.port, "--password=" + self.password, "--file=" + kickfile])
 
 	def reloadbans(self):
 		temp = os.path.join("tools", "rcon", ("rcon_reloadbans.exe"))
-		print temp
-		subprocess.call([temp, self.ip, str(self.port), self.password])
+		if self.os_name == "Windows":
+			subprocess.call([temp, self.ip, str(self.port), self.password])
+		else:
+			subprocess.call(["mono", temp, self.ip, str(self.port), self.password])
