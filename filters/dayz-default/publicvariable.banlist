@@ -7,5 +7,8 @@ missionNamespace
 myvehobj
 remotecmd
 teamtype
+"teamName"
+"createTeam"
+"execVM"
 "norrnRLact" = \<NULL-object\>
 "BIS_MPF_logic" = \<NULL-object\>

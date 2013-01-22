@@ -4,10 +4,12 @@ callVar
 call compile
 "code"
 compile
+"createTeam"
 ctrlset
 cutText
 dayzSetDate
 eventhandler
+"execVM"
 format
 getVariable
 "hintC"
@@ -36,6 +38,7 @@ setDate
 setTask
 setVariable
 "spawn"
+"teamName"
 teamtype
 teleported
 terminate
