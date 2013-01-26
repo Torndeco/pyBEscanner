@@ -134,19 +134,22 @@ class Main:
         if (self.args.pause_scan and self.args.start_scan):
             print("Can't Start + Pause Scanning, make your mind up")
             sys.exit()
+
         if self.args.pause_scan:
             pyBE().stop_scan()
         elif self.args.start_scan:
             pyBE().start_scan()
-			
-		if self.args.load_bans():
+        else:
+            pass
+
+        if self.args.download_bans:
 			print("Work In Progress")
 
 
 parser = argparse.ArgumentParser(description='pyBEscanner Utility...')
-parser.add_argument('--pause-scan', '-p', action='store_true')
-parser.add_argument('--start-scan', '-s', action='store_true')
-parser.add_argument('--download-bans', '-d', action='store_true')
+parser.add_argument('-s', '--start-scan', action='store_true')
+parser.add_argument('-p', '--pause-scan', action='store_true')
+parser.add_argument('-d', '--download-bans', action='store_true')
 args = parser.parse_args()
 main = Main(args)
 main.start()
