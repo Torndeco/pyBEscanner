@@ -48,7 +48,7 @@ def load_rules(rule_files):
 							rules[current_rule]["Exception"].append(temp[1])
 						elif temp[0] == "Time":
 							rules[current_rule]["Time"] = int(temp[1])
-						elif temp[0] == "Max Count":
+						elif temp[0] == "Count":
 							rules[current_rule]["Max Count"] = int(temp[1])
 						elif temp[0] == "Action":
 							if temp[1] == "DELETE":
