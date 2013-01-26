@@ -1,2 +1,7 @@
-4 1 BAN .
-5 8 BAN ..
+Rule = .
+	Count = 4
+	Time = 1
+
+Rule = ..
+	Count = 5
+	Time = 8

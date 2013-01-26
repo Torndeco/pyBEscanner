@@ -38,7 +38,6 @@ def load_rules(rule_files):
 			with open(rule_file) as f:
 				for line in f:
 					line = line.strip()
-					line = line.lsr
 					if (line[:1] != "#") or (line != ""):
 						temp = re.split("\s=\s", line, 1)
 						if temp[0] == "Rule":

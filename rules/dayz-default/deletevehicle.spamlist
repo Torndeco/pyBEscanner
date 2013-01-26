@@ -1,1 +1,3 @@
-40 1 BAN .
+Rule = .
+	Count = 40
+	Time = 1
