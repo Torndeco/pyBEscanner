@@ -1,20 +1,20 @@
-AmmoBoxSmall_556
-AmmoBoxSmall_762
-BearTrap_DZ
-DZ_Pastor
-F_40mm_Green
-F_40mm_White
-G_40mm_HE
-G_40mm_Smoke
-GrenadeHandTimedWest
-Hedgehog_DZ
-HelicopterExploBig
-HelicopterExploSmall
-ParachuteWest
-PipeBomb
-Sandbag1_DZ
-SeaGull
-SmallSecondary
-TentStorage
-Wire_cat1
-WeaponHolder_ItemTent
+Rule = AmmoBoxSmall_556
+Rule = AmmoBoxSmall_762
+Rule = BearTrap_DZ
+Rule = DZ_Pastor
+Rule = F_40mm_Green
+Rule = F_40mm_White
+Rule = G_40mm_HE
+Rule = G_40mm_Smoke
+Rule = GrenadeHandTimedWest
+Rule = Hedgehog_DZ
+Rule = HelicopterExploBig
+Rule = HelicopterExploSmall
+Rule = ParachuteWest
+Rule = PipeBomb
+Rule = Sandbag1_DZ
+Rule = SeaGull
+Rule = SmallSecondary
+Rule = TentStorage
+Rule = Wire_cat1
+Rule = WeaponHolder_ItemTent

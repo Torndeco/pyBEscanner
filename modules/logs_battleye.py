@@ -38,7 +38,7 @@ def load_rules(rule_files):
 			with open(rule_file) as f:
 				for line in f:
 					line = line.strip()
-					if (line[:1] != "#") or (line != ""):
+					if (line[:1] != "#") and (line != ""):
 						temp = re.split("\s=\s", line, 1)
 						if temp[0] == "Rule":
 							current_rule = temp[0]

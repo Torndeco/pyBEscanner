@@ -1,9 +1,9 @@
-;
-compile
-dwarden
-hiveupdateresu
-missionNamespace
-myvehobj
-remotecmd
-"norrnRLact" = \<NULL-object\>
-"BIS_MPF_logic" = \<NULL-object\>
+Rule = ;
+Rule = compile
+Rule = dwarden
+Rule = hiveupdateresu
+Rule = missionNamespace
+Rule = myvehobj
+Rule = remotecmd
+Rule = "norrnRLact" = \<NULL-object\>
+Rule = "BIS_MPF_logic" = \<NULL-object\>
