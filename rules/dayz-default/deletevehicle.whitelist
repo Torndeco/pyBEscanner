@@ -1,26 +1,26 @@
-#dynamicsound
-Hedgehog_DZ
-Hen
-MedBox0
-Sandbag1_DZ
-Shot
-WeaponHolder
-WeaponHolder_ItemHatchet
-WeaponHolder_MeleeCrowbar
-Wire_cat1
-z_doctor
-z_hunter
-z_policeman
-z_priest
-z_soldier
-z_soldier_heavy
-z_suit1
-z_suit2
-z_teacher
-z_villager1
-z_villager2
-z_villager3
-z_worker1
-z_worker2
-z_worker3
-zZombie_Base
+Rule = #dynamicsound
+Rule = Hedgehog_DZ
+Rule = Hen
+Rule = MedBox0
+Rule = Sandbag1_DZ
+Rule = Shot
+Rule = WeaponHolder
+Rule = WeaponHolder_ItemHatchet
+Rule = WeaponHolder_MeleeCrowbar
+Rule = Wire_cat1
+Rule = z_doctor
+Rule = z_hunter
+Rule = z_policeman
+Rule = z_priest
+Rule = z_soldier
+Rule = z_soldier_heavy
+Rule = z_suit1
+Rule = z_suit2
+Rule = z_teacher
+Rule = z_villager1
+Rule = z_villager2
+Rule = z_villager3
+Rule = z_worker1
+Rule = z_worker2
+Rule = z_worker3
+Rule = zZombie_Base

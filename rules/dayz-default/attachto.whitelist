@@ -1,2 +1,2 @@
-BoltSteelF
-(?:s|S)hot
+Rule = BoltSteelF
+Rule = (?:s|S)hot
