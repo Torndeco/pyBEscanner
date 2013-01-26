@@ -1,0 +1,7 @@
+Rule = 1\.000000
+	Count = 4
+	Time = 5
+
+Rule = .
+	Count = 30
+	Time = 10

@@ -1,0 +1,7 @@
+Rule = .
+	Count = 3
+	Time = 1
+
+Rule = ..
+	Count = 10
+	Time = 5

@@ -1,0 +1,10 @@
+Rule = compile
+Rule = dayzSetDate
+Rule = hiveupdateresu
+Rule = local_gutObject
+Rule = local_sefFuel
+Rule = "rsay"
+Rule = "rland"
+Rule = rsetdir
+Rule = teleported
+Rule = toString

@@ -21,6 +21,7 @@ import ConfigParser
 import os
 import sys
 import time
+import urllib
 
 from modules import bans
 
@@ -79,8 +80,7 @@ class pyBE:
             self.server_list[section] = {"ServerName": config[section]["ServerName"],
                                          "LockFile-Scan-Ask": os.path.join(self.temp_dir, section, "scan-stop-ask.lockfile"),
                                          "LockFile-Scan-Stopped": os.path.join(self.temp_dir, section, "scan-stopped.lockfile")}
-                                         
-
+ 
     def start_scan(self, servers=None):
         if servers == None:
             servers = self.section_list
@@ -91,7 +91,6 @@ class pyBE:
             if os.path.isfile(self.server_list[section]["LockFile-Scan-Stopped"]):
                 os.remove(self.server_list[section]["LockFile-Scan-Stopped"])
         print("Telling pyBEscanner to resume scanning on " + str(servers))
-
     
     def stop_scan(self, servers=None):
         if servers == None:
@@ -120,6 +119,11 @@ class pyBE:
                 self.start_scan()
                 sys.exit()
         print("Scanning Paused")
+		
+	def download_bans(self):
+		urllib.urlretrieve ("http://www.banzunion.com/downloads/?do=download", os.path.join(self.temp_dir, "banzunion.txt"))
+		urllib.urlretrieve ("http://code.google.com/p/dayz-community-banlist/source/browse/bans/cblbans.txt", os.path.join(self.temp_dir, "cblbans.txt"))
+		urllib.urlretrieve ("http://code.google.com/p/dayz-community-banlist/source/browse/bans/dwbans.txt", os.path.join(self.temp_dir, "dwbans.txt"))
 
 
 class Main:
@@ -142,7 +146,7 @@ class Main:
 parser = argparse.ArgumentParser(description='pyBEscanner Utility...')
 parser.add_argument('--pause-scan', '-p', action='store_true')
 parser.add_argument('--start-scan', '-s', action='store_true')
-parser.add_argument('--load-bans', '-l', action='store_true')
+parser.add_argument('--download-bans', '-d', action='store_true')
 args = parser.parse_args()
 main = Main(args)
 main.start()

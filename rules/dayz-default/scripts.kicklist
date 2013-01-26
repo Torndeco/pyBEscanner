@@ -1,0 +1,5 @@
+Rule = getPlayerUID _x != ""
+Rule = #line 1
+Rule = removeAllWeapons
+Rule = removeallweapons
+Rule = espfnc

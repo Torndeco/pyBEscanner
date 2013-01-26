@@ -1,0 +1,18 @@
+Rule = #9 "me = name player;_model call player_switchModel;player allowDamage false;_lastAte = _survival select 1;_lastDrank = _surviv"
+Rule = #23 "ong! disconnect and try again!", "BLACK OUT",1\];player enableSimulation false;\};\};dayz_losChance = \{private\["_agent","_max"
+Rule = #34 "dayz_logDamage = \[name _unit, name _source, _damage\];
+Rule = #34 "\[dayz_characterID,0,_body,_playerID,dayz_playerName\];publicVariableServer "dayzDeath";if \(isServer\) then \{_id = dayzDeath spa"
+Rule = #34 "yzUpdateVehicle call server_updateObject;\};\} else \{publicVariableServer "dayzUpdateVehicle";\};\};\};\};_total"
+Rule = #34 "ayz_characterID,_object,\[_dir,_location\],_classname\];publicVariableServer "dayzPublishObj";if \(isServer\) then \{dayzPublishObj"
+Rule = #34 "es;sleep 5;dayzDeleteObj = \[_objectID,_objectUID\];publicVariableServer "dayzDeleteObj";if \(isServer\) then \{dayzDeleteObj c"
+Rule = #34 "kCargo _obj;dayzDeleteObj = \[_objectID,_objectUID\];publicVariableServer "dayzDeleteObj";if \(isServer\) then \{dayzDeleteObj c"
+Rule = #34 "TentStorage"\], 10\];\{dayzUpdateVehicle = \[_x,"all"\];publicVariableServer "dayzUpdateVehicle";\} foreach _objects;private\["_d"
+Rule = #35 "else \{publicVariable "dayzUpdateVehicle";\};_unit removeAllEventHandlers "HandleDamage";_unit removeAllEventHandlers "Killed"
+Rule = #67 "openDSInterface;"
+Rule = #127 " \[player,_config\] call BIS_fnc_invAdd;
+Rule = #127 " \[player,_config\] call BIS_fnc_invAdd;if \(_isOk\) then \{deleteVehicle _holder;\} else \{_holder setVariable\["clai"
+Rule = #127 "ldUnit removeMagazine _x;\} forEach  magazines _oldUnit;deleteVehicle _oldUnit;if\(_currentWpn != ""\) then \{_newUnit select"
+Rule = #128 "private \['_dummy'\]; _dummy = \[_this,'onload'\] call compile preprocessfile '\\ca\\ui\\scripts\\server_interface.sqf';"
+Rule = #(?:223|227) "rivate \["_dummy"\]; _dummy = \[_this,"players"\] execVM "\\ca\\ui\\scripts\\dedicatedServerInterface.sqf";"
+Rule = #138
+Rule = #139

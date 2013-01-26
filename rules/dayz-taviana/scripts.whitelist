@@ -1,0 +1,4 @@
+Rule = kh_functions_ReplacementWeatherSetters\.sqf
+Rule = building_spawnLoot\.sqf
+Rule = kh_internal_ensureReplacementWeatherInitialis
+Rule = ib_refueling_in_progress

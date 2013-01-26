@@ -37,7 +37,7 @@ class Main:
 		temp_dir = os.path.join(self.main_dir, "temp")
 
 		self.lockfile = os.path.join(temp_dir, "pyBEscanner.lockfile")
-		self.conf_file = os.path.join(self.main_dir, 'conf', 'servers.ini')
+		self.conf_file = os.path.join(self.main_dir, 'conf', 'conf.ini')
 		
 		if not os.path.isfile(os.path.join(self.main_dir, 'pyBEscanner.py')):
 			print "Wrong working Directory"
@@ -68,7 +68,7 @@ class Main:
 		config = ConfigParser.ConfigParser()
 		config.read(self.conf_file)
 		if config.has_option("Default", "Version"):
-			if config.get("Default", "Version") != "16":
+			if config.get("Default", "Version") != "17":
 				print "-------------------------------------------------"
 				print "ERROR: Bad conf/servers.ini version"
 				print "-------------------------------------------------"
@@ -93,7 +93,7 @@ class Main:
 		config_sections= config.sections()
 		config_sections.remove("Default")
 
-		default = {"pyBEscanner Directory": self.main_dir}
+		default = {	"pyBEscanner Directory": self.main_dir, "Bans": None}
 		self.server_settings = []
 		# Ban.txt  File Location
 		if config.has_option("Default", "Bans Directory"):
@@ -123,13 +123,12 @@ class Main:
 					["Kick Message", "Kick Message"],
 					["Report Message", "Report Message"],
 					["Ban IP", "Ban IP"],
-					["Filters", "Filters"],
+					["Ban IP Time", "Ban IP Time"],
+					["Rules", "Rules"],
 					["Bans Symlinked", "Bans Symlinked"]]
 
 		## Scan Settings -- Default
 		self.interval = int(config.get("Default", "interval", "60"))
-		
-		
 
 		for x in range(len(options)):
 			default[options[x][1]] = config.get("Default", options[x][0])
@@ -154,14 +153,14 @@ class Main:
 				if config.has_option(section, options[y][0]):
 					server[options[y][1]] = config.get(section, options[y][0])
 
-			server["Filters"] = re.sub(",\s*", ",", server["Filters"])
-			temp_filters = server["Filters"].split(",")
-			server["Filters"] = []
-			for filters in temp_filters:
-				if filters == "Custom":
-					server["Filters"].append(os.path.join(server["BattlEye Directory"], "pyBEscanner", "filters"))
+			server["Rules"] = re.sub(",\s*", ",", server["Rules"])
+			temp_rules = server["Rules"].split(",")
+			server["Rules"] = []
+			for rules in temp_rules:
+				if rules == "Custom":
+					server["Rules"].append(os.path.join(server["BattlEye Directory"], "pyBEscanner", "rules"))
 				else:
-					server["Filters"].append(os.path.join(self.main_dir, "filters", filters))
+					server["Rules"].append(os.path.join(self.main_dir, "rules", rules))
 
 			if server["Bans Symlinked"] == "on":
 				if default["Bans"] == None:
@@ -192,26 +191,26 @@ class Main:
 			server["Battleye Temp Logs"] = {}
 			server["Battleye Backup Logs"] = {}
 
-			server["Banlist Filters"] = {}
-			server["Kicklist Filters"] = {}
-			server["Whitelist Filters"] = {}
-			server["Spamlist Filters"] = {}
+			server["Banlist Rules"] = {}
+			server["Kicklist Rules"] = {}
+			server["Whitelist Rules"] = {}
+			server["Spamlist Rules"] = {}
 
 
 			for be_log in server["Battleye Logs"]:
 				server["Battleye Logs Location"][be_log] = os.path.join(server["BattlEye Directory"], (be_log + ".log"))
 				server["Battleye Temp Logs"][be_log] = os.path.join(server["Temp Directory"], (be_log + ".log"))
 
-				server["Banlist Filters"][be_log] = []
-				server["Kicklist Filters"][be_log] = []
-				server["Whitelist Filters"][be_log] = []
-				server["Spamlist Filters"][be_log] = []
+				server["Banlist Rules"][be_log] = []
+				server["Kicklist Rules"][be_log] = []
+				server["Whitelist Rules"][be_log] = []
+				server["Spamlist Rules"][be_log] = []
 
-				for filters in server["Filters"]:
-					server["Banlist Filters"][be_log].append(os.path.join(filters, be_log + ".banlist"))
-					server["Kicklist Filters"][be_log].append(os.path.join(filters, be_log + ".kicklist"))
-					server["Whitelist Filters"][be_log].append(os.path.join(filters, be_log + ".whitelist"))
-					server["Spamlist Filters"][be_log].append(os.path.join(filters, be_log + ".spamlist"))
+				for rules in server["Rules"]:
+					server["Banlist Rules"][be_log].append(os.path.join(rules, be_log + ".banlist"))
+					server["Kicklist Rules"][be_log].append(os.path.join(rules, be_log + ".kicklist"))
+					server["Whitelist Rules"][be_log].append(os.path.join(rules, be_log + ".whitelist"))
+					server["Spamlist Rules"][be_log].append(os.path.join(rules, be_log + ".spamlist"))
 			self.server_settings.append(server)
 
 

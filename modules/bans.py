@@ -18,20 +18,24 @@ import copy
 import os
 import pickle
 import re
+import time
 
-pickleVersion = 1
+pickleVersion = 2
 
 class Bans:
 
-	def __init__(self, bans_directory):
+	def __init__(self, bans_directory, additional_ban_files=None):
 		self.bans_file = os.path.join(bans_directory, "bans.txt")
-		self.bans_report_file = os.path.join(bans_directory, "bans-pyBEscanner.txt")
+		self.bans_report_file = os.path.join(bans_directory, "bans-pyBEscanner-report.txt")
+		
+		self.additional_ban_files = additional_ban_files
+
+		self.data = {"Version":2, "Bans":set(), "Timestamp":{"Local":None}}
 		self.data_file = os.path.join(bans_directory, "bans.data")
 
-		self.data = {"Version":0, "Bans":set(), "Timestamp":{}}
 		self.new_bans = {}
 		self.updateStatus(False)
-
+		
 		if os.path.exists(bans_directory) is False:
 			os.makedirs(bans_directory)
 		if os.path.isfile(self.bans_file) is False:
@@ -62,11 +66,9 @@ class Bans:
 		
 	def checkBans(self):
 		timestamp = os.path.getmtime(self.bans_file)	  
-		if self.data["Timestamp"] != timestamp:
+		if self.data["Timestamp"]["Local"] != timestamp:
 			print
-			# Sync value asap, this way if file is altered during scan...
-			# Will get scanned afterwards again
-			self.data["Timestamp"] = timestamp
+			self.data["Timestamp"]["Local"] = timestamp
 			self.updateStatus(True)
 			bans_compare = copy.deepcopy(self.data["Bans"])
 			with open(self.bans_file) as b_file:
@@ -84,7 +86,7 @@ class Bans:
 					self.data["Bans"].remove(x)
 					print("Ban Removed: " + x)
 			self.saveBanInfo()
-
+			
 	def formatMessage(self, template, player_name, server_name, log_file, date_time, guid, ip):
 		tmp = template.replace("LOG_FILE", log_file)
 		tmp = tmp.replace("DATE_TIME", date_time)
@@ -94,7 +96,7 @@ class Bans:
 		tmp = tmp.replace("IP", ip)
 		return tmp
 
-	def addBan(self, unique_id, info, logname, ban_template, report_template): #{ID,Reason}
+	def addBan(self, unique_id, info, logname, ban_template, report_template, time): #{ID,Reason}
 		if unique_id not in self.data["Bans"]:
 			if unique_id not in self.new_bans:
 				self.data["Bans"].add(unique_id)
@@ -104,27 +106,32 @@ class Bans:
 				self.new_bans[unique_id]["Report Template"] = report_template
 			else:
 				self.new_bans[unique_id]["logname"].append(logname)
+		self.updateStatus(True)
 
 	def writeBans(self):
 		print
-		with open(self.bans_file, "a") as f_bans, open(self.bans_report_file, "a") as f_report:
-			for unique_id in self.new_bans.keys():
-				guid = self.new_bans[unique_id]["guid"]
-				ip = self.new_bans[unique_id]["ip"]
-				server_name = self.new_bans[unique_id]["ServerName"]
-				date_time = self.new_bans[unique_id]["date"]
-				player_name = self.new_bans[unique_id]["name"]
-				lognames = self.new_bans[unique_id]["logname"]
-				bans_message_template = self.new_bans[unique_id]["Ban Template"]
-				report_message_template = self.new_bans[unique_id]["Report Template"]
-
-				f_bans.write(unique_id + " -1 " + self.formatMessage(bans_message_template, player_name, server_name, lognames, date_time, guid, ip) + "\n")
-				f_report.write(unique_id + " -1 " + self.formatMessage(report_message_template, player_name, server_name, lognames, date_time, guid, ip) + "\n")
-				print("Ban Added: " + unique_id)
-
+		current_time = time.mktime(time.localtime())
+		if self.new_bans != {}:
+			with open(self.bans_file, "a") as f_bans, open(self.bans_report_file, "a") as f_report:
+				for unique_id in self.new_bans.keys():
+					guid = self.new_bans[unique_id]["guid"]
+					ip = self.new_bans[unique_id]["ip"]
+					server_name = self.new_bans[unique_id]["ServerName"]
+					date_time = self.new_bans[unique_id]["date"]
+					player_name = self.new_bans[unique_id]["name"]
+					lognames = self.new_bans[unique_id]["logname"]
+					bans_message_template = self.new_bans[unique_id]["Ban Template"]
+					report_message_template = self.new_bans[unique_id]["Report Template"]
+					if self.new_bans[unique_id["Ban IP Time"]] == "-1":
+						ban_time = "-1"
+					else:
+						ban_time = str(current_time + (int(ban_time) * 86400))
+					f_bans.write(unique_id + " " + ban_time + " " + self.formatMessage(bans_message_template, player_name, server_name, lognames, date_time, guid, ip) + "\n")
+					f_report.write(unique_id + " " + ban_time + " " + self.formatMessage(report_message_template, player_name, server_name, lognames, date_time, guid, ip) + "\n")
+					print("Ban Added: " + unique_id)
+			self.data["Timestamp"] = os.path.getmtime(self.bans_file)
 		self.new_bans = {}
-		self.data["Timestamp"] = os.path.getmtime(self.bans_file)
-		self.updateStatus(True)
+
 
 	def getStatus(self):
 		return self.update_status
