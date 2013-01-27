@@ -225,6 +225,7 @@ class Main:
 			try:
 				new_config_timestamp = os.path.getmtime(self.conf_file)
 				if old_config_timestamp != new_config_timestamp:
+					print
 					print "---------------------------------------------------------"
 					print "       Loading Config File"
 					print "---------------------------------------------------------"
