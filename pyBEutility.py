@@ -51,7 +51,7 @@ class pyBE:
         config.read(conf_file)
         
         if config.has_option("Default", "Version"):
-            if config.get("Default", "Version") != "16":
+            if config.get("Default", "Version") != "18":
                 print("-------------------------------------------------")
                 print("ERROR: Bad conf/servers.ini version")
                 print("-------------------------------------------------")

@@ -22,14 +22,49 @@ import time
 
 pickleVersion = 2
 
+class BansDeamon:
+	def __init__(self, bans_symlink_directory):
+		if bans_symlink_directory != None:
+			self.bans_symlinked = Bans(bans_symlink_directory)
+		
+		# {ServerName: 
+#			{"Bans":Bans,
+#			 "Bans Shared":Bans_Shared}
+#			}
+		self.bans_server_list = {}
+		
+	def addServer(self, servername, bans_directory, bans_shared, bans_symlinked):
+		if bans_symlinked == "on":
+			self.bans_server_list[servername] = {"Bans": self.bans_symlinked, "Bans Shared": bans_shared}
+		else:
+			self.bans_server_list[servername] = {"Bans": Bans(bans_directory), "Bans Shared": bans_shared}
+
+
+	def getStatus(self, servername):
+		return self.bans_server_list[servername]["Bans"].getStatus()
+
+	def updateStatus(self, servername, status):
+		self.bans_server_list[servername]["Bans"].updateStatus(status)
+	
+	def addBan(self, servername, unique_id, info, logname, ban_template, report_template, time):
+		if self.bans_server_list[servername]["Bans Shared"] == "on":
+			for servername in self.bans_server_list:
+				self.bans_server_list[servername]["Bans"].addBan(unique_id, info, logname, ban_template, report_template, time)
+		else:
+			self.bans_server_list[servername]["Bans"].addBan(unique_id, info, logname, ban_template, report_template, time)
+
+	def writeBans(self, servername):
+		self.bans_server_list[servername]["Bans"].writeBans()
+
+	def checkBans(self, servername):
+		self.bans_server_list[servername]["Bans"].checkBans()
+
 class Bans:
 
-	def __init__(self, bans_directory, additional_ban_files=None):
+	def __init__(self, bans_directory):
 		self.bans_file = os.path.join(bans_directory, "bans.txt")
 		self.bans_report_file = os.path.join(bans_directory, "bans-pyBEscanner-report.txt")
 		
-		self.additional_ban_files = additional_ban_files
-
 		self.data = {"Version":2, "Bans":set(), "Timestamp":{"Local":None}}
 		self.data_file = os.path.join(bans_directory, "bans.data")
 

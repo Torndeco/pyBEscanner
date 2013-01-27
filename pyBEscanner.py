@@ -68,7 +68,7 @@ class Main:
 		config = ConfigParser.ConfigParser()
 		config.read(self.conf_file)
 		if config.has_option("Default", "Version"):
-			if config.get("Default", "Version") != "17":
+			if config.get("Default", "Version") != "18":
 				print "-------------------------------------------------"
 				print "ERROR: Bad conf/servers.ini version"
 				print "-------------------------------------------------"
@@ -93,14 +93,11 @@ class Main:
 		config_sections= config.sections()
 		config_sections.remove("Default")
 
-		default = {	"pyBEscanner Directory": self.main_dir, "Bans": None}
-		self.server_settings = []
-		# Ban.txt  File Location
-		if config.has_option("Default", "Bans Directory"):
-			default["Bans Directory"] = config.get("Default", "Bans Directory")
-			default["Bans"] = None
-			# Doesnt initializes bans, until encounters a server with symlink setting turned on
-		default["Scan Server Logs"] = config.get("Default", "Scan Server Logs", "off")
+		self.server_settings = [] 
+		self.server_ban_deamon = bans.BansDeamon(config.get("Default", "Bans Symlinked Location", None))
+
+		default = {	"pyBEscanner Directory": self.main_dir}
+		default["Scan Server Logs"] = config.get("Default", "Scan Server Logs")
 
 		options = [["Scan Addbackpackcargo", "addbackpackcargo"],
 					["Scan Addmagazinecargo", "addmagazinecargo"],
@@ -125,10 +122,12 @@ class Main:
 					["Ban IP", "Ban IP"],
 					["Ban IP Time", "Ban IP Time"],
 					["Rules", "Rules"],
-					["Bans Symlinked", "Bans Symlinked"]]
+					["Bans Symlinked", "Bans Symlinked"],
+					["Bans Shared", "Bans Shared"],
+					["Bans Symlinked Location", "Bans Symlinked Location"]]
 
 		## Scan Settings -- Default
-		self.interval = int(config.get("Default", "interval", "60"))
+		self.interval = int(config.get("Default", "interval"))
 
 		for x in range(len(options)):
 			default[options[x][1]] = config.get("Default", options[x][0])
@@ -137,6 +136,7 @@ class Main:
 			server = copy.copy(default)
 
 			## Server Info
+			server["Server ID"] = section
 			server["ServerName"] = config.get(section, "ServerName")
 			server["ServerIP"] = config.get(section, "ServerIP")
 			server["ServerPort"] = config.get(section, "ServerPort")
@@ -162,12 +162,8 @@ class Main:
 				else:
 					server["Rules"].append(os.path.join(self.main_dir, "rules", rules))
 
-			if server["Bans Symlinked"] == "on":
-				if default["Bans"] == None:
-					default["Bans"] = bans.Bans(default["Bans Directory"])
-				server["Bans"] = default["Bans"]
-			else:
-				server["Bans"] = bans.Bans(server["BattlEye Directory"])
+			self.server_ban_deamon.addServer(section, server["BattlEye Directory"], server["Bans Shared"], server["Bans Symlinked"])
+
 
 			# Generated Settings
 			server["Battleye Logs"] = ["addbackpackcargo",
@@ -225,7 +221,6 @@ class Main:
 			try:
 				new_config_timestamp = os.path.getmtime(self.conf_file)
 				if old_config_timestamp != new_config_timestamp:
-					print
 					print "---------------------------------------------------------"
 					print "       Loading Config File"
 					print "---------------------------------------------------------"
@@ -249,11 +244,7 @@ class Main:
 						print("LockFile Detected - Skipping " + server["ServerName"])
 						scan_count = 60
 					else:
-						bans_file = os.path.join(server["BattlEye Directory"], "bans.txt")
-						if os.path.isfile(bans_file) is False:
-							open(bans_file, 'w').close()
-						server["Bans.txt Timestamp"] = os.path.getmtime(bans_file)
-						logs_battleye.Scanner(server).scan()
+						logs_battleye.Scanner(server, self.server_ban_deamon).scan()
 						if os.path.isfile(server["LockFile-Ask"]):
 							print
 							print("LockFile Detected, Finished Scanning Logs for Server " + server["ServerName"])
@@ -276,16 +267,16 @@ class Main:
 						scan_count = 60
 
 				for server in list(self.server_settings):
-					server["Bans"].checkBans()
-					if server["Bans"].getStatus() == True:
+					self.server_ban_deamon.checkBans(server["Server ID"])					
+					if self.server_ban_deamon.getStatus(server["Server ID"]) == True:
 						print
 						print ("Reloading Bans: " + server["ServerName"])
-						server["Bans"].writeBans()
+						self.server_ban_deamon.writeBans(server["Server ID"])
 						rcon = rcon_cscript.Rcon(os_name, server["ServerIP"], server["ServerPort"], server["RconPassword"])
 						rcon.reloadbans()
 						scan_count = 60
 				for server in list(self.server_settings):
-					server["Bans"].updateStatus(False)
+					self.server_ban_deamon.updateStatus(server["Server ID"], False)
 
 				time.sleep(self.interval)
 			except KeyboardInterrupt:

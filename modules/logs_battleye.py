@@ -66,11 +66,11 @@ def load_rules(rule_files):
 
 
 class Scanner:
-	def __init__(self, server_settings):
+	def __init__(self, server_settings, server_ban_deamon):
 
 		self.server_settings = server_settings
+		self.server_ban_deamon = server_ban_deamon
 
-		self.bans = self.server_settings["Bans"]
 		self.kicks = Kicks(os.path.join(self.server_settings["Temp Directory"], "kicks.txt"))
 
 		self.bans_guid_list = []
@@ -193,11 +193,11 @@ class Scanner:
 		if update:
 			for x in range(len(self.bans_guid_list)):
 				if (self.server_settings["Ban IP"] == "on") or (self.bans_guid_list[x] == None):
-					self.bans.addBan(self.bans_ip_list[x], self.bans_info_list[x], logname, self.server_settings["Ban Message"], self.server_settings["Report Message"], self.server_settings["Ban IP Time"])
+					server_ban_deamon.addBan(self.server_settings["Server ID"], self.bans_ip_list[x], self.bans_info_list[x], logname, self.server_settings["Ban Message"], self.server_settings["Report Message"], self.server_settings["Ban IP Time"])
 				if self.bans_guid_list[x] != None:
-					self.bans.addBan(self.bans_guid_list[x], self.bans_info_list[x], logname, self.server_settings["Ban Message"], self.server_settings["Report Message"], "-1")
+					server_ban_deamon.addBan(self.server_settings["Server ID"], self.bans_guid_list[x], self.bans_info_list[x], logname, self.server_settings["Ban Message"], self.server_settings["Report Message"], "-1")
 			if self.bans_guid_list != []:
-				self.bans.updateStatus(True)
+				server_ban_deamon.updateStatus(self.server_settings["Server ID"], True)
 				self.bans_guid_list = []
 				self.bans_ip_list = []
 				self.bans_info_list = []

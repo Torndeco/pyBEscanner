@@ -30,14 +30,14 @@ class Rcon:
 
 
 	def kickplayers(self, kickfile):
-		temp = os.path.join("tools", "rcon", ("rcon_kick.exe"))
+		temp = os.path.join("tools", "rcon", "rcon_kick", "rcon_kick.exe")
 		if self.os_name == "Windows":
 			subprocess.call([temp, "--ip=" + self.ip, "--port=" + self.port, "--password=" + self.password, "--file=" + kickfile])
 		else:
 			subprocess.call(["mono", temp, "--ip=" + self.ip, "--port=" + self.port, "--password=" + self.password, "--file=" + kickfile])
 
 	def reloadbans(self):
-		temp = os.path.join("tools", "rcon", ("rcon_reloadbans.exe"))
+		temp = os.path.join("tools", "rcon", "rcon_reloadbans", "rcon_reloadbans.exe")
 		if self.os_name == "Windows":
 			subprocess.call([temp, self.ip, str(self.port), self.password])
 		else:
