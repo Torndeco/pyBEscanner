@@ -88,16 +88,22 @@ class Main:
 
 	def loadconfig(self):
 
+		self.server_settings = []
+
 		config = ConfigParser.ConfigParser()
 		config.read(self.conf_file)
 		config_sections= config.sections()
 		config_sections.remove("Default")
 
-		self.server_settings = [] 
-		self.server_ban_deamon = bans.BansDeamon(config.get("Default", "Bans Symlinked Location", None))
-
 		default = {	"pyBEscanner Directory": self.main_dir}
 		default["Scan Server Logs"] = config.get("Default", "Scan Server Logs")
+		
+		if config.has_option("Default", "Bans Symlinked Location"):
+			default["Bans Symlinked Location"] = config.get("Default", "Bans Symlinked Location")			
+		else:
+			default["Bans Symlinked Location"] = None
+
+		self.server_ban_deamon = bans.BansDeamon(default["Bans Symlinked Location"])
 
 		options = [["Scan Addbackpackcargo", "addbackpackcargo"],
 					["Scan Addmagazinecargo", "addmagazinecargo"],
@@ -123,8 +129,7 @@ class Main:
 					["Ban IP Time", "Ban IP Time"],
 					["Rules", "Rules"],
 					["Bans Symlinked", "Bans Symlinked"],
-					["Bans Shared", "Bans Shared"],
-					["Bans Symlinked Location", "Bans Symlinked Location"]]
+					["Bans Shared", "Bans Shared"]]
 
 		## Scan Settings -- Default
 		self.interval = int(config.get("Default", "interval"))
