@@ -25,7 +25,7 @@ import time
 
 #from modules import rcon_cscript
 
-pickleVersion = 3
+pickleVersion = 4
 
 		# rules {}
 		# Regrex Rule: Extra Info {}
@@ -42,9 +42,9 @@ def load_rules(rule_files):
 						temp = re.split("\s=\s", line, 1)
 						if temp[0] == "Rule":
 							current_rule = temp[1]
-							rules[current_rule] = {"Exception":[]}
-						elif temp[0] == "Exception":
-							rules[current_rule]["Exception"].append(temp[1])
+							rules[current_rule] = {"Exceptions":[]}
+						elif temp[0] == "Exceptions":
+							rules[current_rule]["Exceptions"].append(temp[1])
 						elif temp[0] == "Time":
 							rules[current_rule]["Time"] = int(temp[1])
 						elif temp[0] == "Count":
@@ -361,7 +361,7 @@ class Parser:
 				while x != len(entries_code):
 					if re.search(rule, entries_code[x]) is not None:
 						exception_flag = False
-						for exception_rule in wl_rules[rule]["Exception"]:
+						for exception_rule in wl_rules[rule]["Exceptions"]:
 							if re.search(exception_rule, entries_code[x]):
 								exception_flag = True	
 								break								
@@ -382,7 +382,7 @@ class Parser:
 				while x != len(entries_code):
 					if re.search(rule, entries_code[x]) or re.search(rule, self.decoder.decode_string(entries_code[x])):
 						exception_flag = False
-						for exception_rule in kl_rules[rule]["Exception"]:
+						for exception_rule in kl_rules[rule]["Exceptions"]:
 							if re.search(exception_rule, entries_code[x]):
 								exception_flag = True	
 								break	
@@ -404,7 +404,7 @@ class Parser:
 				while x != len(entries_code):
 					if re.search(rule, entries_code[x]) or re.search(rule, self.decoder.decode_string(entries_code[x])):
 						exception_flag = False
-						for exception_rule in bl_rules[rule]["Exception"]:
+						for exception_rule in bl_rules[rule]["Exceptions"]:
 							if re.search(exception_rule, entries_code[x]):
 								exception_flag = True	
 								break	
@@ -503,15 +503,18 @@ class Spam:
 			for rule in self.rules.keys():
 				if re.search(rule, entries_code[x]) or re.search(rule, self.decoder.decode_string(entries_code[x])):
 					if entries_guid[x] not in self.players: # Check if Player GUID exists in data
-						rules_data = {"Exceptions": [], "Data": []}
+						rules_data = {"Exceptions": self.rules[rule]["Exceptions"], "Data": []}
 						self.players[entries_guid[x]] = {"Name": entries_name[x], 
 														"IP":    entries_ip[x], 
 														"Port":  entries_port[x], 
-														"Rules": rules_data}
+														"Rules": {rule: rules_data}}
+					elif rule not in self.players[entries_guid[x]]["Rules"]:
+						rules_data = {"Exceptions": self.rules[rule]["Exceptions"], "Data": []}
+						self.players[entries_guid[x]]["Rules"][rule] = rules_data
+					else:
+						pass
 					time_stamp = time.mktime((time.strptime(entries_date[x], "%d.%m.%Y %H:%M:%S")))
-					data = self.players[entries_guid[x]]["Rules"][rule]["Data"]
-					data.append([time_stamp, entries_code[x]])
-					self.players[entries_guid[x]]["Rules"][rule]["Data"] = data
+					self.players[entries_guid[x]]["Rules"][rule]["Data"].append([time_stamp, entries_code[x]])
 
 
 	def scan(self, scan_time):
@@ -526,11 +529,10 @@ class Spam:
 						self.players[guid]["Rules"][rule] = {"Exceptions": [], "Data": []}
 				else:
 					#[[Timestamp][Code]] = self.players[entries_guid[x]][Rules][filter]
-					data = self.players[guid]["Rules"][rule] # Current logged rule data = [[Timestamp, Code], [T2,C2]]
+					data = self.players[guid]["Rules"][rule]["Data"] # Current logged rule data = [[Timestamp, Code], [T2,C2]]
 					x = 0
 					ignore_count = 0
 					while x < len(data):
-
 						if ignore_count != 0:
 							ignore_count = ignore_count - 1
 						if (x + self.rules[rule]["Max Count"]) < len(data):
