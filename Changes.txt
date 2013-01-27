@@ -1,5 +1,36 @@
 Important info regarding changes
 
+Version 18
+	Filters Renamed -> Rules
+		New Internal File Format
+			Read the Readme @ rules/Readme-rules.txt for more info
+			
+	servers.ini renamed to conf.ini (makes more sense)
+	
+	New Options
+		Ban IP Time x
+			Ability to set IP Ban Duration in hours (-1 = forever)
+
+		Bans Shared = on
+			If a pyBEscanner-ban is added to server with "Bans Shared = on",
+			it is added to all other servers with "Bans Shared = on".
+		Bans Symlinked = off
+		Bans Symlinked Location = None
+			If multiple servers have a bans.txt symlinked together. Use this option &
+			set Bans Symlinked Location to location of a ban file.
+			This will allow pyBEscanner to just monitor 1 ban file & reduce cpu / io / memory usage.
+			Also a good way to test pyBEscanner for the paranoid (and entering wrong rcon info aswell)
+
+			
+-----------------------------------------------------------------
+-----------------------------------------------------------------
+If your config version is under version 15.
+It will prob be easier to just start with a new config 
+file.
+Note:- If u going to keep your filters, read version 18 changes
+-----------------------------------------------------------------
+-----------------------------------------------------------------
+
 Version 15
 	Logging files are now located @ pyBEscanner/logs/
 	All Temp Files are now located @ pyBEscanner/temp/
