@@ -10,7 +10,7 @@ Features:
 
 	* Multiple Servers ( No multi-threading support, it scans 1 server at a time )
 	* Scans battlelogs
-	* Whitelist + Blanlist + Kicklist filters with regrex features
+	* Whitelist + Blanlist + Kicklist rules with regrex features
 		http://docs.python.org/2/library/re.html
 	* Auto-purges logs as it scans, reduces need to re-scan
 	* Makes backup logs files & splits them up into folders based on date
@@ -39,15 +39,15 @@ Directory Layout
 	<pyBEscanner install directory>/conf/servers.ini
 		[Settings File, reloaded everytime before a log scan]
 
-	<pyBEscanner install directory>/filters>
-		[Filter file directorys, were filters are located.
+	<pyBEscanner install directory>/rules>
+		[Filter file directorys, were rules are located.
 		If u arent using Custom Filter Setting]
 
-	<pyBEscanner install directory>/rcon/
+	<pyBEscanner install directory>/tools/rcon/
 		[Source code available for exe's in src directorys, read the readme.txts]
 
-	<server battleye directory>/pyBEscanner/filters
-		[Location of whitelist / kicklist / blacklist / spamlist filters]
+	<server battleye directory>/pyBEscanner/rules
+		[Location of whitelist / kicklist / blacklist / spamlist rules]
 
 	<server battleye directory>/Logs/Battle Logs - %Year-%Month-%Day
 		[Location of archived battleye logs,
@@ -55,9 +55,9 @@ Directory Layout
 
 
 Installation
-	Copy conf/servers-example.ini -> conf/servers.ini
-	Edit conf/servers.ini
-	Start pyBEscanner.py
+	Copy conf/conf-example.ini -> conf/conf.ini
+	Edit conf/conf.ini
+	python pyBEscanner.py
 
 
 Requirements
@@ -70,21 +70,11 @@ Known Issues
 		So if u make a typo in filter files will cause app to crash
 
 Notes:-
-	* U can alter the settings & pyBEscanner filters & settings, while the
+	* U can alter the settings & pyBEscanner rules & settings, while the
 		program is running. Just avoid making any typo mistakes
-	* When using multiple filters, if u load up multiple spam filter with same
+	* When using multiple rules, if u load up multiple spam filter with same
 		regrex rule, the last one loaded is used.
-	* If u would like pyBEscanner not to ban people for spaming tents
-		U need to alter createvehicle.spamlist to look like the following
-
-			4 1 BAN #0  (?!["WeaponHolder_ItemTent"])
-			5 8 BAN #0  (?!["WeaponHolder_ItemTent"])
-
-		Then u can a seperate rule with a higher value for tents if u like
-		For example, 10 tents in 10 seconds = player ban
-			
-			10 10 BAN Tent
-
+	* Don't forget u can add exceptions when making a spam rule
 
 ---------------------------
 ---------------------------
@@ -92,7 +82,7 @@ Notes:-
 Thx for the following people for helping out with this project
 
 Nanomo for creating the c# app for kicking players
-k4n30 for updating the filters & finding my mistakes
+k4n30 for updating the rules & finding my mistakes
 ziellos2k for creating the BattleNET C# library
 
 and everyone else that i forgot....

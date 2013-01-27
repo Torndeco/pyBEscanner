@@ -17,39 +17,37 @@ http://www.pythonregex.com/
 
 -------------------
 -------------------
+Whitelist / Kicklist / Banlist Filters
 
+#
+# Random Comments
+#
+Rule = Some Random Regrex Rule
+   Exception =
+   Exception = 
+Rule = X
+Rule = Y
 
-Spam Filters are slighty different beast, while they are essential just regrex expressions.
-There is a slighty different format
+Rule = Z
+  Exception:
+# More Random Info
+Rule:A
+  Action = DELETE  (only valid option)
 
-<Number of detections> <elapsed time in seconds> <action values = BAN / KICK / LOG / DELETE> <regrex rule>
+-------------------
+-------------------
+Spam Filters
 
-For example
-10 15 BAN .
-
-10 detections within 15 seconds regrex rule . (basicly matches everything) results in a player ban...
-
-Now lets say u wanted 2 different rules but with the same regrex rule...
-Just alter the regrex slighty so it still catches what u want
-
-10 15 BAN .
-4 1 KICK ..
-
-
-Note:- 
-Lets say u are loading a filter set, but u want to disable a spam rule.
-Plus u are feeling lazy & don't want to manually keep the altering the filters everytime they are updated.
-U can just create a new filter set + have it loaded last in servers.ini
-
-So if u original had
-10 15 BAN .
-4 1 KICK ..
-
-And in your custom filter u added the line
-4 1 DELETE ..
-
-This will remove the filters with regrex rule ..
-
-
-
-
+Rule = Some Random Regrex Rule
+    Exception = 
+    Exception =
+    Time = 
+    Count = 
+    Action = BAN/KICK/LOG
+	
+Rule = Some Random Regrex Rule
+    Exception = 
+    Exception =
+    Time = 
+    Count = 
+    Action = BAN/KICK/LOG
