@@ -546,10 +546,10 @@ class Spam:
 													data[y][1])
 								ignore_count = self.rules[rule]["Max Count"]
 						if (scan_time - data[x][0]) > self.rules[rule]["Time"]:
-							self.players[guid]["Rules"][rule].pop(0)   # Remove old entry
+							self.players[guid]["Rules"][rule]["Data"].pop(0)   # Remove old entry
 						else:
 							x = x + 1
-					if self.players[guid]["Rules"][rule] == []:
+					if self.players[guid]["Rules"][rule]["Data"] == []:
 						del self.players[guid]["Rules"][rule]  # Remove Rule if no-more logged entries present
 			if self.players[guid]["Rules"] == {}:
 				del self.players[guid] # Remove Player Info if no-more logged entries present
