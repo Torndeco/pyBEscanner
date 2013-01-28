@@ -1,3 +1,4 @@
 Rule = .
 	Count = 40
 	Time = 1
+	Action = BAN

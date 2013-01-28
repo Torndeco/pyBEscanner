@@ -1,7 +1,9 @@
 Rule = .
 	Count = 4
 	Time = 1
+	Action = BAN
 
 Rule = ..
 	Count = 5
 	Time = 8
+	Action = BAN
