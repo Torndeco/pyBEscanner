@@ -20,7 +20,7 @@ import pickle
 import re
 import time
 
-pickleVersion = 3
+pickleVersion = 4
 
 class BansDeamon:
 	def __init__(self, bans_symlink_directory, bans_ip_time):
@@ -167,7 +167,7 @@ class Bans:
 					f_bans.write(unique_id + " " + str(ban_time) + " " + self.formatMessage(bans_message_template, player_name, server_name, lognames, date_time, guid, ip) + "\n")
 					f_report.write(unique_id + " " + str(ban_time) + " " + self.formatMessage(report_message_template, player_name, server_name, lognames, date_time, guid, ip) + "\n")
 					print("Ban Added: " + unique_id)
-			self.data["Timestamp"] = os.path.getmtime(self.bans_file)
+			self.data["Timestamp"]["Local"] = os.path.getmtime(self.bans_file)
 		self.new_bans = {}
 
 

@@ -502,20 +502,26 @@ class Spam:
 			# Loop through self.rules & check if entries_code[x] is a match
 			for rule in self.rules.keys():
 				if re.search(rule, entries_code[x]) or re.search(rule, self.decoder.decode_string(entries_code[x])):
-					if entries_guid[x] not in self.players: # Check if Player GUID exists in data
-						rules_data = {"Exceptions": self.rules[rule]["Exceptions"], "Data": []}
-						self.players[entries_guid[x]] = {"Name": entries_name[x], 
-														"IP":    entries_ip[x], 
-														"Port":  entries_port[x], 
-														"Rules": {rule: rules_data}}
-					elif rule not in self.players[entries_guid[x]]["Rules"]:
-						rules_data = {"Exceptions": self.rules[rule]["Exceptions"], "Data": []}
-						self.players[entries_guid[x]]["Rules"][rule] = rules_data
-					else:
-						pass
-					time_stamp = time.mktime((time.strptime(entries_date[x], "%d.%m.%Y %H:%M:%S")))
-					self.players[entries_guid[x]]["Rules"][rule]["Data"].append([time_stamp, entries_code[x]])
-
+					exception_flag = False
+					for exception_rule in self.rules[rule]["Exceptions"]:
+						if re.search(exception_rule, entries_code[x]):
+							exception_flag = True
+							break
+					if exception_flag is False:	
+						if entries_guid[x] not in self.players: # Check if Player GUID exists in data
+							rules_data = {"Exceptions": self.rules[rule]["Exceptions"], "Data": []}
+							self.players[entries_guid[x]] = {"Name": entries_name[x], 
+															"IP":    entries_ip[x], 
+															"Port":  entries_port[x], 
+															"Rules": {rule: rules_data}}
+						elif rule not in self.players[entries_guid[x]]["Rules"]:
+							rules_data = {"Exceptions": self.rules[rule]["Exceptions"], "Data": []}
+							self.players[entries_guid[x]]["Rules"][rule] = rules_data
+						else:
+							pass
+						time_stamp = time.mktime((time.strptime(entries_date[x], "%d.%m.%Y %H:%M:%S")))
+						self.players[entries_guid[x]]["Rules"][rule]["Data"].append([time_stamp, entries_code[x]])
+	
 
 	def scan(self, scan_time):
 		# Loop through Players (unique id = GUID)
