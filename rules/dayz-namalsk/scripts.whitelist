@@ -1,0 +1,6 @@
+Rule = #11 "_cycle;_source = "logic" createVehicleLocal _pos;_source attachto \[_unit, \[0, 0.15, 0\], "neck"\];_bfog = "#particlesource" cr"
+Rule = #76 "FoldTable" createVehicle \[4984.2925,6606.5459,0\];_object setPosASL \[4984.21,6605.85,28.2215\];_object setVectorUp \[0,0,1\];_ob"
+Rule = #128 "#line 1 "nst\\ns_dayz\\code\\compile\\fn_temperatur.sqf"private \["_looptime","_sun_factor","_warm_clothes",""
+Rule = #128 "#line 1 "nst\\ns_dayz\\code\\compile\\fn_selfActions.sqf"scriptName "Functions\\misc\\fn_selfActions.sqf";private\["_menClose",""
+Rule = #128 "#line 1 "nst\\ns_dayz\\code\\compile\\player_spawnCheck.sqf"_isAir = vehicle player iskindof "Air";_inVehicle = \(vehicle player !="
+Rule = #132 "0\];_object setPos \[4983.9385,6614.6343,27.40\];_object setVectorUp \[0,0,1\];_object = "ns_zarivka" createVehicle \[4986.8208,"
