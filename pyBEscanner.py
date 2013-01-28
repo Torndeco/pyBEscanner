@@ -99,11 +99,9 @@ class Main:
 		default["Scan Server Logs"] = config.get("Default", "Scan Server Logs")
 		
 		if config.has_option("Default", "Bans Symlinked Location"):
-			default["Bans Symlinked Location"] = config.get("Default", "Bans Symlinked Location")			
+			default["Bans Symlinked Location"] = config.get("Default", "Bans Symlinked Location",)			
 		else:
 			default["Bans Symlinked Location"] = None
-
-		self.server_ban_deamon = bans.BansDeamon(default["Bans Symlinked Location"])
 
 		options = [["Scan Addbackpackcargo", "addbackpackcargo"],
 					["Scan Addmagazinecargo", "addmagazinecargo"],
@@ -136,6 +134,8 @@ class Main:
 
 		for x in range(len(options)):
 			default[options[x][1]] = config.get("Default", options[x][0])
+			
+		self.server_ban_deamon = bans.BansDeamon(default["Bans Symlinked Location"], default["Ban IP Time"])
 
 		for section in config_sections:
 			server = copy.copy(default)
@@ -167,7 +167,7 @@ class Main:
 				else:
 					server["Rules"].append(os.path.join(self.main_dir, "rules", rules))
 
-			self.server_ban_deamon.addServer(section, server["BattlEye Directory"], server["Bans Shared"], server["Bans Symlinked"])
+			self.server_ban_deamon.addServer(section, server["BattlEye Directory"], server["Bans Shared"], server["Bans Symlinked"], server["Ban IP Time"])
 
 
 			# Generated Settings

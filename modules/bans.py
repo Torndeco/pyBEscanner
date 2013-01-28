@@ -20,12 +20,12 @@ import pickle
 import re
 import time
 
-pickleVersion = 2
+pickleVersion = 3
 
 class BansDeamon:
-	def __init__(self, bans_symlink_directory):
+	def __init__(self, bans_symlink_directory, bans_ip_time):
 		if bans_symlink_directory != None:
-			self.bans_symlinked = Bans(bans_symlink_directory)
+			self.bans_symlinked = Bans(bans_symlink_directory, bans_ip_time)
 		
 		# {ServerName: 
 #			{"Bans":Bans,
@@ -33,11 +33,11 @@ class BansDeamon:
 #			}
 		self.bans_server_list = {}
 		
-	def addServer(self, servername, bans_directory, bans_shared, bans_symlinked):
+	def addServer(self, servername, bans_directory, bans_shared, bans_symlinked, bans_ip_time):
 		if bans_symlinked == "on":
 			self.bans_server_list[servername] = {"Bans": self.bans_symlinked, "Bans Shared": bans_shared}
 		else:
-			self.bans_server_list[servername] = {"Bans": Bans(bans_directory), "Bans Shared": bans_shared}
+			self.bans_server_list[servername] = {"Bans": Bans(bans_directory, bans_ip_time), "Bans Shared": bans_shared}
 
 
 	def getStatus(self, servername):
@@ -61,12 +61,14 @@ class BansDeamon:
 
 class Bans:
 
-	def __init__(self, bans_directory):
+	def __init__(self, bans_directory, bans_ip_time):
 		self.bans_file = os.path.join(bans_directory, "bans.txt")
 		self.bans_report_file = os.path.join(bans_directory, "bans-pyBEscanner-report.txt")
 		
 		self.data = {"Version":2, "Bans":set(), "Timestamp":{"Local":None}}
 		self.data_file = os.path.join(bans_directory, "bans.data")
+		
+		self.bans_ip_time = bans_ip_time
 
 		self.new_bans = {}
 		self.updateStatus(False)
@@ -91,7 +93,8 @@ class Bans:
 			if data["Version"] == pickleVersion:
 				self.data = data
 			else:
-				self.BanInfo()
+				self.data["Bans"] = set()
+				self.data["Timestamp"] = {"Local": None}
 
 	def saveBanInfo(self):
 		f_bans_data = open(self.data_file, 'wb')
@@ -157,7 +160,7 @@ class Bans:
 					lognames = self.new_bans[unique_id]["logname"]
 					bans_message_template = self.new_bans[unique_id]["Ban Template"]
 					report_message_template = self.new_bans[unique_id]["Report Template"]
-					if self.new_bans[unique_id]["Ban IP Time"] == "-1":
+					if self.bans_ip_time == "-1":
 						ban_time = "-1"
 					else:
 						ban_time = str(current_time + (int(ban_time) * 86400))
