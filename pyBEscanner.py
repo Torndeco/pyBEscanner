@@ -99,7 +99,7 @@ class Main:
 		default["Scan Server Logs"] = config.get("Default", "Scan Server Logs")
 		
 		if config.has_option("Default", "Bans Symlinked Location"):
-			default["Bans Symlinked Location"] = config.get("Default", "Bans Symlinked Location",)			
+			default["Bans Symlinked Location"] = config.get("Default", "Bans Symlinked Location")			
 		else:
 			default["Bans Symlinked Location"] = None
 
