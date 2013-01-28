@@ -193,11 +193,11 @@ class Scanner:
 		if update:
 			for x in range(len(self.bans_guid_list)):
 				if (self.server_settings["Ban IP"] == "on") or (self.bans_guid_list[x] == None):
-					server_ban_deamon.addBan(self.server_settings["Server ID"], self.bans_ip_list[x], self.bans_info_list[x], logname, self.server_settings["Ban Message"], self.server_settings["Report Message"], self.server_settings["Ban IP Time"])
+					self.server_ban_deamon.addBan(self.server_settings["Server ID"], self.bans_ip_list[x], self.bans_info_list[x], logname, self.server_settings["Ban Message"], self.server_settings["Report Message"], self.server_settings["Ban IP Time"])
 				if self.bans_guid_list[x] != None:
-					server_ban_deamon.addBan(self.server_settings["Server ID"], self.bans_guid_list[x], self.bans_info_list[x], logname, self.server_settings["Ban Message"], self.server_settings["Report Message"], "-1")
+					self.server_ban_deamon.addBan(self.server_settings["Server ID"], self.bans_guid_list[x], self.bans_info_list[x], logname, self.server_settings["Ban Message"], self.server_settings["Report Message"], "-1")
 			if self.bans_guid_list != []:
-				server_ban_deamon.updateStatus(self.server_settings["Server ID"], True)
+				self.server_ban_deamon.updateStatus(self.server_settings["Server ID"], True)
 				self.bans_guid_list = []
 				self.bans_ip_list = []
 				self.bans_info_list = []

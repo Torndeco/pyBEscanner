@@ -149,20 +149,20 @@ class Bans:
 		if self.new_bans != {}:
 			with open(self.bans_file, "a") as f_bans, open(self.bans_report_file, "a") as f_report:
 				for unique_id in self.new_bans.keys():
-					guid = self.new_bans[unique_id]["guid"]
-					ip = self.new_bans[unique_id]["ip"]
+					guid = self.new_bans[unique_id]["Guid"]
+					ip = self.new_bans[unique_id]["IP"]
 					server_name = self.new_bans[unique_id]["ServerName"]
-					date_time = self.new_bans[unique_id]["date"]
-					player_name = self.new_bans[unique_id]["name"]
+					date_time = self.new_bans[unique_id]["Date"]
+					player_name = self.new_bans[unique_id]["Name"]
 					lognames = self.new_bans[unique_id]["logname"]
 					bans_message_template = self.new_bans[unique_id]["Ban Template"]
 					report_message_template = self.new_bans[unique_id]["Report Template"]
-					if self.new_bans[unique_id["Ban IP Time"]] == "-1":
+					if self.new_bans[unique_id]["Ban IP Time"] == "-1":
 						ban_time = "-1"
 					else:
 						ban_time = str(current_time + (int(ban_time) * 86400))
-					f_bans.write(unique_id + " " + ban_time + " " + self.formatMessage(bans_message_template, player_name, server_name, lognames, date_time, guid, ip) + "\n")
-					f_report.write(unique_id + " " + ban_time + " " + self.formatMessage(report_message_template, player_name, server_name, lognames, date_time, guid, ip) + "\n")
+					f_bans.write(unique_id + " " + str(ban_time) + " " + self.formatMessage(bans_message_template, player_name, server_name, lognames, date_time, guid, ip) + "\n")
+					f_report.write(unique_id + " " + str(ban_time) + " " + self.formatMessage(report_message_template, player_name, server_name, lognames, date_time, guid, ip) + "\n")
 					print("Ban Added: " + unique_id)
 			self.data["Timestamp"] = os.path.getmtime(self.bans_file)
 		self.new_bans = {}
