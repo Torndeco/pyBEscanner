@@ -39,8 +39,8 @@ Rule:A
 Spam Filters
 
 Rule = Some Random Regrex Rule
-    Exception = 
-    Exception =
+    Exceptions = 
+    Exceptions =
     Time = 
     Count = 
     Action = BAN/KICK/LOG
