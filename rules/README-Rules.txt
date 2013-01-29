@@ -23,8 +23,8 @@ Whitelist / Kicklist / Banlist Filters
 # Random Comments
 #
 Rule = Some Random Regrex Rule
-   Exceptions =
-   Exceptions = 
+   Exception =
+   Exception = 
 Rule = X
 Rule = Y
 
@@ -39,8 +39,8 @@ Rule:A
 Spam Filters
 
 Rule = Some Random Regrex Rule
-    Exceptions = 
-    Exceptions =
+    Exception = 
+    Exception =
     Time = 
     Count = 
     Action = BAN/KICK/LOG

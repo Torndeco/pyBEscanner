@@ -43,7 +43,7 @@ def load_rules(rule_files):
 						if temp[0] == "Rule":
 							current_rule = temp[1]
 							rules[current_rule] = {"Exceptions":[]}
-						elif temp[0] == "Exceptions":
+						elif temp[0] == "Exception":
 							rules[current_rule]["Exceptions"].append(temp[1])
 						elif temp[0] == "Time":
 							rules[current_rule]["Time"] = int(temp[1])
