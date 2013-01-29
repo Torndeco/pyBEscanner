@@ -23,8 +23,8 @@ Whitelist / Kicklist / Banlist Filters
 # Random Comments
 #
 Rule = Some Random Regrex Rule
-   Exception =
-   Exception = 
+   Exceptions =
+   Exceptions = 
 Rule = X
 Rule = Y
 
