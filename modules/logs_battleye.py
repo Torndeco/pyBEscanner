@@ -25,7 +25,7 @@ import time
 
 #from modules import rcon_cscript
 
-pickleVersion = 4
+pickleVersion = 5
 
 		# rules {}
 		# Regrex Rule: Extra Info {}
@@ -532,7 +532,7 @@ class Spam:
 				if rule not in self.rules.keys(): # Check if old rule logged
 					del self.players[guid]["Rules"][rule] # Remove Old Rule
 				elif (self.players[guid]["Rules"][rule]["Exceptions"] != self.rules[rule]["Exceptions"]): # Reset Spam data if Exceptions are Changed
-						self.players[guid]["Rules"][rule] = {"Exceptions": [], "Data": []}
+						self.players[guid]["Rules"][rule] = {"Exceptions": self.rules[rule]["Exceptions"], "Data": []}
 				else:
 					#[[Timestamp][Code]] = self.players[entries_guid[x]][Rules][filter]
 					data = self.players[guid]["Rules"][rule]["Data"] # Current logged rule data = [[Timestamp, Code], [T2,C2]]
