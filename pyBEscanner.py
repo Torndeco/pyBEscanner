@@ -67,6 +67,7 @@ class Main:
 
 		config = ConfigParser.ConfigParser()
 		config.read(self.conf_file)
+
 		if config.has_option("Default", "Version"):
 			if config.get("Default", "Version") != "18":
 				print "-------------------------------------------------"

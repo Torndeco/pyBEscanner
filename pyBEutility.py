@@ -26,12 +26,12 @@ import urllib
 from modules import bans
 
 class pyBE:
-    def __init__(self):
+    def __init__(self, updatebans=False):
         main_dir = os.getcwd()
         conf_dir = os.path.join(main_dir, 'conf')
         self.temp_dir = os.path.join(main_dir, "temp")
         self.pyBEscanner_lockfile = os.path.join(self.temp_dir, "pyBEscanner.lockfile")
-        conf_file = os.path.join(main_dir, 'conf', 'servers.ini')
+        conf_file = os.path.join(main_dir, 'conf', 'conf.ini')
 
         if not os.path.isfile(os.path.join(main_dir, 'pyBEscanner.py')):
             print()
@@ -44,10 +44,10 @@ class pyBE:
                 sys.exit()
             else:
                 if not os.path.isfile(conf_file):
-                    print("Missing Server Configs @ " + self.conf_file)
+                    print("Missing Server Configs @ " + conf_file)
                     sys.exit()
                     
-        config = configparser.ConfigParser()
+        config = ConfigParser.ConfigParser()
         config.read(conf_file)
         
         if config.has_option("Default", "Version"):
@@ -69,15 +69,18 @@ class pyBE:
             print("Recommend u delete pyBEscanner temp folders & read Changes.txt for update changes")
             sys.exit()
             
-        config = configparser.ConfigParser()
-        config.read(conf_file)
-        config_sections = config.sections()
+        config_sections= config.sections()
         config_sections.remove("Default")
+
+        if updatebans:
+            self.server_ban_deamon = bans.BansDeamon(default["Bans Symlinked Location"], default["Ban IP Time"])
 
         self.section_list = config_sections
         self.server_list = {}
-        for section in list(config_sections):
-            self.server_list[section] = {"ServerName": config[section]["ServerName"],
+        for section in config_sections:
+            if updatebans:
+                self.server_ban_deamon.addServer(section, server["BattlEye Directory"], server["Bans Shared"], server["Bans Symlinked"], server["Ban IP Time"])
+            self.server_list[section] = {"ServerName": config.get(section, "ServerName"),
                                          "LockFile-Scan-Ask": os.path.join(self.temp_dir, section, "scan-stop-ask.lockfile"),
                                          "LockFile-Scan-Stopped": os.path.join(self.temp_dir, section, "scan-stopped.lockfile")}
  
@@ -90,46 +93,55 @@ class pyBE:
                 os.remove(self.server_list[section]["LockFile-Scan-Ask"])
             if os.path.isfile(self.server_list[section]["LockFile-Scan-Stopped"]):
                 os.remove(self.server_list[section]["LockFile-Scan-Stopped"])
-        print("Telling pyBEscanner to resume scanning on " + str(servers))
+        print("pyBEutility: Request Resume Scanning: " + str(servers))
+
     
     def stop_scan(self, servers=None):
-        if servers == None:
-            servers = self.section_list
+        if os.path.isfile(self.pyBEscanner_lockfile):
+            if servers is None:
+                servers = self.section_list
+            for section in servers: 
+                open(self.server_list[section]["LockFile-Scan-Ask"], 'w').close()
+                print("pyBEscanner: Request Stop Scanning: " + self.server_list[section]["ServerName"])
             
-        for section in servers: 
-            open(self.server_list[section]["LockFile-Scan-Ask"], 'w', encoding='utf8').close()
-        print("Asking pyBEscanner to pause scanning on " + str(servers))
-        
-        while servers != []:
             print
-            x = 0
-            while x < len(servers):
-                section = servers[x]
-                if os.path.isfile(self.server_list[section]["LockFile-Scan-Stopped"]):
-                    print("Scan Paused on Server " + str(servers[x]))
-                    servers.pop(x)
-                else:
-                    x = x + 1
-            print("Waiting...")
-            if os.path.isfile(self.pyBEscanner_lockfile):
-                time.sleep(5)
-            else:
-                print("pyBEscanner is not running")
-                print("Removing lockfiles + exiting")
-                self.start_scan()
-                sys.exit()
-        print("Scanning Paused")
-		
-	def download_bans(self):
-		urllib.urlretrieve ("http://www.banzunion.com/downloads/?do=download", os.path.join(self.temp_dir, "banzunion.txt"))
-		urllib.urlretrieve ("http://code.google.com/p/dayz-community-banlist/source/browse/bans/cblbans.txt", os.path.join(self.temp_dir, "cblbans.txt"))
-		urllib.urlretrieve ("http://code.google.com/p/dayz-community-banlist/source/browse/bans/dwbans.txt", os.path.join(self.temp_dir, "dwbans.txt"))
+            while servers != []:
+                print("Waiting...")
+                time.sleep(5)            
+                x = 0
+                while x < len(servers):
+                    section = servers[x]
+                    if os.path.isfile(self.server_list[section]["LockFile-Scan-Stopped"]):
+                        print("pyBEscanner: Scan Stopped: " + self.server_list[section]["ServerName"])
+                        servers.pop(x)
+                    else:
+                        time.sleep(5) 
+                        x = x + 1
+                if servers != []:
+                    print("pyBEutility: Waiting for " + str(servers))
+            print("Scanning Paused")
+        else:
+            print("pyBEscanner is not running")
+            print("Removing lockfiles + Exiting")
+            self.start_scan()
+            sys.exit()
 
 
+    def download_bans(self):
+        ban_files = [(os.path.join(self.temp_dir, "banzunion.txt")), (os.path.join(self.temp_dir, "cblbans.txt")), (os.path.join(self.temp_dir, "dwbans.txt"))]
+        urllib.urlretrieve ("http://www.banzunion.com/downloads/?do=download", ban_files[0])
+        urllib.urlretrieve ("http://code.google.com/p/dayz-community-banlist/source/browse/bans/cblbans.txt", ban_files[1])
+        urllib.urlretrieve ("http://code.google.com/p/dayz-community-banlist/source/browse/bans/dwbans.txt", ban_files[2])
+
+        self.stop_scan()
+        self.server_ban_deamon.updateBanFiles(ban_files)
+        self.start_scan()
+        
+        
 class Main:
     def __init__(self, args):
         self.args = args
-    
+        
     def start(self):
         if (self.args.pause_scan and self.args.start_scan):
             print("Can't Start + Pause Scanning, make your mind up")
@@ -140,16 +152,17 @@ class Main:
         elif self.args.start_scan:
             pyBE().start_scan()
         else:
-            pass
+            if self.args.download_bans:    
+                #pyBE(True).download_bans()
+                print("Work In Progress")
 
-        if self.args.download_bans:
-			print("Work In Progress")
 
 
 parser = argparse.ArgumentParser(description='pyBEscanner Utility...')
-parser.add_argument('-s', '--start-scan', action='store_true')
-parser.add_argument('-p', '--pause-scan', action='store_true')
-parser.add_argument('-d', '--download-bans', action='store_true')
+parser.add_argument('--start-scan', action='store_true')
+parser.add_argument('--pause-scan', action='store_true')
+parser.add_argument('--download-bans', action='store_true')
+parser.add_argument('--update-battleeye-filters', action='store_true')
 args = parser.parse_args()
 main = Main(args)
 main.start()

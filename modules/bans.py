@@ -59,6 +59,25 @@ class BansDeamon:
 	def checkBans(self, servername):
 		self.bans_server_list[servername]["Bans"].checkBans()
 
+		
+	def updateBanFiles(self, ban_files=[]):
+		for ban_file in ban_files:
+			with open(ban_file) as b_file:
+				bans = []
+				info = []
+				duration = []
+				for line in b_file:
+					data = re.split(' ', line.rstrip(), 2)
+					if len(data) == 3:
+						if (data[0] != "banzbanzbanzbanzbanzbanzbanzbanz") and (data[0] != "dayzcommunitybanslistdayzdayzday"):
+							bans.add(data[0])
+							duration.add(data[1])
+							info.add(data[2])
+		if bans != []:			
+			for server_name in self.bans_server_list.keys(): 
+				self.bans_server_list[server_name].addBanRaw(bans, duration, info)
+						
+
 class Bans:
 
 	def __init__(self, bans_directory, bans_ip_time):
@@ -144,6 +163,17 @@ class Bans:
 				self.new_bans[unique_id]["Report Template"] = report_template
 			else:
 				self.new_bans[unique_id]["logname"].append(logname)
+		self.updateStatus(True)
+
+	def addBanRaw(self, bans, duration, info):
+		count = 0
+		with open(self.bans_file, "a") as f_bans:
+			for x in range(len(bans)):
+				if bans[x] not in self.data["Bans"]:
+					count = count + 1
+					f_bans.write(bans[x] + " " + duration[x] + " " + info[x] + "\n")
+		print
+		print "Added " + str(count) + " Bans to " + server_name
 		self.updateStatus(True)
 
 	def writeBans(self):
