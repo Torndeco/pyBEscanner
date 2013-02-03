@@ -79,12 +79,6 @@ class pyBE:
         print "Downloading Dwarden Bans..."
         urllib.urlretrieve ("http://dayz-community-banlist.googlecode.com/git/bans/dwbans.txt", ban_files[2])
         self.stop_scan()
-        print
-        print "**************"
-        print "THIS OPTION = WORK IN PROGRESS"
-        print "IT DOESNT WORK YET"
-        print "**************"
-        print "**************"
         self.server_ban_deamon.updateBanFiles(ban_files)
         print
         self.start_scan()
