@@ -5,5 +5,4 @@ Rule = hiveupdateresu
 Rule = missionNamespace
 Rule = myvehobj
 Rule = remotecmd
-Rule = "norrnRLact" = \<NULL-object\>
 Rule = "BIS_MPF_logic" = \<NULL-object\>
