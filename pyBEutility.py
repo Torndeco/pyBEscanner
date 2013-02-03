@@ -70,15 +70,14 @@ class pyBE:
 
 
     def download_bans(self):
-        temp_dir = self.server_settings[1]["Temp Directory"]
+        temp_dir = os.path.join(os.getcwd(), "temp")
         ban_files = [(os.path.join(temp_dir, "banzunion.txt")), (os.path.join(temp_dir, "cblbans.txt")), (os.path.join(temp_dir, "dwbans.txt"))]
-        print
         print "Downloading BanZ Union Bans..."
         urllib.urlretrieve ("http://www.banzunion.com/downloads/?do=download", ban_files[0])
         print "Downloading CBL Bans..."
-        urllib.urlretrieve ("http://code.google.com/p/dayz-community-banlist/source/browse/bans/cblbans.txt", ban_files[1])
+        urllib.urlretrieve ("http://dayz-community-banlist.googlecode.com/git/bans/bans.txt", ban_files[1])
         print "Downloading Dwarden Bans..."
-        urllib.urlretrieve ("http://code.google.com/p/dayz-community-banlist/source/browse/bans/dwbans.txt", ban_files[2])
+        urllib.urlretrieve ("http://dayz-community-banlist.googlecode.com/git/bans/dwbans.txt", ban_files[2])
         self.stop_scan()
         print
         print "**************"
@@ -86,7 +85,7 @@ class pyBE:
         print "IT DOESNT WORK YET"
         print "**************"
         print "**************"
-        #self.server_ban_deamon.updateBanFiles(ban_files)
+        self.server_ban_deamon.updateBanFiles(ban_files)
         print
         self.start_scan()
         

@@ -61,21 +61,21 @@ class BansDeamon:
 
 		
 	def updateBanFiles(self, ban_files=[]):
+		bans = []
+		info = []
+		duration = []
 		for ban_file in ban_files:
 			with open(ban_file) as b_file:
-				bans = []
-				info = []
-				duration = []
 				for line in b_file:
 					data = re.split(' ', line.rstrip(), 2)
 					if len(data) == 3:
 						if (data[0] != "banzbanzbanzbanzbanzbanzbanzbanz") and (data[0] != "dayzcommunitybanslistdayzdayzday"):
-							bans.add(data[0])
-							duration.add(data[1])
-							info.add(data[2])
+							bans.append(data[0])
+							duration.append(data[1])
+							info.append(data[2])
 		if bans != []:			
 			for server_name in self.bans_server_list.keys(): 
-				self.bans_server_list[server_name].addBanRaw(bans, duration, info)
+				self.bans_server_list[server_name]["Bans"].addBanRaw(bans, duration, info)
 						
 
 class Bans:
@@ -172,8 +172,9 @@ class Bans:
 				if bans[x] not in self.data["Bans"]:
 					count = count + 1
 					f_bans.write(bans[x] + " " + duration[x] + " " + info[x] + "\n")
+					self.data["Bans"].add(bans[x])
 		print
-		print "Added " + str(count) + " Bans to " + server_name
+		print "Total New Bans Added " + str(count)
 		self.updateStatus(True)
 
 	def writeBans(self):

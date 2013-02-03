@@ -32,6 +32,7 @@ Features:
 			U can also add in different triggers i.e different triggers for
 			pipebombs / grenades etc...
 
+			
 Directory Layout
 	<pyBEscanner install directory>pyBEscanner.py
 		[Main Python Script....   This is what u run]
@@ -59,6 +60,20 @@ Installation
 	Edit conf/conf.ini
 	python pyBEscanner.py
 
+	
+Extras
+	python pyBEutility.pl --download-bans
+		After u have pyBEscanner configured... U can set to run this command once a day/week if u want.
+		It will download cblbans / dwbans & banzunion bans + add any missing bans to your servers bans.txt for u.
+		U can run this command while pyBEscanner is running.
+
+	python pyBEutility.pl --pause-scan
+		If u are paranoid of open file locks, while rotating server console / rpt logs.
+		Add this to your script / bat file.. to pause server scanning...
+		
+	python pyBEutility.pl --resume-scan
+		This re-enables server log scanning
+	
 
 Requirements
 	Python 2.7
