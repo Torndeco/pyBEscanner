@@ -1,13 +1,15 @@
 Rule = .
-Count = 4
-Time = 1
-Action = BAN
-Exception = z_us_soldier
-Exception = z_ru_soldier
+	Count = 4
+	Time = 1
+	Action = BAN
+		Exception = z_us_soldier
+		Exception = z_ru_soldier
+		Exception = R_x57mm_HE_NAC
 
 Rule = ..
-Count = 5
-Time = 8
-Action = BAN
-Exception = z_us_soldier
-Exception = z_ru_soldier
+	Count = 5
+	Time = 8
+	Action = BAN
+		Exception = z_us_soldier
+		Exception = z_ru_soldier
+		Exception = R_x57mm_HE_NAC
