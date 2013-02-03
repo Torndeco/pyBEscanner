@@ -8,3 +8,4 @@ Rule = "rland"
 Rule = rsetdir
 Rule = teleported
 Rule = toString
+Rule = ;

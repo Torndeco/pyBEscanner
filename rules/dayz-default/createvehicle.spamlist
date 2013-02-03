@@ -7,3 +7,10 @@ Rule = ..
 	Count = 5
 	Time = 8
 	Action = BAN
+	
+Rule = .*\[[0],[0],[0]\]
+	Exception = #0 "HelicopterExplo
+	Exception = #0 "SmallSecondary
+	Count = 3
+	Time = 59
+	Action = BAN
