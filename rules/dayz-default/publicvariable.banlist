@@ -3,6 +3,9 @@ Rule = compile
 Rule = dwarden
 Rule = hiveupdateresu
 Rule = missionNamespace
+Rule = "monkymonitor"
+Rule = "mmonitor"
+Rule = "monky"
 Rule = myvehobj
 Rule = remotecmd
 Rule = "BIS_MPF_logic" = \<NULL-object\>

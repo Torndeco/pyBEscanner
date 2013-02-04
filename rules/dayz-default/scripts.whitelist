@@ -13,6 +13,8 @@ Rule = #127 " \[player,_config\] call BIS_fnc_invAdd;
 Rule = #127 " \[player,_config\] call BIS_fnc_invAdd;if \(_isOk\) then \{deleteVehicle _holder;\} else \{_holder setVariable\["clai"
 Rule = #127 "ldUnit removeMagazine _x;\} forEach  magazines _oldUnit;deleteVehicle _oldUnit;if\(_currentWpn != ""\) then \{_newUnit select"
 Rule = #128 "private \['_dummy'\]; _dummy = \[_this,'onload'\] call compile preprocessfile '\\ca\\ui\\scripts\\server_interface.sqf';"
+Rule = #128 "cVM '\\ca\\Data\\ParticleEffects\\SCRIPTS\\init\.sqf'; _this call compile preprocessFileLineNumbers '\\ca\\communityconfigurationproject"
+Rule = #128 "\{BIS_CPP_Muzzle_Init = true;BIS_CPP_Muzzle_ForceReload = compile preprocessFileLineNumbers "\\ca\\communityconfigurationproject"
 Rule = #(?:223|227) "rivate \["_dummy"\]; _dummy = \[_this,"players"\] execVM "\\ca\\ui\\scripts\\dedicatedServerInterface.sqf";"
 Rule = #138
 Rule = #139
