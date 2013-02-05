@@ -194,7 +194,7 @@ class Bans:
 					if self.bans_ip_time == "-1":
 						ban_time = "-1"
 					else:
-						ban_time = str(current_time + (int(ban_time) * 86400))
+						ban_time = str(current_time + (int(self.bans_ip_time) * 86400))
 					f_bans.write(unique_id + " " + str(ban_time) + " " + self.formatMessage(bans_message_template, player_name, server_name, lognames, date_time, guid, ip) + "\n")
 					f_report.write(unique_id + " " + str(ban_time) + " " + self.formatMessage(report_message_template, player_name, server_name, lognames, date_time, guid, ip) + "\n")
 					print("Ban Added: " + unique_id)
