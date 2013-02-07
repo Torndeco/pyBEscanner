@@ -145,8 +145,17 @@ class Settings:
             server["BattlEye Directory"] = config.get(section, "BattlEye Directory")
             server["Server Console Log"] = config.get(section, "Server Console Log")
             server["Server RPT Log"] = config.get(section, "Server RPT Log")
-            server["Temp Directory"] = os.path.join(self.main_dir, "temp", section)
-            server["Logs Directory"] = os.path.join(self.main_dir, "logs", section)
+
+            if config.has_option(section, "Temp Directory"):
+                server["Temp Directory"] = os.path.join(config.get(section, "Temp Directory"), section)
+            else:
+                server["Temp Directory"] = os.path.join(self.main_dir, "temp", section)
+
+            if config.has_option(section, "Logs Directory"):
+                server["Logs Directory"] = os.path.join(config.get(section, "Logs Directory"), section)
+            else:
+                server["Logs Directory"] = os.path.join(self.main_dir, "logs", section)
+
             server["LockFile"] = os.path.join(server["Temp Directory"], "scan-stopped.lockfile")
             server["LockFile-Ask"] = os.path.join(server["Temp Directory"], "scan-stop-ask.lockfile")
 
