@@ -1,4 +1,5 @@
 Rule = ;
+Rule = "BIS_MPF_logic" = \<NULL-object\>
 Rule = compile
 Rule = dwarden
 Rule = hiveupdateresu
@@ -8,4 +9,5 @@ Rule = "mmonitor"
 Rule = "monky"
 Rule = myvehobj
 Rule = remotecmd
-Rule = "BIS_MPF_logic" = \<NULL-object\>
+Rule = TTT5derCode
+Rule = TTT5NamePl

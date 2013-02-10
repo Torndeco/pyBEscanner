@@ -1,3 +1,4 @@
+Rule = """"
 Rule = #2 "then \{player addWeapon "ItemMap"\};\(findDisplay 46\) displayAddEventHandler \["KeyDown", "altstate = _this select 4"\];\(\(findDisp"
 Rule = addvehicle\.sqf
 Rule = ajmenu\.sqf
