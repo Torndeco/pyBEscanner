@@ -139,7 +139,6 @@ class ConsoleScanner:
 		self.offset_data_file = os.path.join(server_settings["Temp Directory"], "server_console.offset")
 
 		player_tracker_data_file = os.path.join(server_settings["Temp Directory"], "server_player_tracker.offset")
-		self.player_tracker = PlayerTracker(server_settings, self.logfile, player_tracker_data_file)
 				
 		backup_dir = os.path.join(server_settings["Logs Directory"], datetime.datetime.now().strftime("%Y-%m-%d"))
 		self.backup_chatlog = os.path.join(backup_dir, "chat-logs.txt")
