@@ -52,6 +52,7 @@ class BansDeamon:
 				self.bans_server_list[servername]["Bans"].addBan(unique_id, info, logname, ban_template, report_template, time)
 		else:
 			self.bans_server_list[servername]["Bans"].addBan(unique_id, info, logname, ban_template, report_template, time)
+			
 
 	def writeBans(self, servername):
 		self.bans_server_list[servername]["Bans"].writeBans()

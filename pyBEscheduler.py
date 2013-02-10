@@ -18,6 +18,4 @@
 
 from twisted.internet import reactor
 
-s.startService()
 reactor.run()
-s.stopService()

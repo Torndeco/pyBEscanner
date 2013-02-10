@@ -65,17 +65,15 @@ class Main:
 						scan_count = 60
 					else:
 						logs_battleye.Scanner(server, server_ban_deamon).scan()
+						if server["Scan Server Logs"] == "on":
+							player_tracker_data_file = os.path.join(server["Temp Directory"], "server_player_tracker.offset")
+							player_tracker = logs_server.PlayerTracker(server, player_tracker_data_file, server_ban_deamon)
+							logs_server.ConsoleScanner(server, player_tracker).scan_log(0)
+							logs_server.RPTScanner(server, player_tracker).scan_log(0)
 						if os.path.isfile(server["LockFile-Ask"]):
 							print
 							print("LockFile Detected, Finished Scanning Logs for Server " + server["ServerName"])
-							if server["Scan Server Logs"] == "on":
-								logs_server.ConsoleScanner(server).scan_log(0)
-								logs_server.RPTScanner(server).scan_log(0)
 							open(server["LockFile"], 'w').close()
-						else:
-							if server["Scan Server Logs"] == "on":
-								logs_server.ConsoleScanner(server).scan_log(0)
-								logs_server.RPTScanner(server).scan_log(0)
 
 				for server in server_settings:
 					kicks_file = os.path.join(server["BattlEye Directory"], "kicks.txt")
