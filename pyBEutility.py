@@ -71,9 +71,11 @@ class pyBE:
 
     def download_bans(self):
         temp_dir = os.path.join(os.getcwd(), "temp")
-        ban_files = [(os.path.join(temp_dir, "banzunion.txt")), (os.path.join(temp_dir, "cblbans.txt")), (os.path.join(temp_dir, "dwbans.txt"))]
-        print "Downloading BanZ Union Bans..."
-        urllib.urlretrieve ("http://www.banzunion.com/downloads/?do=download", ban_files[0])
+        ban_files = [(os.path.join(temp_dir, "cblbans.txt")), (os.path.join(temp_dir, "dwbans.txt"))]
+        #ban_files = [(os.path.join(temp_dir, "banzunion.txt")), (os.path.join(temp_dir, "cblbans.txt")), (os.path.join(temp_dir, "dwbans.txt"))]
+        #print "Disabled --- Downloading BanZ Union Bans..."
+        #print "Downloading BanZ Union Bans..."
+        #urllib.urlretrieve ("http://www.banzunion.com/downloads/?do=download", ban_files[0])
         print "Downloading CBL Bans..."
         urllib.urlretrieve ("http://dayz-community-banlist.googlecode.com/git/bans/bans.txt", ban_files[1])
         print "Downloading Dwarden Bans..."
