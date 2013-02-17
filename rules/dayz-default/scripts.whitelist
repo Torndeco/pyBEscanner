@@ -1,5 +1,6 @@
 Rule = #9 "me = name player;_model call player_switchModel;player allowDamage false;_lastAte = _survival select 1;_lastDrank = _surviv"
 Rule = #23 "ong! disconnect and try again!", "BLACK OUT",1\];player enableSimulation false;\};\};dayz_losChance = \{private\["_agent","_max"
+Rule = #32 " then \{_loop = false\};sleep 1;\};dayzHideBody = _item;publicVariable "dayzHideBody";hideBody _item;sleep 10;deleteVehicle "
 Rule = #34 "dayz_logDamage = \[name _unit, name _source, _damage\];
 Rule = #34 "\[dayz_characterID,0,_body,_playerID,dayz_playerName\];publicVariableServer "dayzDeath";if \(isServer\) then \{_id = dayzDeath spa"
 Rule = #34 "yzUpdateVehicle call server_updateObject;\};\} else \{publicVariableServer "dayzUpdateVehicle";\};\};\};\};_total"
@@ -18,3 +19,4 @@ Rule = #128 "\{BIS_CPP_Muzzle_Init = true;BIS_CPP_Muzzle_ForceReload = compile p
 Rule = #(?:223|227) "rivate \["_dummy"\]; _dummy = \[_this,"players"\] execVM "\\ca\\ui\\scripts\\dedicatedServerInterface.sqf";"
 Rule = #138
 Rule = #139
+Rule = #199 "if \(isnil 'BIS_fnc_AAN' || false\) then \{BIS_fnc_AAN = \{if \(!false\) then \{debuglog \('Log: \[Function"

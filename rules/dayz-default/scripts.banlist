@@ -24,6 +24,7 @@ Rule = esp2\.sqf
 Rule = _flockArea
 Rule = _flockHeight
 Rule = _flockPos
+Rule = GodMode
 Rule = Help\.sqf
 Rule = (?:I|i)nvisible
 Rule = magicbox
