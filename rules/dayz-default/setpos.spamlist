@@ -1,9 +1,14 @@
 Rule = .
-	Count = 4
+	Count = 2
+	Time = 1
+	Action = KICK
+
+Rule = ..
+	Count = 3
 	Time = 1
 	Action = BAN
 	
-Rule = ..
+Rule = ...
 	Count = 10
 	Time = 5
 	Action = BAN
