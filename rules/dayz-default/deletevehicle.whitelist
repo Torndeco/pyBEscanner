@@ -4,6 +4,7 @@ Rule = Hen
 Rule = MedBox0
 Rule = Sandbag1_DZ
 Rule = Shot
+Rule = TentStorage
 Rule = WeaponHolder
 Rule = WeaponHolder_ItemHatchet
 Rule = WeaponHolder_MeleeCrowbar

@@ -1,13 +1,17 @@
 Rule = "dayz_logDamage" = \[".*",".*",.*\]
 Rule = #0 "player.*" = <NULL-object>
+Rule = #0 "dayzHitV" = \[<NULL-object>,"glass
 Rule = #6 "remExField" = \[,<NULL-object>,"say",\["z_spotted_[0-9]",40\]\]
 Rule = #6 "remExField" = \[,<NULL-object>,"say",\["z_spotted_[0-9][0-9]",40\]\]
 Rule = #7 "dayzDeath" = \[".*",0,<NULL-object>,".*",".*"\]
+Rule = #(?:0|34|39) "atp" = \["
 Rule = Value Restriction #21 "remExField" = \[<NULL-object>,<NULL-object>,"playmove","ZombieFeed[0-9]"\]
 Rule = Value Restriction #(?:6|21) "remExField" = \[<NULL-object>,<NULL-object>,"playmove","ZombieStandingAttack[0-9]"\]
 Rule = Value Restriction #(?:6|21) "remExField" = \[<NULL-object>,<NULL-object>,"playmove","ZombieStandingAttack[0-9][0-9]"\]
 Rule = Value Restriction #(?:10|21) "remExField" = \[<NULL-object>,<NULL-object>,"switchmove",""\]
 Rule = Value Restriction #(?:10|21) "remExField" = \[<NULL-object>,<NULL-object>,"switchmove","(?:adthpkn|adthppn|amovper|amovpkn|amovppn|amovpsi|aidlpkn|aidlper|ainvpkn|aswmper|awopppn|awopper|awoppkn|acrgpkn|aovrper|adthper|weaponmagazinereloadprone|laddercivil|ladderrifle|pistolmagazinereloadprone)
-Rule = Value Restriction #(?:10|21) "remExField" = \[<NULL-object>,<NULL-object>,"switchmove","[a-z]*_driver"]
+Rule = Value Restriction #(?:10|21) "remExField" = \[<NULL-object>,<NULL-object>,"switchmove","[a-z]*_driver"\]
+Rule = Value Restriction #(?:10|21) "remExField" = \[,<NULL-object>,"switchmove","ActsPercMrunSlowWrflDf_FlipFlopPara"\]
 Rule = Value Restriction #[0-9][0-9] "remExField" = \[<NULL-object>,,"JIPrequest"\]
 Rule = Value Restriction #27
+Rule = Value Restriction #3 "remExField" = \[<NULL-object>,<NULL-object>,"switchmove","ladderrifletopoff"\]

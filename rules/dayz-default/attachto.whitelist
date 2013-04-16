@@ -1,2 +1,3 @@
 Rule = BoltSteelF
 Rule = (?:s|S)hot
+Rule = WoodenArrowF
