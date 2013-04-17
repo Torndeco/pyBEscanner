@@ -43,3 +43,5 @@ Rule = #9 "30Rnd_762x39_SA58" 0:0
 Rule = #9 "30Rnd_556x45_G36" 0:0
 Rule = #9 "30Rnd_556x45_G36SD" 0:0
 Rule = #10 "ItemSodaMdew" 0:0
+Rule = #123 "FoodrabbitCooked" 0:0
+Rule = #130 "FoodrabbitRaw" 0:0
