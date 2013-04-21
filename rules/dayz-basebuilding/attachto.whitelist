@@ -1,6 +1,7 @@
 Rule = Base_WarfareBBarrier10x
 Rule = Base_WarfareBBarrier10xTall
 Rule = Concrete_Wall_EP1
+Rule = Fence_corrugated_plate
 Rule = Fort_RazorWire
 Rule = Hhedgehog_concrete
 Rule = Infostand_2_EP1
