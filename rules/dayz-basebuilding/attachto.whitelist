@@ -10,5 +10,6 @@ Rule = Land_Fort_Watchtower
 Rule = Land_HBarrier_large
 Rule = Land_fort_bagfence_long
 Rule = Land_pumpa
+Rule = Misc_Cargo1Bo_military
 Rule = Misc_cargo_cont_small_EP1
 Rule = WarfareBDepot
