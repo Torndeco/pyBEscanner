@@ -1,9 +1,9 @@
 Rule = .
-	Count = 8
+	Count = 10
 	Time = 1
 	Action = BAN
 
 Rule = ..
-	Count = 15
+	Count = 18
 	Time = 5
 	Action = BAN
