@@ -4,6 +4,6 @@ Rule = .
 	Action = BAN
 
 Rule = ..
-	Count =20
+	Count = 20
 	Time = 3
 	Action = BAN
