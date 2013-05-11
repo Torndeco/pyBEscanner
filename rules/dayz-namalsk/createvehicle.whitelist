@@ -1,2 +1,6 @@
 Rule = z_us_soldier
 Rule = z_ru_soldier
+Rule = MedBox0_DZN
+Rule = BAF_AssaultPack_DZN
+Rule = z_nac_soldier_heavy
+Rule = z_nac_soldier
