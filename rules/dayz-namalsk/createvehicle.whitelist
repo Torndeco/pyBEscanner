@@ -1,6 +1,8 @@
-Rule = z_us_soldier
-Rule = z_ru_soldier
-Rule = MedBox0_DZN
 Rule = BAF_AssaultPack_DZN
-Rule = z_nac_soldier_heavy
+Rule = CamoWinter_DZN
+Rule = MedBox0_DZN
+Rule = Sniper1W_DZN
 Rule = z_nac_soldier
+Rule = z_nac_soldier_heavy
+Rule = z_ru_soldier
+Rule = z_us_soldier
