@@ -199,9 +199,9 @@ class ConsoleScanner:
 	def get_player_ip(self, line):
 		# Just Incase Player Name Tries to Confuse pyBEscanner
 		line = re.split("#\d{1,3}\s", line, 1)[1]
-		temp = re.search("\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}:\d{1,4}[0-9]\) connected$", line).group()
-		playername = line[:((len(temp)+2)*-1)]
-		ip = temp2[:-16] 
+		temp = re.search("\(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}:\d{1,4}[0-9]\) connected$", line).group()
+		playername = line[: (-1 * (len(temp)+1))]
+		ip = temp.split(":")[0][1:]
 		
 		return playername, ip
 		 
