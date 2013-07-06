@@ -1,8 +1,1 @@
-Rule = beeeh
-Rule = bInvisibleOn
-Rule = dwarden
-Rule = hreh1
-Rule = TTT5NamePl
-Rule = TTT5derCode
-Rule = spawnAIS
-Rule = #0 "if \(true\) then \(\(dayzLogin getVariable 'dayzLogin2'\) select 0\)" 
+Rule = .

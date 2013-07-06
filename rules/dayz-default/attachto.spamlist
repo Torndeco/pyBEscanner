@@ -2,7 +2,6 @@ Rule = .
 	Count = 3
 	Time = 1
 	Action = BAN
-	Exception = WoodenArrowF
 
 Rule = ..
 	Count = 10
