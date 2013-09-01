@@ -2,11 +2,13 @@ Rule = .
 	Count = 4
 	Time = 1
 	Action = BAN
+	Exception = #0 "CMflareAmmo"
 
 Rule = ..
 	Count = 5
 	Time = 8
 	Action = BAN
+	Exception = #0 "CMflareAmmo"
 	
 Rule = .*\[[0],[0],[0]\]
 	Exception = #0 "HelicopterExplo

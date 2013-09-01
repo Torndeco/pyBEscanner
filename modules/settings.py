@@ -58,7 +58,7 @@ class Settings:
         config.read(self.conf_file)
 
         if config.has_option("Default", "Version"):
-            if config.get("Default", "Version") != "18":
+            if config.get("Default", "Version") != "19":
                 print "-------------------------------------------------"
                 print "ERROR: Bad conf/servers.ini version"
                 print "-------------------------------------------------"
@@ -112,6 +112,8 @@ class Settings:
                     ["Scan Setpos", "setpos"],
                     ["Scan Setvariable", "setvariable"],
                     ["Scan Teamswitch", "teamswitch"],
+					["Scan Waypointcondition", "waypointcondition"],
+					["Scan Waypointstatement", "waypointstatement"],
                     ["OffSet", "OffSet"],
                     ["Ban Message", "Ban Message"],
                     ["Kick Message", "Kick Message"],
@@ -192,7 +194,9 @@ class Settings:
                                             "setdamage",
                                             "setpos",
                                             "setvariable",
-                                            "teamswitch"]
+                                            "teamswitch",
+											"waypointcondition",
+											"waypointstatement"]
 
             server["Battleye Logs Location"] = {}
             server["Battleye Temp Logs"] = {}

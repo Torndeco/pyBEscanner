@@ -1,2 +1,2 @@
-Rule = BoltSteelF
-Rule = (?:s|S)hot
+Rule = \[0,0,0\]
+Rule = \[0,1,0\]

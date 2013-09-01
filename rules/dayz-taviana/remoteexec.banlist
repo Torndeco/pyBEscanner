@@ -1,0 +1,3 @@
+Rule = .
+	Exception = spawn BIS_Effects_Burn"
+	Exception = spawn BIS_Effects_AirDestructionStage2"
