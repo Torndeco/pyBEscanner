@@ -70,7 +70,7 @@ class BansDeamon:
 				for line in b_file:
 					data = re.split(' ', line.rstrip(), 2)
 					if len(data) == 3:
-						if (data[0] != "banzbanzbanzbanzbanzbanzbanzbanz") and (data[0] != "dayzcommunitybanslistdayzdayzday"):
+						if (data[0] != "banzbanzbanzbanzbanzbanzbanzbanz") and (data[0] != "dayzcommunitybanslistdayzdayzday") and (data[0] != "dartdartdartdartdartdartdartdart"):
 							bans.append(data[0])
 							duration.append(data[1])
 							info.append(data[2])
